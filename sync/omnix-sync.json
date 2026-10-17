@@ -1,5 +1,5 @@
 {
- "commit": "6e0cfd339248abe4de80a02838d8fb01567b055d",
+ "commit": "177bdf0054e3237ed637c0049366a0e1fcfbfb9a",
  "derived": {
   "pyproject.toml": "418462422a19766d7cd9e09accea65f94fc5b9a908e5fb41eb4279e167522a44",
   "web/package.json": "937d3d627e85e0db5106a9f7a1e2b43b87cd88fb6750de181fcd2ea5153a10a0"
@@ -586,7 +586,7 @@
   "src/app/apps/trading/strategy_leader_momentum_diagnostics.py": "9623ecea273ef303151b582775b4baf533dd963803a8a86bc0acdc6c24de5dbd",
   "src/app/apps/trading/strategy_leader_momentum_funnel_diagnostics.py": "04f00d27a6bf3943b96deea11a5150a4efaf741bb223beb4b795a5d0b0f82423",
   "src/app/apps/trading/strategy_leader_momentum_research.py": "6aace343ed6a044eadb71e0cadd9a73670a975041662629eef826248d6261ccc",
-  "src/app/apps/trading/strategy_managed_finviz_shadow.py": "be4637a0435560736e55e619a1bf0e67cb6775c18257d64c013426460d348903",
+  "src/app/apps/trading/strategy_managed_finviz_shadow.py": "b8a0c62a29caaefd2c70cf6345eb4579d5bb4d0e94c05593dd8ab9c6cb35414a",
   "src/app/apps/trading/strategy_monitor.py": "cdbb22f28fc4bc7d2b04b4ded9ffec95c4baac8f98063a753e01973f2e47327e",
   "src/app/apps/trading/strategy_monitor_candidates.py": "2915a0a7f0732ee4cdb933a7897ba075d33959ca167127aef7730e758926ebc4",
   "src/app/apps/trading/strategy_monitor_config_run.py": "2dae4f57d7b805f07c67439c3521049494b79e463d829b391d38dca40984d268",
@@ -596,7 +596,7 @@
   "src/app/apps/trading/strategy_operations_api.py": "9408378b88b436ab772bbc5ebe8b51e578608eb5dc52a91dad08d741b7d1bebb",
   "src/app/apps/trading/strategy_operations_health.py": "92126178eaf9a5eedf17022a45626831385a4033fc66d0b6ffebcbb8a45d1c04",
   "src/app/apps/trading/strategy_outcome_quality.py": "560c88b733601e0f6616830e89ab45b3e8feb60f78b92c326367c47afac0065f",
-  "src/app/apps/trading/strategy_overnight_monitor.py": "6386410327863994648da7882a0e5a9bec26f888ca03c3d0a52fbe18bc4c0b59",
+  "src/app/apps/trading/strategy_overnight_monitor.py": "9bbe4ca40faaedb332c4abcf438c171fe9466ac8ee131f8a6b8843a352effb4a",
   "src/app/apps/trading/strategy_overnight_scan.py": "aca71baa90e64981f124d0715eb085d026a7ac8e0d7e2914d7d0772cbe7e8739",
   "src/app/apps/trading/strategy_overnight_shadow.py": "d96c052c38479e463191a6803f54525c25221efbb8f47bd7811d2dd0c6ce4b84",
   "src/app/apps/trading/strategy_partial_runner_research.py": "b13d27a50d58fb96f316b242228ad583199e2bc5ff6c27aec0b1cf68d2b919c5",
@@ -1616,7 +1616,7 @@
   "src/tests/trading/test_strategy_leader_momentum_research.py": "cbe67b59b0fdc4fd39f3e859ab48abb06cffc09dcbdca4966ff8212ae22309dc",
   "src/tests/trading/test_strategy_managed_finviz_shadow.py": "bcd712d0f863d82540235e7e5156d34ddedae9c43b1b259b0da10aa39ecba37b",
   "src/tests/trading/test_strategy_operations_interday_monitor_status.py": "5adfd20e0e3283c0a391c3d8dd425483f6dee9ac9c7b1577cdb460af70e5a92a",
-  "src/tests/trading/test_strategy_overnight_shadow.py": "d90cfafaafd694944bf709641ea97d2bc12e4a147d08cedc840ff0b3a320e76e",
+  "src/tests/trading/test_strategy_overnight_shadow.py": "36442cf2edc7c7d86d23081ca533c2fab6f9b63b6cb35887db27201f0a9c8bf2",
   "src/tests/trading/test_strategy_partial_runner_research.py": "35d0bad1dd108d81ce551086600a77704e26fbee2432cff8f64f82cdab971e48",
   "src/tests/trading/test_strategy_registry.py": "01e4f349da9576ce4ec95ad845d4d28aca57c10dd63e82594a0cd8d7909166c3",
   "src/tests/trading/test_strategy_replay_reliability.py": "0310a66b5cac1ae33967e0bcea9cd9f10eb95ca0ce2c79ddcd0f2653d84e8038",
@@ -3358,5 +3358,5 @@
   "web/vitest.workspace.config.ts": "f1f2382afdf7550337092061b966ac32b22fb2286174c89b691bc35703795507"
  },
  "source": "F:/LLM/omnix",
- "synced_at": "2026-10-17T18:35:55+00:00"
+ "synced_at": "2026-10-17T20:44:41+00:00"
 }

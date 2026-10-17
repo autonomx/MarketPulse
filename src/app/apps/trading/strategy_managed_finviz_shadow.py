@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from app.config.env import environment
+from app.config.product import product_name
 
 """Idempotent startup provisioning for the managed interday SHADOW profile."""
 
@@ -27,7 +28,7 @@ INTERDAY_TRADING_STRATEGY_ID = "interday-trading-strategy-shadow"
 # provisioner. The durable strategy identity is the interday group ID above.
 MANAGED_FINVIZ_SHADOW_STRATEGY_ID = INTERDAY_TRADING_STRATEGY_ID
 MANAGED_FINVIZ_SHADOW_ACCOUNT_ID = "omnix-finviz-shadow"
-_MANAGED_ACCOUNT_NAME = "Omnix Finviz SHADOW"
+_MANAGED_ACCOUNT_NAME_SUFFIX = "Finviz SHADOW"
 _MAX_UPDATE_ATTEMPTS = 3
 
 # The first five are embedded research arms of the parent configuration. The
@@ -120,7 +121,8 @@ def _resolve_account(paper_repository: TradingPaperRepository) -> str:
 
     request = PaperAccountCreate(
         account_id=MANAGED_FINVIZ_SHADOW_ACCOUNT_ID,
-        name=_MANAGED_ACCOUNT_NAME,
+        # Shown in the paper account list: the visible product name (S-3).
+        name=f"{product_name()} {_MANAGED_ACCOUNT_NAME_SUFFIX}",
         initial_cash=_managed_initial_cash(),
         commission_bps=Decimal("0"),
     )

@@ -17,6 +17,7 @@ from decimal import Decimal
 from typing import Any, Callable
 
 from app.config.env import environment
+from app.config.product import product_name
 from app.runtime.features import FeatureContext
 
 from .monitor_task import ScheduledTradingMonitor, TradingMonitorTask
@@ -43,7 +44,7 @@ logger = logging.getLogger(__name__)
 
 _STATE_KEY = "_omnix_overnight_shadow_monitor"
 OVERNIGHT_SHADOW_ACCOUNT_ID = "omnix-overnight-shadow"
-_ACCOUNT_NAME = "Omnix Overnight SHADOW"
+_ACCOUNT_NAME_SUFFIX = "Overnight SHADOW"
 EVENT_PICK = "overnight_pick"
 EVENT_POPULATION = "overnight_population"
 EVENT_SCAN = "overnight_scan"
@@ -116,7 +117,8 @@ def _resolve_account(paper_repository: TradingPaperRepository) -> str:
     try:
         # SHADOW never places orders; the account only owns the evidence (FK).
         paper_repository.create_account(PaperAccountCreate(
-            account_id=OVERNIGHT_SHADOW_ACCOUNT_ID, name=_ACCOUNT_NAME,
+            # Shown in the paper account list, so it carries the visible product name (S-3), not "Omnix" everywhere.
+            account_id=OVERNIGHT_SHADOW_ACCOUNT_ID, name=f"{product_name()} {_ACCOUNT_NAME_SUFFIX}",
             initial_cash=Decimal("10000"), commission_bps=Decimal("0"),
         ))
     except Exception:

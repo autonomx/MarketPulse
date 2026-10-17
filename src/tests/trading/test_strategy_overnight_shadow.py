@@ -282,6 +282,7 @@ class FakePaperRepository:
 
     def create_account(self, request):
         self.accounts.append(request.account_id)
+        self.names = [*getattr(self, "names", []), request.name]
 
 
 def test_provisioning_creates_once_and_never_overwrites(monkeypatch) -> None:
@@ -293,3 +294,16 @@ def test_provisioning_creates_once_and_never_overwrites(monkeypatch) -> None:
     repo.config = repo.config.model_copy(update={"mode": "off"})   # operator change survives restart
     assert provision_overnight_shadow_strategy(strategy_repository=repo, paper_repository=paper) == "unchanged"
     assert repo.config.mode == "off" and paper.accounts == [OVERNIGHT_SHADOW_ACCOUNT_ID]
+
+
+def test_the_shadow_account_carries_the_visible_product_name(monkeypatch) -> None:
+    monkeypatch.setenv("OMNIX_TRADING_OVERNIGHT_SHADOW_AUTOPROVISION", "1")
+    monkeypatch.setenv("OMNIX_TRADING_OVERNIGHT_SHADOW_AUTOPROVISION_IN_TESTS", "1")
+    for product, expected in ((None, "Omnix Overnight SHADOW"), ("MarketPulse", "MarketPulse Overnight SHADOW")):
+        if product is None:
+            monkeypatch.delenv("OMNIX_PRODUCT_NAME", raising=False)
+        else:
+            monkeypatch.setenv("OMNIX_PRODUCT_NAME", product)
+        paper = FakePaperRepository()
+        provision_overnight_shadow_strategy(strategy_repository=FakeRepository(None), paper_repository=paper)
+        assert paper.names == [expected]
