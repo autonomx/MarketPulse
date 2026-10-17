@@ -67,8 +67,9 @@ test('Continue with Google opens the system browser on a begin link that goes to
   await main.getByRole('button', { name: 'Continue with Google' }).click();
   await expect(main.getByRole('status').filter({ hasText: 'Finish signing in with Google in your browser' })).toBeVisible();
 
-  const opened = await expect.poll(() => app.evaluate(() => (globalThis as unknown as { opened: string[] }).opened), { timeout: 30_000 })
-    .toHaveLength(1).then(() => app.evaluate(() => (globalThis as unknown as { opened: string[] }).opened));
+  const openedUrls = () => app.evaluate(() => (globalThis as unknown as { opened: string[] }).opened);
+  await expect.poll(openedUrls, { timeout: 30_000 }).toHaveLength(1);
+  const opened = await openedUrls();
   const begin = new URL(opened[0]);
   expect(begin.origin).toBe(origin);
   expect(begin.pathname).toBe('/api/auth/google/desktop/begin');
