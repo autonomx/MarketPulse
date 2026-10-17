@@ -27,6 +27,9 @@ Commands (stdin): {"cmd": "login-code", "id": 1}   a one-time owner sign-in code
                   {"cmd": "backup", "id": 3}
                   {"cmd": "import-reference", "id": 4, "source": "postgresql://…", "apply": false}
                       Omnix's market reference data (MP-10.1), on a worker thread; a dry run unless apply
+                  {"cmd": "import-account-data", "id": 5, "source": "postgresql://…", "apply": false,
+                   "source_workspace": "workspace:local"}
+                      one Omnix workspace's documents, alerts and paper accounts (MP-10.2), likewise
                   {"cmd": "stop"}
 """
 from __future__ import annotations
@@ -396,12 +399,21 @@ class Supervisor:
         return output.strip().splitlines()[-1]
 
     def import_reference(self, source: str, *, apply: bool) -> dict[str, Any]:
+        """Omnix's market reference data (MP-10.1)."""
+        return self._import("import-reference", source, apply=apply)
+
+    def import_account_data(self, source: str, *, apply: bool, source_workspace: str = "") -> dict[str, Any]:
+        """One Omnix workspace's documents, alerts and paper accounts (MP-10.2)."""
+        extra = ["--source-workspace", source_workspace] if source_workspace else []
+        return self._import("import-account-data", source, apply=apply, extra=extra)
+
+    def _import(self, command: str, source: str, *, apply: bool, extra: list[str] | None = None) -> dict[str, Any]:
         if not source.startswith(("postgresql://", "postgres://")):
             raise ValueError("the source must be a postgresql:// URL")
         if not self._import_lock.acquire(blocking=False):
             raise RuntimeError("an import is already running")
         try:
-            output = self._run("import", self._serve_command("import-reference", *(["--apply"] if apply else [])),
+            output = self._run("import", self._serve_command(command, *(["--apply"] if apply else []), *(extra or [])),
                                env={**self._serve_env(), "MARKETPULSE_IMPORT_SOURCE_URL": source}, log="import.log")
         finally:
             self._import_lock.release()
@@ -484,10 +496,9 @@ class Supervisor:
                 reply["has_password"] = self.owner_has_password()
             elif name == "backup":
                 reply["path"] = str(self.backup())
-            elif name == "import-reference":
+            elif name in {"import-reference", "import-account-data"}:
                 # Minutes for a large Omnix: off the command loop, so stop and other commands still answer.
-                threading.Thread(target=self._import_command, args=(command, reply), name="import-reference",
-                                 daemon=True).start()
+                threading.Thread(target=self._import_command, args=(command, reply), name=name, daemon=True).start()
                 return
             elif name == "stop":
                 self.stop()
@@ -501,7 +512,12 @@ class Supervisor:
 
     def _import_command(self, command: dict[str, Any], reply: dict[str, Any]) -> None:
         try:
-            reply.update(self.import_reference(str(command.get("source") or ""), apply=bool(command.get("apply"))))
+            source, apply = str(command.get("source") or ""), bool(command.get("apply"))
+            if command.get("cmd") == "import-account-data":
+                reply.update(self.import_account_data(source, apply=apply,
+                                                      source_workspace=str(command.get("source_workspace") or "")))
+            else:
+                reply.update(self.import_reference(source, apply=apply))
         except Exception as exc:  # reported to the shell
             reply["error"] = f"{type(exc).__name__}: {exc}"
         self.emit(reply)

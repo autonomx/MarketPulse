@@ -3,20 +3,26 @@
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self'; style-src 'self'; script-src 'self'" />
-    <title>Import market data from Omnix</title>
+    <title>Import from Omnix</title>
     <link rel="stylesheet" href="shell.css" />
   </head>
   <body class="shell import">
     <main>
-      <h1>Import market data from Omnix</h1>
+      <h1>Import from Omnix</h1>
       <p class="note">
-        Copies the public market reference data an Omnix database has fetched (company profiles, financials, filing
-        snapshots, corporate events and market breadth) into MarketPulse. Omnix is only read, and nothing from its
-        accounts, alerts, layouts or settings is copied. Data MarketPulse already has is kept.
+        Copies the public market data an Omnix database has fetched (company profiles, financials, filing snapshots,
+        corporate events and market breadth). Omnix is only read, and data MarketPulse already has is kept.
       </p>
       <label for="source">Omnix database URL</label>
       <input id="source" type="password" autocomplete="off" spellcheck="false"
              placeholder="postgresql://user:password@127.0.0.1:5432/omnix" />
+      <label class="check"><input id="accounts" type="checkbox" /> Also my layouts, watchlists, drawings, scripts,
+        alerts and paper accounts</label>
+      <div id="workspace-row" hidden>
+        <label for="workspace">From the Omnix workspace</label>
+        <input id="workspace" type="text" autocomplete="off" spellcheck="false" value="workspace:local" />
+        <p class="note">Each comes over whole, as yours. One with the same id that MarketPulse already has is kept.</p>
+      </div>
       <p id="state" role="status"></p>
       <table id="report" hidden>
         <thead><tr><th>Data</th><th>In Omnix</th><th id="new-heading">New</th></tr></thead>

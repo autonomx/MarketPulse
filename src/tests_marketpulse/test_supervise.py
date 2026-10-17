@@ -168,6 +168,28 @@ def test_the_omnix_import_runs_off_the_command_loop_with_the_source_in_its_envir
     assert calls == [(supervisor._serve_command("import-reference"), "postgresql://u:pw@127.0.0.1/omnix")]
 
 
+def test_the_account_data_import_names_its_workspace_and_keeps_the_url_off_the_command_line(tmp_path, secrets_env,
+                                                                                          monkeypatch):
+    events = []
+    supervisor = Supervisor(_config(tmp_path), events.append)
+    calls = []
+
+    def run(step, command, *, env=None, log):
+        calls.append((command, env["MARKETPULSE_IMPORT_SOURCE_URL"]))
+        return '{"applied": true, "groups": []}'
+
+    monkeypatch.setattr(supervisor, "_run", run)
+    supervisor.handle({"cmd": "import-account-data", "id": 11, "source": "postgresql://u:pw@127.0.0.1/omnix",
+                       "apply": True, "source_workspace": "workspace:local"})
+    deadline = time.monotonic() + 10
+    while not events and time.monotonic() < deadline:
+        time.sleep(0.01)
+
+    assert events == [{"event": "result", "id": 11, "cmd": "import-account-data", "applied": True, "groups": []}]
+    assert calls == [(supervisor._serve_command("import-account-data", "--apply", "--source-workspace", "workspace:local"),
+                      "postgresql://u:pw@127.0.0.1/omnix")]
+
+
 def test_only_one_omnix_import_runs_at_a_time(tmp_path, secrets_env):
     supervisor = Supervisor(_config(tmp_path), lambda event: None)
     supervisor._import_lock.acquire()

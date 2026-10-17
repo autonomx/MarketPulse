@@ -115,3 +115,7 @@ input:focus { outline: none; border-color: var(--accent); }
 button.primary { background: var(--accent); border-color: var(--accent); color: #111; }
 button:disabled { opacity: 0.5; cursor: default; }
 button:disabled:hover { border-color: var(--border); }
+label.check { display: flex; gap: 8px; align-items: center; font-weight: 400; -webkit-app-region: no-drag; }
+label.check input { margin: 0; }
+#workspace-row { display: grid; gap: 6px; }
+#workspace-row[hidden] { display: none; }

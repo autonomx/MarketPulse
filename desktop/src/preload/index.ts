@@ -18,6 +18,8 @@ if (location.protocol === 'file:') {
     quit: () => ipcRenderer.send('mp:quit'),
     importReference: (source: string, apply: boolean): Promise<unknown> =>
       ipcRenderer.invoke('mp:import-reference', String(source), Boolean(apply)),
+    importAccountData: (source: string, apply: boolean, workspace: string): Promise<unknown> =>
+      ipcRenderer.invoke('mp:import-account-data', String(source), Boolean(apply), String(workspace)),
     closeWindow: () => ipcRenderer.send('mp:close-window'),
   });
 } else if (info.origin && location.origin === info.origin) {

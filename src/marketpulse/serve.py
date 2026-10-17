@@ -10,6 +10,8 @@
     python -m marketpulse.serve env         --config launch.json   # the child environment, secrets redacted
     python -m marketpulse.serve import-reference [--apply] --config launch.json
         # Omnix's market reference data (MP-10.1) from MARKETPULSE_IMPORT_SOURCE_URL; a dry run without --apply
+    python -m marketpulse.serve import-account-data [--apply] [--source-workspace ID] --config launch.json
+        # one Omnix workspace's documents, alerts and paper accounts (MP-10.2), into the owner's workspace
 
 Each command first replaces this process's environment with marketpulse.env.child_environment, so the gateway, the
 job worker it starts and the database tools all run with exactly that environment.
@@ -109,6 +111,29 @@ def _import_reference(source_url: str | None, *, apply: bool) -> int:
     return 0
 
 
+def _import_account_data(source_url: str | None, *, apply: bool, source_workspace: str | None) -> int:
+    """Prints the import report or {"error"}, as _import_reference does."""
+    import psycopg
+
+    from app.persistence.config import migration_database_settings
+    from marketpulse.import_omnix_accounts import LOCAL_WORKSPACE, AccountImportError, import_account_data
+
+    if not source_url:
+        print(json.dumps({"error": "no source: MARKETPULSE_IMPORT_SOURCE_URL is not set"}))
+        return 0
+    try:
+        report = import_account_data(source_url, migration_database_settings().url, apply=apply,
+                                     source_workspace=source_workspace or LOCAL_WORKSPACE)
+    except AccountImportError as exc:
+        print(json.dumps({"error": str(exc)}))
+        return 0
+    except psycopg.Error as exc:
+        print(json.dumps({"error": f"the import stopped: {str(exc).strip()}"}))
+        return 0
+    print(json.dumps(report, default=str))
+    return 0
+
+
 def _show_env() -> int:
     import os
 
@@ -121,10 +146,11 @@ def _show_env() -> int:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="python -m marketpulse.serve", description=__doc__.splitlines()[0])
     parser.add_argument("command", choices=["serve", "migrate", "status", "login-code", "backup", "restore", "grants", "env",
-                                            "import-reference"])
+                                            "import-reference", "import-account-data"])
     parser.add_argument("path", nargs="?", type=Path, help="backup or restore file")
     parser.add_argument("--config", required=True, type=Path, help="the supervisor's launch config (JSON)")
-    parser.add_argument("--apply", action="store_true", help="import-reference: write the rows (default: a dry run)")
+    parser.add_argument("--apply", action="store_true", help="imports: write the rows (default: a dry run)")
+    parser.add_argument("--source-workspace", help="import-account-data: the Omnix workspace (default workspace:local)")
     args = parser.parse_args(argv)
     # Read before _prepare replaces the environment (it drops MARKETPULSE_* variables).
     import_source = os.environ.get("MARKETPULSE_IMPORT_SOURCE_URL")
@@ -146,6 +172,8 @@ def main(argv: list[str] | None = None) -> int:
         return _login_code()
     if args.command == "import-reference":
         return _import_reference(import_source, apply=args.apply)
+    if args.command == "import-account-data":
+        return _import_account_data(import_source, apply=args.apply, source_workspace=args.source_workspace)
     return _show_env()
 
 

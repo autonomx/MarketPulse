@@ -312,6 +312,14 @@ test('the Omnix import page checks a source before importing, through the backen
     await page.locator('#check').click();
     await expect(page.locator('#report tbody tr')).toHaveCount(5, { timeout: 60_000 });
     await expect(page.locator('#report tbody')).toContainText('Company profiles');
+    // With the owner's own data (MP-10.2): its documents, alerts and paper accounts are counted too.
+    await expect(page.locator('#workspace')).toBeHidden();
+    await page.locator('#accounts').check();
+    await expect(page.locator('#workspace')).toHaveValue('workspace:local');
+    await page.locator('#check').click();
+    await expect(page.locator('#report tbody tr')).toHaveCount(8, { timeout: 120_000 });
+    await expect(page.locator('#report tbody')).toContainText('Paper accounts');
+    await expect(page.locator('#report tbody')).toContainText('Layouts, watchlists, drawings and scripts');
   }
   await page.locator('#close').click();
   await expect.poll(() => app.windows().some((candidate) => candidate.url().endsWith('/pages/import.html'))).toBe(false);

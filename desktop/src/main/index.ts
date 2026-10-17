@@ -230,6 +230,16 @@ async function main(): Promise<void> {
       return { error: error instanceof Error ? error.message : String(error) };
     }
   });
+  ipcMain.handle('mp:import-account-data', async (event, source: string, apply: boolean, workspace: string) => {
+    if (!fromShellPage(event)) return { error: 'refused' };
+    // One Omnix workspace's documents, alerts and paper accounts (roadmap MP-10.2), as the owner's.
+    try {
+      return await supervisor.command('import-account-data', 30 * 60_000,
+        { source: String(source), apply: Boolean(apply), source_workspace: String(workspace) });
+    } catch (error) {
+      return { error: error instanceof Error ? error.message : String(error) };
+    }
+  });
   ipcMain.on('mp:close-window', (event) => {
     if (fromShellPage(event)) BrowserWindow.fromWebContents(event.sender)?.close();
   });
@@ -357,7 +367,7 @@ function buildMenu(origin: () => string | null, windows: WindowManager, logs: st
         { label: 'Charts', click: go('/trading') },
         { label: 'Settings…', click: go('/settings') },
         { type: 'separator' },
-        { id: 'import-omnix', label: 'Import market data from Omnix…', click: openImport },
+        { id: 'import-omnix', label: 'Import from Omnix…', click: openImport },
         { type: 'separator' },
         { label: 'Open logs folder', click: () => void shell.openPath(logs) },
         { label: 'Export diagnostics…', click: () => void exportDiagnostics(desktopPaths(), SettingsStore.in(desktopPaths().data).load(), null) },
