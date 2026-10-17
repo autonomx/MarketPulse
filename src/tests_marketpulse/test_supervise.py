@@ -55,6 +55,25 @@ def test_a_busy_port_is_refused_not_moved(tmp_path, secrets_env):
     assert port_free(busy) is True
 
 
+def test_this_data_folders_own_running_cluster_may_hold_the_postgres_port(tmp_path, secrets_env, monkeypatch):
+    with socket.socket() as holder:
+        holder.bind(("127.0.0.1", 0))
+        holder.listen(1)
+        busy = holder.getsockname()[1]
+        supervisor = Supervisor(_config(tmp_path, pg=busy), lambda event: None)
+        steps = []
+        supervisor.emit = steps.append
+
+        monkeypatch.setattr(supervisor, "postgres_running", lambda: False)
+        with pytest.raises(SupervisorError):
+            supervisor.check_ports()
+        monkeypatch.setattr(supervisor, "postgres_running", lambda: True)
+        supervisor.check_ports()
+        supervisor.start_postgres()
+
+    assert steps == [{"event": "step", "step": "postgres", "message": "Reconnecting to the database"}]
+
+
 def test_only_the_newest_snapshots_are_kept(tmp_path):
     for stamp in ("20261001", "20261003", "20261002", "20261005", "20261004"):
         (tmp_path / f"pgdata-{stamp}").mkdir()

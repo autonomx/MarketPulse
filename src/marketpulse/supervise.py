@@ -205,8 +205,10 @@ class Supervisor:
     def check_ports(self) -> None:
         ports = {"http": self.config.http_port, "postgres": self.config.pg_port,
                  "metrics": self.config.metrics_port, "notifications": self.config.notify_port}
-        busy = [f"{name} {port}" for name, port in ports.items()
-                if name != "notifications" and not port_free(port)]
+        # The notification listener is the shell's; the PostgreSQL port may be held by this data folder's own cluster,
+        # left running by a supervisor that was killed (start_postgres reconnects to it).
+        skip = {"notifications"} | ({"postgres"} if self.postgres_running() else set())
+        busy = [f"{name} {port}" for name, port in ports.items() if name not in skip and not port_free(port)]
         if busy:
             raise SupervisorError("ports", "port_busy: " + ", ".join(busy))
 
