@@ -31,3 +31,7 @@ resources/cache/
 *.log
 Thumbs.db
 .DS_Store
+
+# Desktop test output
+desktop/test-results/
+desktop/playwright-report/

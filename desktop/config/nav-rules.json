@@ -1,0 +1,13 @@
+{
+  "$comment": "Where a link or window.open from the app goes (roadmap §4.4). The gateway origin is internal and decided at run time.",
+  "internal": {
+    "windowOpen": "window",
+    "navigate": "stay"
+  },
+  "external": {
+    "schemes": ["https:", "http:"],
+    "deniedHosts": ["127.0.0.1", "localhost", "[::1]"],
+    "action": "open-external"
+  },
+  "otherwise": "deny"
+}

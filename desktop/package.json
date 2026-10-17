@@ -1,0 +1,26 @@
+{
+  "name": "marketpulse-desktop",
+  "productName": "MarketPulse",
+  "version": "0.1.0",
+  "description": "MarketPulse: market monitoring, premarket gappers, catalysts and momentum, in one desktop app.",
+  "author": "Autonomx",
+  "license": "MIT",
+  "private": true,
+  "main": "out/main.js",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "start": "npm run build && electron .",
+    "test": "npm run build && playwright test --config tests/playwright.config.ts",
+    "test:unit": "playwright test --config tests/playwright.config.ts tests/unit.spec.ts",
+    "dist": "npm run build && node scripts/dist.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.60.0",
+    "@types/node": "22.20.1",
+    "electron": "44.5.1",
+    "electron-builder": "26.15.3",
+    "esbuild": "0.28.2",
+    "typescript": "5.9.3"
+  }
+}
