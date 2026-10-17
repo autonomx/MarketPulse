@@ -56,6 +56,7 @@ import './TradingIntervalMenu.css';
 import './TradingSideRail.css';
 import './TradingLayoutConstraints.css';
 import './TradingLightTheme.css';
+import './TradingTerminalLook.css';
 import './TradingChartPan.css';
 import './TradingChartChrome.css';
 import './TradingTypography.css';

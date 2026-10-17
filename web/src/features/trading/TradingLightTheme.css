@@ -1,12 +1,13 @@
 @layer features {
   :root[data-omnix-appearance='light'] .trading-workspace {
-    --trading-light-bg: var(--c-slate-970-2);
-    --trading-light-surface: var(--c-neutral-1000);
-    --trading-light-surface-muted: var(--c-slate-970-2);
-    --trading-light-line: color-mix(in srgb, var(--c-slate-550) 24%, transparent);
-    --trading-light-line-soft: color-mix(in srgb, var(--c-slate-550) 14%, transparent);
-    --trading-light-text: var(--c-blue-280-2);
-    --trading-light-muted: var(--c-blue-560);
+    /* A TradingView-like light terminal (W-3): white surfaces, grey lines, near-black text. */
+    --trading-light-bg: #ffffff;
+    --trading-light-surface: #ffffff;
+    --trading-light-surface-muted: #f0f3fa;
+    --trading-light-line: #e0e3eb;
+    --trading-light-line-soft: #f0f3fa;
+    --trading-light-text: #131722;
+    --trading-light-muted: #787b86;
   }
 
   /* Watchlist rows and hover actions need an explicit light palette because

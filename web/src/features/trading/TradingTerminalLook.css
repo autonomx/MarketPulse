@@ -1,0 +1,87 @@
+/*
+ * The trading terminal's look (W-3, decision D-11 of the MarketPulse roadmap): a neutral, TradingView-like dark
+ * palette and type, built from Omnix's own CSS. Values were matched by eye against the public TradingView desktop
+ * app; nothing is taken from its code or assets.
+ *
+ * The trading stylesheets use Omnix's hue-named design tokens; inside the workspace (dark appearance) the navy and
+ * blue-tinted ones are mapped to neutral greys, the accent to a saturated blue and gain/loss to green/red.
+ */
+@layer features {
+  :root:not([data-omnix-appearance='light']) .trading-workspace,
+  :root:not([data-omnix-appearance='light']) .trading-title-bar {
+    /* Surfaces: chart and panels, raised panels, hover and lines. */
+    --c-slate-150-2: #0f1219;
+    --c-slate-170-2: #131722;
+    --c-indigo-190: #131722;
+    --c-slate-240: #1e222d;
+    --c-slate-260-2: #2a2e39;
+    --c-blue-390: #363a45;
+    /* Lines and muted text: neutral grey instead of blue-grey. */
+    --c-blue-660: #787b86;
+    --c-blue-710: #b2b5be;
+    --c-slate-550: #5d606b;
+    --c-slate-600: #6a6d78;
+    --c-slate-630: #787b86;
+    --c-slate-660: #787b86;
+    --c-slate-680: #868993;
+    --c-slate-740: #9598a1;
+    --c-slate-790: #a3a6af;
+    --c-slate-850: #b2b5be;
+    /* Text. */
+    --c-slate-870: #c3c6ce;
+    --c-slate-910: #d1d4dc;
+    --c-slate-930: #d1d4dc;
+    --c-slate-950: #d1d4dc;
+    --c-neutral-960: #e0e3eb;
+    /* Accent, gain and loss. */
+    --c-blue-630: #2962ff;
+    --c-blue-770: #5b8cff;
+    --c-blue-560: #4c7cf3;
+    --c-red-640: #f23645;
+    --c-red-720: #f7525f;
+    --c-teal-700: #089981;
+    --c-teal-740: #089981;
+    --c-green-790-2: #22ab94;
+    /* The title bar's colours, read by the desktop shell (W-4). */
+    --trading-title-bar-bg: #131722;
+    --trading-title-bar-fg: #b2b5be;
+    font-family: -apple-system, BlinkMacSystemFont, 'Trebuchet MS', Roboto, Ubuntu, sans-serif;
+  }
+
+  :root:not([data-omnix-appearance='light']) .trading-workspace {
+    background: #131722;
+    color: #d1d4dc;
+  }
+}
+
+@layer features {
+  /* A compact header like the terminal's other controls: 13px type, short controls, one quiet brand line. */
+  .trading-terminal-header {
+    min-height: 40px;
+    gap: 10px;
+    box-shadow: none;
+  }
+
+  .trading-terminal-header button,
+  .trading-terminal-header select {
+    font-size: 13px;
+    line-height: 18px;
+    padding: 4px 8px;
+  }
+
+  .trading-workspace-switcher button:first-child {
+    min-width: 0;
+  }
+
+  .trading-terminal-brand {
+    min-width: 0;
+  }
+
+  .trading-terminal-brand small {
+    display: none;
+  }
+
+  .trading-session-tab-hint {
+    display: none;
+  }
+}

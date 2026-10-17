@@ -35,6 +35,13 @@ import type { MarketBar } from '../tradingTypes';
 import type { TradingComparisonPlacement } from '../tradingComparisons';
 import { formatTradingChartTick, formatTradingChartTime } from '../tradingTime';
 
+// The terminal's chart colours (W-3): TradingView-like candles, axis text, grid and scale borders.
+const CANDLE_UP = '#089981';
+const CANDLE_DOWN = '#f23645';
+const CHART_TEXT = { dark: '#b2b5be', light: '#131722' } as const;
+const CHART_GRID = { dark: 'rgba(42, 46, 57, 0.6)', light: 'rgba(224, 227, 235, 0.8)' } as const;
+const CHART_BORDER = { dark: '#2a2e39', light: '#e0e3eb' } as const;
+
 export type TradingChartTypeGroup = 'candles' | 'lines' | 'areas' | 'columns' | 'profiles' | 'specialty';
 export const TRADING_CHART_TYPE_GROUPS: readonly { id: TradingChartTypeGroup; label: string }[] = [
   { id: 'candles', label: 'Candles' },
@@ -723,10 +730,10 @@ export class TradingChartAdapter {
     this.chartType = chartType;
     this.chart = createChart(container, {
       autoSize: true,
-      layout: { background: { color: 'transparent' }, textColor: '#9eacbd' },
+      layout: { background: { color: 'transparent' }, textColor: CHART_TEXT.dark },
       crosshair: { mode: CrosshairMode.Normal },
-      grid: { vertLines: { color: 'rgba(120,145,170,.08)' }, horzLines: { color: 'rgba(120,145,170,.08)' } },
-      rightPriceScale: { borderColor: 'rgba(140,160,180,.18)' },
+      grid: { vertLines: { color: CHART_GRID.dark }, horzLines: { color: CHART_GRID.dark } },
+      rightPriceScale: { borderColor: CHART_BORDER.dark },
       timeScale: {
         borderColor: 'rgba(140,160,180,.18)',
         timeVisible: true,
@@ -773,23 +780,23 @@ export class TradingChartAdapter {
       base: 0,
     });
     if (isBarType(type)) return this.chart.addSeries(BarSeries, {
-      upColor: '#20c997',
-      downColor: '#ff6b6b',
+      upColor: CANDLE_UP,
+      downColor: CANDLE_DOWN,
       openVisible: type !== 'high-low',
       thinBars: type === 'high-low',
     });
     if (type === 'hollow-candles') {
       return this.chart.addSeries(CandlestickSeries, {
         upColor: 'transparent',
-        downColor: '#ff6b6b',
+        downColor: CANDLE_DOWN,
         borderVisible: true,
-        borderUpColor: '#20c997',
-        borderDownColor: '#ff6b6b',
-        wickUpColor: '#20c997',
-        wickDownColor: '#ff6b6b',
+        borderUpColor: CANDLE_UP,
+        borderDownColor: CANDLE_DOWN,
+        wickUpColor: CANDLE_UP,
+        wickDownColor: CANDLE_DOWN,
       });
     }
-    return this.chart.addSeries(CandlestickSeries, { upColor: '#20c997', downColor: '#ff6b6b', borderVisible: false, wickUpColor: '#20c997', wickDownColor: '#ff6b6b' });
+    return this.chart.addSeries(CandlestickSeries, { upColor: CANDLE_UP, downColor: CANDLE_DOWN, borderVisible: false, wickUpColor: CANDLE_UP, wickDownColor: CANDLE_DOWN });
   }
 
   private setPriceData(bars: readonly MarketBar[]): void {
@@ -887,9 +894,9 @@ export class TradingChartAdapter {
   setAppearance(appearance: TradingChartAppearance): void {
     this.assertActive();
     const light = appearance === 'light';
-    const textColor = light ? '#536273' : '#9eacbd';
-    const gridColor = light ? 'rgba(91,111,132,.14)' : 'rgba(120,145,170,.08)';
-    const borderColor = light ? 'rgba(91,111,132,.28)' : 'rgba(140,160,180,.18)';
+    const textColor = light ? CHART_TEXT.light : CHART_TEXT.dark;
+    const gridColor = light ? CHART_GRID.light : CHART_GRID.dark;
+    const borderColor = light ? CHART_BORDER.light : CHART_BORDER.dark;
     this.chart.applyOptions({
       layout: { background: { color: 'transparent' }, textColor },
       grid: { vertLines: { color: gridColor }, horzLines: { color: gridColor } },

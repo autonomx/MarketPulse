@@ -57,6 +57,7 @@ include = [
   "web/eslint.config.js",
   "web/scripts/generate-api-types.mjs",
   "web/tests/e2e/trading-terminal.spec.ts",
+  "web/tests/e2e/trading-look.spec.ts",
   "web/tests/e2e/support/**",
   # Trading architecture records that trading tests read.
   "docs/architecture/ADR-0004-omnix-trading-terminal.md",

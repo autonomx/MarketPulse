@@ -1,5 +1,5 @@
 {
- "commit": "4232eeb57b6c69eaee3bb2fecc4bf3f38b61a21f",
+ "commit": "83571aeba08c491020e52b204376b6f8f0a1da7f",
  "derived": {
   "pyproject.toml": "418462422a19766d7cd9e09accea65f94fc5b9a908e5fb41eb4279e167522a44",
   "web/package.json": "937d3d627e85e0db5106a9f7a1e2b43b87cd88fb6750de181fcd2ea5153a10a0"
@@ -4066,7 +4066,7 @@
   "web/src/features/trading/TradingIntervalMenu.tsx": "8155f4b5373fd0b8e955de429e8b9194c22329d0bdf70c64c5bb17ea04833803",
   "web/src/features/trading/TradingLayoutConstraints.css": "04d1a69aa782c317e3881ab7e6d458f842206529925aa049b75985a5ddee979f",
   "web/src/features/trading/TradingLayoutPanel.tsx": "ccfc64a11931e47a83f9670e8ef8702de46435048dfa716b7377804a21709986",
-  "web/src/features/trading/TradingLightTheme.css": "0ffc20e1e4f9772f3fbf62244fca67a837dc04ecd9337f470eeeab5e45652852",
+  "web/src/features/trading/TradingLightTheme.css": "c78c0676a7a6aa2e2fbde7b1ca51eca9cb743fb48af8c43ed6f3b10b4754fc1d",
   "web/src/features/trading/TradingNews.css": "54067478b6fa1717dbecf40f2d545a4ddd8f02884dff0fb2eb129bd896a312e9",
   "web/src/features/trading/TradingNewsPanel.test.tsx": "32d4650368b91b74eac51ddc7b197ce3ece4360c78e8b2d8a18ae94dc70fd5cb",
   "web/src/features/trading/TradingNewsPanel.tsx": "87bf11c56df17f3ba7762bacb6ffa77d28c413345554c2e5a9f707e6433506c2",
@@ -4143,6 +4143,7 @@
   "web/src/features/trading/TradingTerminalDockData.css": "968fba7869841f5d803a43a73505f7195b38ebd6cb3c9439e9500287b94c9ca6",
   "web/src/features/trading/TradingTerminalDockLight.css": "6003445d3905a90569e9b836201e3276aa4d5d802c5148353ed2569914ea3410",
   "web/src/features/trading/TradingTerminalDockMinimize.css": "0bfdea04e53717230e0282742c78450c70a0eab077053b4bba6cd0a79a58ed31",
+  "web/src/features/trading/TradingTerminalLook.css": "9bad7afcbd6b4663f55b51a76fd5b87f7cc5b052d9f954bd4d52a0e435e76d0a",
   "web/src/features/trading/TradingToolFullscreen.css": "f8f3901620140298819871edc260bdab691f2d3581a7b668367e90da707556c4",
   "web/src/features/trading/TradingToolbarAlignment.css": "e5ce0b6fc16ff57cf24703b68154bb96e632d1b69ca3e7ef9db6a702ac46e737",
   "web/src/features/trading/TradingTradeDrilldown.css": "2bc48d65489b4b3c14bca6cf2d4e1ff167ffd8d2280266a79ec768cf08c6acdc",
@@ -4165,7 +4166,7 @@
   "web/src/features/trading/TradingWatchlistSymbolPicker.tsx": "b44c87a3feed64c51f451011921e3fcc78f9fd642edbd17867c5231b50238027",
   "web/src/features/trading/TradingWindowRestore.tsx": "7a82d9a4133d895399ec65a313c218bafd797f581cc478339be379c42b62b5b5",
   "web/src/features/trading/TradingWorkspace.css": "5194e3f4c845f60ee054d831b8739c747e3f893a88195c564bdb591936cf9e10",
-  "web/src/features/trading/TradingWorkspace.tsx": "786186c75725791de40d7739f41b1e748c690ad59972c77ded6a7d08f68e4ff3",
+  "web/src/features/trading/TradingWorkspace.tsx": "da965cb4e755c6f0944d84f51f82b5cfd3546252dc2152a71812565073526cfb",
   "web/src/features/trading/TradingYAxisControls.css": "a674fd654fbc04e33d2b90155889d46af6e4303b83decfe24005f3c2a9f7c7b8",
   "web/src/features/trading/TradingYAxisControls.tsx": "420ab0bc7c5e0b3a42b3a906432b87e712ac4c00723b1f42627a66506689fa7e",
   "web/src/features/trading/TradingYieldCurve.css": "0e6add408f453d8255841f7c4f7ff7298a23389e79cf648935d36be976a91c19",
@@ -4190,7 +4191,7 @@
   "web/src/features/trading/chart/ChartPriceHandle.css": "17d15acb5f02f87a757eb1139a8a826a9ac583b4364eff57e76a18c0c13c66df",
   "web/src/features/trading/chart/ChartPriceHandle.tsx": "1b0840824c583e14463ca5f11968fe790c51578b7143494d5f2927741408979e",
   "web/src/features/trading/chart/chartAdapter.test.ts": "0b12e159f4d2c7afa728322d6df1a2f26c63f4419ec40e0b837f18cd58d2eaa0",
-  "web/src/features/trading/chart/chartAdapter.ts": "4f6d7bc05f984d55d6a11c1a49b87da112d645f211d8b1c7088d0970472eec0c",
+  "web/src/features/trading/chart/chartAdapter.ts": "18f0814e4e8a3557f3a3e0ae9d0eedc6c2787e8d7faf7dd735df09935dfb1ed7",
   "web/src/features/trading/chart/chartAdapterWorkflow.test.ts": "721c698fbb8152ef00bf597dcdaa9f2974752c64be4fbc7aedbc5ddecae02dbe",
   "web/src/features/trading/chart/chartSynchronization.test.ts": "3144714094028707968c687a16b1cc8bc10f5fa2afe12b0db76d522c35161a4d",
   "web/src/features/trading/chart/chartSynchronization.ts": "7f56e427c2d33d987b7e5af5032f0f2d771a96da851b441141c26c222921effd",
@@ -4567,7 +4568,9 @@
   "web/src/test/unlayeredCss.ts": "db0a43cda1eb2485d30ad2893dd326cb822cb10acef642f3c613d16391e82115",
   "web/src/theme-presets.css": "30d4d3aeef8da92d6f6a32cc455d168698b4822cbe2be55d13fd03e8867dc3ac",
   "web/src/worklet-modules.d.ts": "cc36c38ddb753b8611ecac39da6ce390a5c4a1dbf8e32f8b729910071ea77a52",
-  "web/tests/e2e/trading-terminal.spec.ts": "4aa67789b87b9e7c85f925b4fb9db6ecdc979720b3e76af91dbbdc229ce474ec",
+  "web/tests/e2e/support/tradingMocks.ts": "914751786550711e0d3d3591ff950fbeddef5ffc53f8cbddd2553524513de46a",
+  "web/tests/e2e/trading-look.spec.ts": "bdef452c7e39968f47056683ce5b6f33a7b0d6614a327a916434531c23d73810",
+  "web/tests/e2e/trading-terminal.spec.ts": "06d46badc73354642bcf3ed4a374ff69409e88fc65e51f965b8f04406cfba45a",
   "web/tsconfig.json": "c0080e4172118c5641f30b61d0074d2eab0d47f3e35e7a6154fdd1b090829111",
   "web/tsconfig.trading.json": "1956a007fa7c72f32e1a89000ff22108a896439ded8e8816508e30ef8cbf3469",
   "web/vite.config.ts": "c5bab0eb1a59aa213cd4f9df2113e965f088e6eea24aeb554056830763c48ed6",
@@ -4575,5 +4578,5 @@
   "web/vitest.workspace.config.ts": "f1f2382afdf7550337092061b966ac32b22fb2286174c89b691bc35703795507"
  },
  "source": "F:/LLM/omnix",
- "synced_at": "2026-10-17T04:24:07+00:00"
+ "synced_at": "2026-10-17T05:24:57+00:00"
 }
