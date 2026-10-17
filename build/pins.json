@@ -1,0 +1,25 @@
+{
+  "_comment": "Pinned third-party inputs of the staged runtime (roadmap Phase 5). Archives are verified by SHA-256 before use.",
+  "python": {
+    "version": "3.11.17",
+    "release": "20261001",
+    "asset": "cpython-3.11.17+20261001-x86_64-pc-windows-msvc-install_only.tar.gz",
+    "url": "https://github.com/astral-sh/python-build-standalone/releases/download/20261001/cpython-3.11.17+20261001-x86_64-pc-windows-msvc-install_only.tar.gz",
+    "sha256": "79e1efc8f383a6c853e573011f8cde82c4f9134d3f9b1512e7d4f49aa5c93532"
+  },
+  "postgres": {
+    "version": "17.11",
+    "asset": "postgresql-17.11-1-windows-x64-binaries.zip",
+    "url": "https://get.enterprisedb.com/postgresql/postgresql-17.11-1-windows-x64-binaries.zip",
+    "sha256": "6eabdf00d2893713b75db4336a23c3fdf505f056e217ec6e2e95d901750cfea3"
+  },
+  "ibapi": {
+    "version": "10.50.2",
+    "_provenance": "Interactive Brokers' official Python client (TWS API 1050.02, author Interactive Brokers LLC, GPL-3.0-or-later). Staged from build/cache/ibapi/ibapi-10.50.2, whose files must match files_sha256. It requires protobuf==5.29.5 but imports and runs on the locked protobuf 7.36.2, so it is installed without dependencies.",
+    "source_dir": "build/cache/ibapi/ibapi-10.50.2",
+    "license": "GPL-3.0-or-later",
+    "license_url": "https://www.gnu.org/licenses/gpl-3.0.txt",
+    "tree_sha256": "bf160f2063af2e26cb905b66f03853151dc5acf7d6da86da2171250530afde1d",
+    "files": 235
+  }
+}

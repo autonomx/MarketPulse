@@ -2,6 +2,7 @@
 
     python -m marketpulse.serve serve       --config launch.json   # the gateway, its job worker and schedulers
     python -m marketpulse.serve migrate     --config launch.json   # release migrations, as the owner role
+    python -m marketpulse.serve status      --config launch.json   # the migration report (JSON), as the owner role
     python -m marketpulse.serve login-code  --config launch.json   # first run only: the owner's one-time sign-in code
     python -m marketpulse.serve backup PATH --config launch.json   # pg_dump custom format, as the owner role
     python -m marketpulse.serve restore PATH --config launch.json  # then the runtime role's grants are re-applied
@@ -94,7 +95,7 @@ def _show_env() -> int:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="python -m marketpulse.serve", description=__doc__.splitlines()[0])
-    parser.add_argument("command", choices=["serve", "migrate", "login-code", "backup", "restore", "grants", "env"])
+    parser.add_argument("command", choices=["serve", "migrate", "status", "login-code", "backup", "restore", "grants", "env"])
     parser.add_argument("path", nargs="?", type=Path, help="backup or restore file")
     parser.add_argument("--config", required=True, type=Path, help="the supervisor's launch config (JSON)")
     args = parser.parse_args(argv)
@@ -103,6 +104,8 @@ def main(argv: list[str] | None = None) -> int:
         return _serve(config)
     if args.command == "migrate":
         return _persistence(["migrate"])
+    if args.command == "status":
+        return _persistence(["status"])
     if args.command in {"backup", "restore"}:
         if args.path is None:
             parser.error(f"{args.command} needs a file")
