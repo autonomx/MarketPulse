@@ -1,7 +1,7 @@
 # MarketPulse Roadmap
 
 **Revision 5, 2026-10-17.** Plan for MarketPulse: a standalone, self-contained desktop copy of the Omnix trading app,
-Windows first, macOS next. Review history is in §10.
+Windows first, macOS next. Review history is in §10; implementation status in §11.
 
 ## 1. Goal
 
@@ -846,3 +846,93 @@ Apart from Q-5, the reviewer and the author found no blockers or majors.
 the parity rule is amended, and a DECISIONS entry with the §4.11 screen list and screenshot baselines is the
 acceptance test. Option (b) was dropped from §4.11. **No blockers, majors or blocking owner questions remain.**
 Q-4 (data repo name, logo) is open and blocks nothing.
+
+## 11. Implementation status (2026-10-17)
+
+Written for the owner and for whoever builds MarketPulse next. MarketPulse branch `implementation` (not pushed);
+Omnix seams on branch `marketpulse-seams` (16 commits on `main`, not merged: merging is the owner's call).
+
+### Status by phase
+
+| Phase | Status | Evidence |
+|-------|--------|----------|
+| 0 Bootstrap | Done | Repo, licences, brand from the supplied logo (`brand/`, `build/render_brand.py`). |
+| 1 Omnix seams | Done except S-11 | S-1, S-2, S-3, S-5, S-6, S-7, S-8, S-10 and W-1 to W-4 are committed on `marketpulse-seams`, each with tests. S-4 was dropped in revision 3. S-11 waits for the data repository (owner). |
+| 2 Mirror and sync | Done | `sync/sync_from_omnix.py`; mirror at Omnix `1d51102844`, 4572 files, `check` clean. |
+| 3 Headless server | Done | Full schema migrates on PostgreSQL 17.11; trading-only `/ready`; `src/tests_marketpulse` env tests. |
+| 4 Web app | Done | MarketPulse build (trading only), 15 Playwright e2e tests, own screenshot baselines. |
+| 5 Embedded runtime | Done | Staged-runtime gate: ready from nothing, password-only PostgreSQL, user-script worker, no process left 0.6 s after a killed supervisor. |
+| 6 Electron shell | Done | 12 smoke tests (first run, window sets over BroadcastChannel, navigation lock, drag regions, permissions, crash view, quit, `--quit`, restart). |
+| 7 Accounts | Done except Google end to end | Password flow end to end. S-5 nonce tests pass in the mirror. Guest refusal test. Google needs the publisher's OAuth Desktop client (owner). |
+| 8 Alerts, tray, background | Done | Notification while hidden, click-through to the chart, taskbar/Dock badge, simulated sleep with exactly-once delivery, keep-awake option. |
+| 9 Windows packaging | Done, unsigned | NSIS per-user installer. Install, update over a running app and uninstall checked in a scratch folder. Migration rollback test. Signing and the release feed are owner actions. |
+| 10 Omnix data import | MP-10.1 done | File › Import market data from Omnix…: dry run first, read-only on Omnix, idempotent. MP-10.2 (account data) is not built; it is the owner's call. |
+| 11 macOS | Ready to build on a Mac | Per-platform pins and staging, mac targets, entitlements, notarization switch, tray template, Dock, Keychain (S-8), cross-platform tests. Not yet run on a Mac: see `docs/MACOS.md`. |
+| 12 Slim the mirror | Dependencies and runtime done; source mirror unchanged | Trading-unused packages and build-only files are pruned (sizes below). The source mirror still carries all of `src/app`: slimming it needs the Omnix refactors this section names. |
+
+### Changes from the plan
+
+- **The supervisor is Python, not TypeScript.** `marketpulse.supervise` runs the §4.3 order, rotates logs, takes
+  snapshots, restores, and puts its children in a kill-on-close Job Object on Windows. The Electron side
+  (`desktop/src/main/supervisor.ts`) is a thin client over JSON lines on stdin and stdout. This replaced the planned
+  native Job Object helper. On macOS a killed supervisor can leave PostgreSQL running; the next start reconnects to
+  it.
+- **`build/stage.py` replaces the `.ps1` scripts.** One cross-platform script with per-platform pins
+  (`build/pins.json`) stages Python, PostgreSQL and the app, prunes, checks imports, and caps path lengths.
+- **No precompiled bytecode.** Python writes its cache to the data folder (`PYTHONPYCACHEPREFIX`), so nothing writes
+  into the install folder. That matters for NSIS removal of long paths and for the signed macOS bundle. First launch
+  reaches ready in about 30 s.
+- **First-run state comes from the database** ("the owner has no password"), not a marker file. A kill during the
+  first-password step therefore gets a fresh login code on the next launch.
+- **No handoff-import switch in the child environment.** Until the owner stores a token, a private repository
+  answers 404 ("not published") and nothing is imported. If the `gh` CLI is installed and signed in, it is used
+  instead, with that account's access.
+- **W-2's `sessionChanged` bridge was dropped.** Nothing needed it once first-run state came from the database.
+- **Installer shutdown.** electron-builder's own check force-killed PostgreSQL. `customCheckAppRunning` now runs
+  `MarketPulse --quit`, which stops the backend cleanly; it waits up to a minute before forcing. The install folder
+  is capped at 112 characters so every file stays under Windows' 260-character limit.
+- **Additions found while building:** log rotation (gateway output rotated while it runs), a renderer crash view, an
+  alert badge, cross-platform test helpers.
+
+### Findings for the owner
+
+- **ibapi is GPL-3.0-or-later.** Bundling it is allowed with its licence and source; both ship under
+  `licenses/ibapi`. The Python client is only in IB's "Latest" API release; the staged copy is version 10.50.2 from
+  your install. Separately, IB's terms forbid passing IB market data on to third parties without their approval.
+- **Provider status reads are open to guests** (Omnix's design): they show "configured" and a masked key, never the
+  key. Writes and the research token are owner-only, and a test pins this behaviour.
+- **Node 22.12 or newer** is recommended. 22.9 needs `--experimental-require-module`, which the `dist` script passes.
+- **A test-isolation bug in Omnix** (a five-minute window in the margin-call email test) is fixed on
+  `marketpulse-seams` (`1d51102844`).
+
+### Versions and sizes
+
+Electron 44.5.1, electron-builder 26.15.3, CPython 3.11.17 (python-build-standalone 20261001), PostgreSQL 17.11,
+ibapi 10.50.2.
+
+| | Before Phase 12 | Now |
+|-|-----------------|-----|
+| Staged runtime | 637 MB | 260 MB |
+| Windows installer | 238 MB | 163 MB |
+| Installed | 878 MB | 582 MB |
+
+### Verification at the last commit
+
+- Trading test set: 2148 tests in 275 files.
+- `src/tests_marketpulse`: 36 tests.
+- Electron: 19 tests (12 smoke, 7 unit).
+- Web: both typechecks clean; vitest 1348 tests in 192 files; 15 Playwright e2e tests.
+- Installer: install, boot and uninstall in a scratch folder.
+
+PostgreSQL tests ran on scratch clusters only.
+
+### Owner actions
+
+1. Code signing for Windows (Azure Trusted Signing or an OV/EV certificate); Developer ID and notarization for macOS.
+2. Create `autonomx/marketpulse-releases` (public) for updates.
+3. Create the Google OAuth Desktop client and add `desktop/config/google-oauth.json`.
+4. Confirm the ibapi bundling decision above.
+5. Create and name the research data repository, then S-11's cutover (a weekend, outside the import window).
+6. Build and check on your Mac (`docs/MACOS.md`).
+7. Merge `marketpulse-seams` into Omnix `main`. Until then MarketPulse syncs from that branch.
+8. Before public distribution: the trademark and trade-dress check from R-8.

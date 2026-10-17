@@ -40,15 +40,34 @@ MarketPulse never authors database migrations: the schema comes from Omnix (one 
 | D-10 | The look closely resembles TradingView Desktop, built from our own code and assets. |
 | D-11 | Omnix trading takes that look too; it is built once in Omnix. |
 
+## Build and test (Windows)
+
+Needs Python 3.11 with the dev dependencies, Node 22.12+, and the ibapi 10.50.2 sources in
+`build/cache/ibapi/ibapi-10.50.2/` (pinned by tree hash in `build/pins.json`). macOS: [docs/MACOS.md](docs/MACOS.md).
+
+```
+npm --prefix web ci && npm --prefix web run build          # the MarketPulse web app
+python build/stage.py all                                   # Python, PostgreSQL, app and web into build/stage, pruned and checked
+npm --prefix desktop ci && npm --prefix desktop run dist    # desktop/release/MarketPulse Setup <version>.exe
+```
+
+The gate set ([ROADMAP §6](docs/ROADMAP.md)) runs with `OMNIX_TEST_DATABASE_URL` pointing at a scratch PostgreSQL:
+
+```
+python sync/sync_from_omnix.py check
+python -m pytest $(python sync/sync_from_omnix.py tests) src/tests_marketpulse -q
+npm --prefix desktop run test                               # Electron smoke + unit suites on build/stage
+```
+
 ## Layout
 
 ```
 src/app/            mirrored Omnix backend (only the trading feature is enabled)
-src/marketpulse/    desktop ASGI wrapper, child environment, diagnostics
+src/marketpulse/    supervisor, desktop ASGI wrapper, child environment, Omnix data import
 web/src/            mirrored Omnix web source
 web/marketpulse/    the MarketPulse web entry (registers only trading)
-desktop/            Electron shell and supervisor
-build/              scripts that stage CPython, PostgreSQL and ibapi into the installer
+desktop/            Electron shell (windows, tray, notifications, updates, installer config)
+build/              stage.py (CPython, PostgreSQL and ibapi into the installer), pins, brand rendering
 sync/               the Omnix mirror manifest, lock and tool
 ```
 
