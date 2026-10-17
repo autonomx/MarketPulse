@@ -1,5 +1,5 @@
 from __future__ import annotations
-from app.config.env import env_str as _env_str
+from app.apps.trading.sec_contact import sec_headers
 
 import hashlib
 from datetime import datetime, timezone
@@ -33,14 +33,7 @@ class SecIssuerIdentityResolver:
 
     @staticmethod
     def _headers() -> dict[str, str]:
-        return {
-            "User-Agent": _env_str(
-                "OMNIX_SEC_USER_AGENT",
-                "OmnixTradingResearch/1.0 local-research contact=local@localhost",
-            ),
-            "Accept-Encoding": "gzip, deflate",
-            "Host": "www.sec.gov",
-        }
+        return sec_headers(Host="www.sec.gov")
 
     def _load(self) -> dict[str, dict[str, Any]]:
         if self._mapping is not None:

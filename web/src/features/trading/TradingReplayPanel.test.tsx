@@ -62,4 +62,20 @@ describe('frozen dataset replay panel', () => {
     expect(screen.getByText('50/50')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Play' })).toBeInTheDocument();
   });
+
+  it('shows backtest results at two decimal places', async () => {
+    replayApi.runBacktest.mockResolvedValue({
+      status: 'completed', final_equity: '10234.5678912', total_return_percent: '2.345678', max_drawdown_percent: '-1.2',
+      win_rate_percent: '57.142857', exposure_percent: '40', trade_count: 7, dataset_fingerprint: 'abcdef0123456789', artifact: null,
+    });
+    render(<TradingReplayPanel instrumentId="crypto:BINANCE:spot:BTC-USDT" bindingId={null} interval="1m" />);
+    await screen.findByRole('combobox', { name: 'Replay speed' });
+    fireEvent.click(screen.getByRole('button', { name: 'Run backtest' }));
+    const summary = await screen.findByRole('group', { name: 'Backtest evidence summary' });
+    expect(summary).toHaveTextContent(`Final equity${(10234.57).toLocaleString(undefined, { minimumFractionDigits: 2 })}`);
+    expect(summary).toHaveTextContent('Return2.35%');
+    expect(summary).toHaveTextContent('Max drawdown-1.20%');
+    expect(summary).toHaveTextContent('Win rate57.14%');
+    expect(summary).toHaveTextContent('Exposure40.00%');
+  });
 });

@@ -180,9 +180,10 @@ export function AccountSection() {
       description={guest ? 'You are using a guest account.' : `${account.display_name}${account.email ? ` · ${account.email}` : ''}`}>
       {guest ? <GuestUpgradeForm minLength={minLength} busy={busy} act={act} /> : (
         <>
+          <p>Requests for company financials send your email to the SEC, which asks each one for a contact.</p>
           {!account.email ? (
             <form className="settings-account-form" onSubmit={saveEmail} aria-label="Add an email">
-              <p>Add an email to sign in from other devices.</p>
+              <p>Add an email to sign in from other devices and to load company financials.</p>
               <label><span>Email</span><input type="email" required value={email} autoComplete="email" onChange={(event) => setEmail(event.currentTarget.value)} /></label>
               <button type="submit" disabled={busy || !email.trim()}>Save email</button>
             </form>

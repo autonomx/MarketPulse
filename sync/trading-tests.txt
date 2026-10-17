@@ -74,6 +74,7 @@ src/tests/trading/test_provider_http_pool.py
 src/tests/trading/test_provider_http_runtime_hardening.py
 src/tests/trading/test_provider_request_budgets.py
 src/tests/trading/test_scheduler_registration.py
+src/tests/trading/test_sec_contact.py
 src/tests/trading/test_session_close_calendar.py
 src/tests/trading/test_session_evidence.py
 src/tests/trading/test_session_reconciliation_quality.py

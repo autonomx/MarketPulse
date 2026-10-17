@@ -658,6 +658,13 @@
     "type": "boolean"
   },
   {
+    "default": "false",
+    "description": "Controls auth desktop handoff for security.",
+    "feature": "security",
+    "name": "OMNIX_AUTH_DESKTOP_HANDOFF",
+    "type": "boolean"
+  },
+  {
     "default": null,
     "description": "Controls auth guests for security.",
     "feature": "security",
@@ -670,6 +677,13 @@
     "feature": "security",
     "name": "OMNIX_AUTH_GUEST_DAYS",
     "type": "integer"
+  },
+  {
+    "default": null,
+    "description": "Controls auth launcher first password for security.",
+    "feature": "security",
+    "name": "OMNIX_AUTH_LAUNCHER_FIRST_PASSWORD",
+    "type": "boolean"
   },
   {
     "default": null,
@@ -1190,6 +1204,13 @@
     "type": "boolean"
   },
   {
+    "default": "Omnix",
+    "description": "Controls keychain service for security.",
+    "feature": "security",
+    "name": "OMNIX_KEYCHAIN_SERVICE",
+    "type": "string"
+  },
+  {
     "default": "0",
     "description": "Controls launcher auto start for launcher.",
     "feature": "launcher",
@@ -1533,6 +1554,13 @@
     "type": "string"
   },
   {
+    "default": "",
+    "description": "Controls product name for kernel.",
+    "feature": "kernel",
+    "name": "OMNIX_PRODUCT_NAME",
+    "type": "string"
+  },
+  {
     "default": null,
     "description": "Controls provider secrets path for security.",
     "feature": "security",
@@ -1558,6 +1586,13 @@
     "description": "Controls research legacy alias sunset for conversation.",
     "feature": "conversation",
     "name": "OMNIX_RESEARCH_LEGACY_ALIAS_SUNSET",
+    "type": "string"
+  },
+  {
+    "default": "",
+    "description": "Controls resources dir for kernel.",
+    "feature": "kernel",
+    "name": "OMNIX_RESOURCES_DIR",
     "type": "string"
   },
   {
@@ -1694,7 +1729,7 @@
     "type": "string"
   },
   {
-    "default": "OmnixTradingResearch/1.0 local-research contact=local@localhost",
+    "default": "",
     "description": "Controls sec user agent for trading.",
     "feature": "trading",
     "name": "OMNIX_SEC_USER_AGENT",
@@ -1881,6 +1916,20 @@
     "feature": "trading",
     "name": "OMNIX_TRADING_DEEP_RECOVERY_SHADOW_MONITOR_IN_TESTS",
     "type": "boolean"
+  },
+  {
+    "default": null,
+    "description": "Controls trading desktop notify secret for trading.",
+    "feature": "trading",
+    "name": "OMNIX_TRADING_DESKTOP_NOTIFY_SECRET",
+    "type": "string"
+  },
+  {
+    "default": "",
+    "description": "Controls trading desktop notify url for trading.",
+    "feature": "trading",
+    "name": "OMNIX_TRADING_DESKTOP_NOTIFY_URL",
+    "type": "string"
   },
   {
     "default": "1",

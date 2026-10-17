@@ -1,5 +1,5 @@
 from __future__ import annotations
-from app.config.env import env_str as _env_str
+from app.apps.trading.sec_contact import sec_headers
 
 import hashlib
 import html
@@ -49,13 +49,7 @@ class SecEdgarAdapter:
 
     @staticmethod
     def _headers() -> dict[str, str]:
-        return {
-            "User-Agent": _env_str(
-                "OMNIX_SEC_USER_AGENT",
-                "OmnixTradingResearch/1.0 local-research contact=local@localhost",
-            ),
-            "Accept-Encoding": "gzip, deflate",
-        }
+        return sec_headers()
 
     def find(self, identity: IssuerIdentity, *, query: str | None = None, limit: int = 20) -> AdapterExecutionResult:
         if not identity.cik:

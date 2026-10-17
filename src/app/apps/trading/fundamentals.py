@@ -24,6 +24,7 @@ from pydantic import BaseModel, Field
 from app.persistence.unit_of_work import unit_of_work
 
 from .company_profiles import CompanyProfiles, SecCompanySource, default_company_profiles
+from .sec_contact import SecContactRequired
 
 logger = logging.getLogger(__name__)
 
@@ -339,6 +340,8 @@ def create_trading_fundamentals_router(service_factory: Callable[[], FinancialsS
     def company(instrument_id: str = Query(min_length=3, max_length=200)) -> Financials:
         try:
             return service_factory().company(instrument_id)
+        except SecContactRequired as exc:
+            raise HTTPException(status_code=409, detail={"code": exc.code, "message": str(exc)}) from exc
         except ValueError as exc:
             raise HTTPException(status_code=422, detail=str(exc)) from exc
         except LookupError as exc:

@@ -7,7 +7,7 @@
 - **Shares outstanding:** ``dei:EntityCommonStockSharesOutstanding`` for every filer from one XBRL frames request
   per quarter, for market capitalisation (shares times the last price).
 
-SEC asks for at most 10 requests a second and a User-Agent with a contact (``OMNIX_SEC_USER_AGENT``); requests spend
+SEC asks for at most 10 requests a second and a User-Agent with a contact email (``sec_contact``); requests spend
 the ``sec_edgar`` request budget.
 """
 
@@ -20,8 +20,9 @@ from datetime import date, datetime, timedelta, timezone
 from decimal import Decimal
 from typing import Any
 
-from app.config.env import env_str
 from app.persistence.unit_of_work import unit_of_work
+
+from .sec_contact import SecContactRequired, sec_headers
 
 logger = logging.getLogger(__name__)
 
@@ -198,7 +199,7 @@ class SecCompanySource:
 
     @staticmethod
     def headers() -> dict[str, str]:
-        return {"User-Agent": env_str("OMNIX_SEC_USER_AGENT", "OmnixTradingResearch/1.0 local-research contact=local@localhost") or "", "Accept-Encoding": "gzip, deflate"}
+        return sec_headers()
 
     def _json(self, url: str) -> Any:
         return self.runtime.get(url, headers=self.headers(), timeout=30).json()
@@ -270,6 +271,8 @@ class CompanyProfiles:
                 cik, name = entry
                 try:
                     submissions = source.submissions(cik)
+                except SecContactRequired:
+                    raise
                 except Exception:
                     logger.info("sec_submissions_failed ticker=%s", ticker)
                     continue

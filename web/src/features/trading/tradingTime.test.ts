@@ -1,7 +1,8 @@
-import type { Time } from 'lightweight-charts';
+import type { TickMarkType, Time } from 'lightweight-charts';
 import { describe, expect, it } from 'vitest';
 import {
   dateInputValue,
+  formatTradingChartTick,
   formatTradingChartTime,
   formatTradingTime,
   formatTradingTimezoneOffset,
@@ -26,6 +27,17 @@ describe('TradingView-style timezone formatting', () => {
     expect(formatTradingChartTime(Date.parse('2026-10-09T00:00:00.000Z') / 1_000 as Time, 'UTC', 86_400)).toBe("Fri 09 Oct '26");
     expect(formatTradingChartTime('2026-10-09', 'America/Vancouver')).toBe("Fri 09 Oct '26");
     expect(formatTradingChartTime(Date.parse('2026-01-01T00:30:00.000Z') / 1_000 as Time, 'UTC')).toBe("Thu 01 Jan '26 00:30");
+  });
+
+  it('labels each axis tick by its kind, so year ticks on a multi-year chart read as years', () => {
+    // A daily bar at the 9:30 ET open on the first session of 2025.
+    const open = Date.parse('2025-01-02T14:30:00.000Z') / 1_000 as Time;
+    const tick = (kind: number, time: Time = open) => formatTradingChartTick(time, 'America/New_York', kind as TickMarkType);
+    expect([tick(0), tick(1), tick(2), tick(3), tick(4)]).toEqual(['2025', 'Jan', '2', '9:30 AM', '9:30:00 AM']);
+    expect(formatTradingChartTick(open, 'America/New_York')).toBe('Jan 2, 9:30 AM');
+    // A business day keeps its own date, even in a zone west of UTC.
+    expect(tick(2, '2025-03-12')).toBe('12');
+    expect(tick(0, { year: 2024, month: 1, day: 1 })).toBe('2024');
   });
 
   it('converts a selected timezone date range to UTC boundaries', () => {

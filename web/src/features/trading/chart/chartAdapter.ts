@@ -23,6 +23,7 @@ import {
   type MouseEventParams,
   type SeriesMarker,
   type Time,
+  type TickMarkType,
   type UTCTimestamp,
   type WhitespaceData,
 } from 'lightweight-charts';
@@ -913,7 +914,7 @@ export class TradingChartAdapter {
         timeFormatter: (time: Time) => formatTradingChartTime(time, timeZone, this.intervalStepSeconds()),
       },
       timeScale: {
-        tickMarkFormatter: (time: Time) => formatTradingChartTick(time, timeZone),
+        tickMarkFormatter: (time: Time, tickMarkType: TickMarkType) => formatTradingChartTick(time, timeZone, tickMarkType),
       },
     });
   }

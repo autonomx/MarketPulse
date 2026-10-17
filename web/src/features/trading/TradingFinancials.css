@@ -9,7 +9,7 @@
   .trading-financials-ratios div{display:grid;gap:2px}
   .trading-financials-ratios dt{color:var(--c-slate-630);font-size:10px}
   .trading-financials-ratios dd{margin:0;font-size:14px;font-weight:600}
-  .trading-financials-bars{display:flex;align-items:flex-end;gap:10px;height:140px;padding-top:8px}
+  .trading-financials-bars{display:flex;flex:none;align-items:flex-end;gap:10px;height:140px;padding-top:8px}
   .trading-financials-bar-group{display:flex;flex:1;flex-direction:column;align-items:center;gap:4px;height:100%}
   .trading-financials-bar-pair{display:flex;flex:1;align-items:flex-end;gap:2px;width:100%;justify-content:center}
   .trading-financials-bar-pair i{display:block;width:40%;max-width:22px;border-radius:2px 2px 0 0}

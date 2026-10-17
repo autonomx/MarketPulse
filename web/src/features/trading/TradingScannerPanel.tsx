@@ -9,6 +9,7 @@ import { newScreenerRule, screenerHistoryNeeded, type ScreenerRuleInput } from '
 import { tradingScannerApi } from './tradingScannerApi';
 import { useAlertIndicatorIds } from './useTradingAlerts';
 import { POLL_INTERVALS_MS, startPolling } from '../../shared/timers';
+import './TradingScanner.css';
 
 const terminalStatuses = new Set(['completed', 'failed', 'cancelled', 'timed_out']);
 

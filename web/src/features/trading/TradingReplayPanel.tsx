@@ -6,6 +6,14 @@ import { TradingReplaySpeedSelect } from './TradingReplaySpeedSelect';
 import { tradingReplayApi } from './tradingReplayApi';
 import { useTradingReplayStore } from './tradingReplayStore';
 import { startTicker } from '../../shared/timers';
+import './TradingReplay.css';
+
+/** A backtest's decimal string at two places ("10234.5678" -> "10,234.57"); text that isn't a number is shown as is. */
+export function twoPlaces(value: string | number | null | undefined): string {
+  if (value === null || value === undefined || value === '') return '—';
+  const number = Number(value);
+  return Number.isFinite(number) ? number.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : String(value);
+}
 
 export function TradingReplayPanel({
   instrumentId,
@@ -127,11 +135,11 @@ export function TradingReplayPanel({
       {backtest ? (
         <dl role="group" className="trading-backtest-summary" aria-label="Backtest evidence summary">
           <div><dt>Status</dt><dd>{backtest.status}</dd></div>
-          <div><dt>Final equity</dt><dd>{backtest.final_equity}</dd></div>
-          <div><dt>Return</dt><dd>{backtest.total_return_percent}%</dd></div>
-          <div><dt>Max drawdown</dt><dd>{backtest.max_drawdown_percent}%</dd></div>
-          <div><dt>Win rate</dt><dd>{backtest.win_rate_percent}%</dd></div>
-          <div><dt>Exposure</dt><dd>{backtest.exposure_percent}%</dd></div>
+          <div><dt>Final equity</dt><dd>{twoPlaces(backtest.final_equity)}</dd></div>
+          <div><dt>Return</dt><dd>{twoPlaces(backtest.total_return_percent)}%</dd></div>
+          <div><dt>Max drawdown</dt><dd>{twoPlaces(backtest.max_drawdown_percent)}%</dd></div>
+          <div><dt>Win rate</dt><dd>{twoPlaces(backtest.win_rate_percent)}%</dd></div>
+          <div><dt>Exposure</dt><dd>{twoPlaces(backtest.exposure_percent)}%</dd></div>
           <div><dt>Trades</dt><dd>{backtest.trade_count}</dd></div>
           <div><dt>Dataset</dt><dd title={backtest.dataset_fingerprint}>{backtest.dataset_fingerprint.slice(0, 10)}</dd></div>
           {backtest.artifact ? (

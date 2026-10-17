@@ -29,6 +29,7 @@ from app.config.env import env_str
 from app.persistence.unit_of_work import unit_of_work
 
 from .company_profiles import CompanyProfiles, SecCompanySource, default_company_profiles
+from .sec_contact import SecContactRequired
 from .us_equity_calendar import REGULAR_OPEN, after_regular_close
 
 logger = logging.getLogger(__name__)
@@ -282,12 +283,18 @@ class CorporateEventsService:
         except Exception:
             actions_ok = False
             logger.warning("alpaca_corporate_actions_failed tickers=%s", len(tickers), exc_info=True)
-        profiles = self.profiles().ensure(tickers, max_new=len(tickers))
+        try:
+            profiles = self.profiles().ensure(tickers, max_new=len(tickers))
+            sec_ok = True
+        except SecContactRequired:
+            # Dividends and splits still show; earnings wait for a contact email (and nothing is cached).
+            profiles, sec_ok = {}, False
+            logger.info("sec_contact_required tickers=%s", len(tickers))
         sec = self.sec_factory() if profiles else None
         output: dict[str, tuple[dict[str, Any], bool]] = {}
         for ticker in tickers:
             earnings: list[CorporateEvent] = []
-            earnings_ok = True
+            earnings_ok = sec_ok
             profile = profiles.get(ticker)
             if profile is not None and sec is not None:
                 try:

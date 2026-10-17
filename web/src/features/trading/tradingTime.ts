@@ -1,4 +1,11 @@
-import type { Time } from 'lightweight-charts';
+import type { TickMarkType, Time } from 'lightweight-charts';
+
+// lightweight-charts' TickMarkType values, kept here so tests that mock the library still format ticks.
+const YEAR_TICK = 0;
+const MONTH_TICK = 1;
+const DAY_TICK = 2;
+const TIME_TICK = 3;
+const SECONDS_TICK = 4;
 
 export type TradingTimezoneOption = {
   id: string;
@@ -138,15 +145,21 @@ export function formatTradingChartTime(value: Time, timeZone: string, barSeconds
   return `${date} ${parts.hour}:${parts.minute}${seconds}`;
 }
 
-export function formatTradingChartTick(value: Time, timeZone: string): string {
-  return new Intl.DateTimeFormat('en-US', {
-    timeZone: validTimeZone(timeZone),
-    month: 'short',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-    hour12: true,
-  }).format(timeFromChartValue(value));
+/**
+ * A time-axis tick, labelled by its kind (lightweight-charts' TickMarkType): a year tick reads "2025", a month
+ * "Mar", a day "12", a time "2:30 PM". Without a kind, the full "Mar 12, 2:30 PM".
+ */
+export function formatTradingChartTick(value: Time, timeZone: string, tickMarkType?: TickMarkType): string {
+  const kind: number | undefined = tickMarkType;
+  const options: Intl.DateTimeFormatOptions = kind === YEAR_TICK ? { year: 'numeric' }
+    : kind === MONTH_TICK ? { month: 'short' }
+      : kind === DAY_TICK ? { day: 'numeric' }
+        : kind === TIME_TICK ? { hour: 'numeric', minute: '2-digit', hour12: true }
+          : kind === SECONDS_TICK ? { hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true }
+            : { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true };
+  // A business day is a calendar date, not an instant: shifting it into a zone west of UTC would show the day before.
+  const timeZoneOption = typeof value === 'number' ? validTimeZone(timeZone) : 'UTC';
+  return new Intl.DateTimeFormat('en-US', { timeZone: timeZoneOption, ...options }).format(timeFromChartValue(value));
 }
 
 function timezoneParts(value: Date, timeZone: string): Record<string, number> {

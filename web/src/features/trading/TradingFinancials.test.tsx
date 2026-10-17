@@ -46,6 +46,13 @@ describe('financials panel (TVP-10.2)', () => {
     expect(screen.getByRole('table', { name: 'Income statement' })).toHaveTextContent('-1.00B');
   });
 
+  it("shows the gateway's message when SEC data can't load", async () => {
+    const message = 'SEC asks for a contact email with each request. Add an email to your account (Settings, Account), then try again.';
+    api.GET.mockResolvedValue({ response: new Response(null, { status: 409 }), error: { detail: { code: 'sec_contact_required', message } } });
+    render(<QueryClientProvider client={new QueryClient()}><TradingFinancials instrumentId="equity:NASDAQ:MSFT" /></QueryClientProvider>);
+    expect(await screen.findByRole('alert')).toHaveTextContent(message);
+  });
+
   it('says financials are for US stocks', () => {
     api.GET.mockClear();
     show('crypto:BINANCE:spot:BTC-USDT');

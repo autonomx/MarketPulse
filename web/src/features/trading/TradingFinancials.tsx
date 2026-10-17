@@ -4,7 +4,8 @@
  */
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import { unwrapLabelled } from '../../api/http';
+import type { ApiError } from '../../api/errors';
+import { unwrapAs } from '../../api/http';
 import type { components } from './api/generated';
 import { api } from './api/gateway';
 import './TradingFinancials.css';
@@ -69,13 +70,24 @@ function Bars({ rows, quarterly }: { rows: Row[]; quarterly: boolean }) {
   );
 }
 
+/** The gateway's own message (such as "add a contact email") when it sends one, else the status and detail. */
+function failureMessage(error: ApiError): string {
+  try {
+    const detail = JSON.parse(error.detail) as { message?: unknown };
+    if (typeof detail.message === 'string' && detail.message) return detail.message;
+  } catch {
+    // A plain-text detail.
+  }
+  return `Financials request failed (${error.status})${error.detail ? `: ${error.detail}` : '.'}`;
+}
+
 export function TradingFinancials({ instrumentId }: { instrumentId: string }) {
   const [tab, setTab] = useState<Tab>('overview');
   const [quarterly, setQuarterly] = useState(false);
   const isStock = instrumentId.toLowerCase().startsWith('equity:');
   const query = useQuery({
     queryKey: ['trading', 'financials', instrumentId],
-    queryFn: () => unwrapLabelled(api.GET('/api/trading/fundamentals', { params: { query: { instrument_id: instrumentId } } }), 'Financials') as Promise<Financials>,
+    queryFn: () => unwrapAs(api.GET('/api/trading/fundamentals', { params: { query: { instrument_id: instrumentId } } }), failureMessage) as Promise<Financials>,
     enabled: isStock,
     staleTime: 60 * 60_000,
     retry: false,
