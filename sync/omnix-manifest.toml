@@ -69,6 +69,52 @@ exclude = [
   "**/__pycache__/**",
   "**/*.pyc",
   "**/.pytest_cache/**",
+  # Phase 12: other features' code. A trading-only gateway never imports it (Omnix keeps it behind feature checks);
+  # each package's schema and declarations stay, through `keep`, because the full schema ships. Platform research
+  # (trading's catalyst research uses it), characters and image (the test conftest wires them) stay whole.
+  "src/app/apps/rpg/**",
+  "src/app/apps/story/**",
+  "src/app/apps/audiobook/**",
+  "src/app/apps/desktop_companion/**",
+  "src/app/apps/character_interactions/**",
+  "src/app/platform/live_speech/**",
+  "src/app/platform/companion_activity/**",
+  "src/app/providers/vendor/**",
+]
+# Mirrored although excluded above: what the schema runner and the settings declarations read from every feature.
+keep = [
+  "src/app/apps/rpg/__init__.py",
+  "src/app/apps/rpg/feature.py",
+  "src/app/apps/rpg/declarations.py",
+  "src/app/apps/rpg/**/migrations/**",
+  "src/app/apps/story/__init__.py",
+  "src/app/apps/story/feature.py",
+  "src/app/apps/story/declarations.py",
+  "src/app/apps/story/**/migrations/**",
+  "src/app/apps/audiobook/__init__.py",
+  "src/app/apps/audiobook/feature.py",
+  "src/app/apps/audiobook/declarations.py",
+  "src/app/apps/audiobook/**/migrations/**",
+  "src/app/apps/desktop_companion/__init__.py",
+  "src/app/apps/desktop_companion/feature.py",
+  "src/app/apps/desktop_companion/declarations.py",
+  "src/app/apps/desktop_companion/**/migrations/**",
+  "src/app/apps/character_interactions/__init__.py",
+  "src/app/apps/character_interactions/feature.py",
+  "src/app/apps/character_interactions/declarations.py",
+  "src/app/apps/character_interactions/**/migrations/**",
+  "src/app/platform/live_speech/__init__.py",
+  "src/app/platform/live_speech/feature.py",
+  "src/app/platform/live_speech/declarations.py",
+  "src/app/platform/live_speech/**/migrations/**",
+  "src/app/platform/companion_activity/__init__.py",
+  "src/app/platform/companion_activity/feature.py",
+  "src/app/platform/companion_activity/declarations.py",
+  "src/app/platform/companion_activity/**/migrations/**",
+  "src/app/providers/vendor/__init__.py",
+  "src/app/providers/vendor/feature.py",
+  "src/app/providers/vendor/declarations.py",
+  "src/app/providers/vendor/**/migrations/**",
 ]
 
 [derived]

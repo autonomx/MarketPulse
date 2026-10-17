@@ -70,8 +70,12 @@ def test_every_non_public_route_requires_authentication(gateway) -> None:
             expected = "run_token_required" if agent_route else "authentication_required"
             assert response.json() == {"detail": expected}
             checked += 1
-    # The gateway exposes hundreds of routes; a tiny count means enumeration broke.
-    assert checked > 300
+    # The gateway exposes hundreds of routes (a trading-only one, as MarketPulse runs it, about 250); a tiny count
+    # means enumeration broke.
+    from app.config.env import environment
+    from app.runtime.config import RuntimeConfig
+
+    assert checked > (300 if "all" in RuntimeConfig.from_environment(environment()).enabled_features else 150)
     assert websockets
     for path in websockets:
         with pytest.raises(WebSocketDisconnect) as closed:

@@ -36,7 +36,7 @@ MarketPulse never authors database migrations: the schema comes from Omnix (one 
 | D-6 | Source is Omnix `main` (the Phase 1 seams are on Omnix branch `marketpulse-seams` until merged). |
 | D-7 | TradingView Desktop is an architecture reference only; nothing from it is copied. |
 | D-8 | `ibapi` is bundled, from Interactive Brokers' official distribution. |
-| D-9 | Research handoffs come from a separate data-only repository. |
+| D-9 | Research handoffs come from Omnix's own public repository, `autonomx/omnix` (owner, 2026-10-17; replaces the separate data repository). |
 | D-10 | The look closely resembles TradingView Desktop, built from our own code and assets. |
 | D-11 | Omnix trading takes that look too; it is built once in Omnix. |
 
@@ -55,7 +55,7 @@ The gate set ([ROADMAP §6](docs/ROADMAP.md)) runs with `OMNIX_TEST_DATABASE_URL
 
 ```
 python sync/sync_from_omnix.py check
-python -m pytest $(python sync/sync_from_omnix.py tests) src/tests_marketpulse -q
+OMNIX_FEATURES=trading python -m pytest $(python sync/sync_from_omnix.py tests) src/tests_marketpulse -q
 npm --prefix desktop run test                               # Electron smoke + unit suites on build/stage
 ```
 

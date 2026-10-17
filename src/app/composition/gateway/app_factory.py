@@ -21,7 +21,6 @@ from app.jobs import (
     default_model_residency_store,
 )
 from app.providers.facade import ProviderFacade, default_provider_facade
-from app.apps.rpg.edge.replay import RpgReplayPersistenceAdapter, default_rpg_replay_adapter
 
 _LOCAL_BROWSER_ORIGINS = (
     "http://localhost:5173",
@@ -156,7 +155,7 @@ def create_gateway_app(
     provider_facade_factory: Callable[[], ProviderFacade] | None = None,
     asset_store_factory: Callable[[], AssetStore] | None = None,
     chat_store_factory: Callable[[], ChatSessionStore] | None = None,
-    replay_adapter_factory: Callable[[], RpgReplayPersistenceAdapter] | None = None,
+    replay_adapter_factory: Callable[[], Any] | None = None,
     model_residency_store_factory: Callable[[], ModelResidencyService]
     | None = None,
     readiness_check: Callable[[], dict[str, Any]] | None = None,
@@ -188,7 +187,6 @@ def create_gateway_app(
     get_provider_facade = provider_facade_factory or default_provider_facade
     get_asset_store = asset_store_factory or default_asset_store
     get_chat_store = chat_store_factory or default_chat_store
-    get_replay_adapter = replay_adapter_factory or default_rpg_replay_adapter
     model_residency_store_is_injected = model_residency_store_factory is not None
     get_model_residency_store = (
         model_residency_store_factory or default_model_residency_store
@@ -224,7 +222,8 @@ def create_gateway_app(
     _install_local_browser_cors(gateway)
     from app.runtime.feature_catalog import enabled_feature_ids
 
-    if "rpg" in enabled_feature_ids(runtime_config):
+    rpg_enabled = "rpg" in enabled_feature_ids(runtime_config)
+    if rpg_enabled:
         # Importing it loads the RPG route package; skip when RPG is off (WP-7.7).
         from app.apps.rpg.edge.api.feature_routes import add_rpg_debug_middleware
 
@@ -290,7 +289,8 @@ def create_gateway_app(
             get_provider_facade=get_provider_facade,
             get_asset_store=get_asset_store,
             get_chat_store=get_chat_store,
-            get_replay_adapter=get_replay_adapter,
+            get_replay_adapter=replay_adapter_factory,
+            replay_enabled=rpg_enabled,
             get_model_residency_store=get_model_residency_store,
             allow_offline_model_residency_store=model_residency_store_is_injected,
         ),

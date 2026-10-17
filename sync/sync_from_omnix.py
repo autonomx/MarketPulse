@@ -63,10 +63,13 @@ def load_manifest() -> dict:
 
 
 def mirrored(path: str, manifest: dict) -> bool:
+    """Included, and not excluded unless ``keep`` names it (a feature's schema and declarations, Phase 12)."""
     rules = manifest["mirror"]
     if not any(_glob_regex(pattern).match(path) for pattern in rules["include"]):
         return False
-    return not any(_glob_regex(pattern).match(path) for pattern in rules.get("exclude", []))
+    if not any(_glob_regex(pattern).match(path) for pattern in rules.get("exclude", [])):
+        return True
+    return "__pycache__" not in path and any(_glob_regex(pattern).match(path) for pattern in rules.get("keep", []))
 
 
 def _git(checkout: Path, *args: str, input_bytes: bytes | None = None) -> bytes:

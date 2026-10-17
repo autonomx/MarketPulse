@@ -1,1 +1,0 @@
-"""Persistent NPC evolution arcs derived from bounded deterministic signals."""

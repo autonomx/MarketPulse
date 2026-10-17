@@ -22,7 +22,7 @@ mechanical sync.
 | D-6 | **Source is Omnix `main`** (`9113b6f59e` when this was written). TradingView parity is already on `main` (merge `6cb7e50a9c`). |
 | D-7 | **TradingView Desktop is an architecture reference only.** Its `package.json` says `"license": "Proprietary"`. No code, configs, icons, sounds or other assets from `tmp/tradingview` go into MarketPulse. |
 | D-8 | **`ibapi` is bundled in the installer**, staged from Interactive Brokers' official TWS API distribution (§5, MP-5.1). |
-| D-9 | **The research handoff and climatology move to a separate data-only repository** that both Omnix and MarketPulse import from (§4.10, S-11). |
+| D-9 | ~~The research handoff and climatology move to a separate data-only repository~~ **Superseded 2026-10-17:** MarketPulse imports them from Omnix's own repository, `autonomx/omnix` (public), as Omnix does. S-11 is not needed. |
 | D-10 | **MarketPulse looks like TradingView Desktop, or closely resembles it**: layout, density, palettes, menus and dialogs, and a frameless window with the tabs in the title bar (§4.11). It is built from our own code and assets under our own name and logo (D-7). This goes beyond Omnix's parity rule, "TradingView is a reference for **features and behaviour only**" (`TRADINGVIEW_PARITY_ROADMAP_2026-10-08.md:11`). The owner chose to build it in Omnix too (D-11). |
 | D-11 | **Omnix trading takes the TradingView-like look too** (Q-5 option a). The look is built once in Omnix (W-3) and synced. The parity rule is amended to allow visual resemblance with our own assets, and an Omnix DECISIONS entry makes the §4.11 screen list and screenshot baselines the acceptance test. |
 
@@ -684,8 +684,8 @@ Omnix's look (D-11).
 ## 6. MarketPulse gate set (after every sync and before every release)
 
 1. `python sync/sync_from_omnix.py check`
-2. `python -m pytest <paths listed in sync/trading-tests.txt> src/tests_marketpulse -q --tb=short` (PG tests on a
-   scratch DB)
+2. `OMNIX_FEATURES=trading python -m pytest <paths listed in sync/trading-tests.txt> src/tests_marketpulse -q --tb=short`
+   (PG tests on a scratch DB; trading-only, as MarketPulse runs Omnix and because other features' code is not mirrored)
 3. `ruff check src/marketpulse` (mirrored code is linted in Omnix)
 4. `npm --prefix web run typecheck:trading`, MarketPulse tsconfig, trading vitest, MarketPulse build + bundle check
 5. Headless supervisor start on a fresh data dir (Phase 5 gate script)
@@ -697,9 +697,9 @@ Omnix's look (D-11).
 | # | Question | Answer |
 |---|----------|--------|
 | Q-1 | `ibapi`: bundle it, or use the user's own TWS API install? | **Bundle it** (D-8). The license check is part of MP-5.1b. |
-| Q-2 | Research handoff: keep importing from `autonomx/omnix`, or use a separate data-only repository? | **Separate data-only repository** (D-9, S-11) |
+| Q-2 | Research handoff: keep importing from `autonomx/omnix`, or use a separate data-only repository? | First a separate repository; on 2026-10-17 the owner chose **Omnix's own repository** (D-9) |
 | Q-3 | Look, icons and brand colours | **Look like TradingView Desktop, or closely resemble it** (D-10, §4.11), with MarketPulse's own name, logo and icons |
-| Q-4 | Final name of the data repository, and the MarketPulse logo | Open; working name `autonomx/trading-research-data`, placeholder logo until supplied |
+| Q-4 | Final name of the data repository, and the MarketPulse logo | Logo supplied; no data repository (D-9) |
 | Q-5 | Should Omnix trading take the TradingView-like look too, or should the look live only in MarketPulse? | **Omnix too** (D-11): built once in Omnix, with the parity rule amended and a DECISIONS acceptance entry |
 
 ## 8. Risks
@@ -857,18 +857,18 @@ Omnix seams on branch `marketpulse-seams` (17 commits on `main`, not merged: mer
 | Phase | Status | Evidence |
 |-------|--------|----------|
 | 0 Bootstrap | Done | Repo, licences, brand from the supplied logo (`brand/`, `build/render_brand.py`). |
-| 1 Omnix seams | Done except S-11 | S-1, S-2, S-3, S-5, S-6, S-7, S-8, S-10 and W-1 to W-4 are committed on `marketpulse-seams`, each with tests. S-4 was dropped in revision 3. S-11 waits for the data repository (owner). |
-| 2 Mirror and sync | Done | `sync/sync_from_omnix.py`; mirror at Omnix `5eb3f34459`, 4572 files, `check` clean. |
+| 1 Omnix seams | Done | S-1, S-2, S-3, S-5, S-6, S-7, S-8, S-10 and W-1 to W-4 are committed on `marketpulse-seams`, each with tests. S-4 was dropped in revision 3. S-11 is not needed: the owner kept Omnix's own public repository for research data (D-9), which MarketPulse's mirrored default already reads without a token. |
+| 2 Mirror and sync | Done | `sync/sync_from_omnix.py`; mirror at Omnix `6e0cfd3392`, 3351 files after Phase 12, `check` clean. |
 | 3 Headless server | Done | Full schema migrates on PostgreSQL 17.11; trading-only `/ready`; `src/tests_marketpulse` env tests. |
 | 4 Web app | Done | MarketPulse build (trading only), 15 Playwright e2e tests, own screenshot baselines. |
 | 5 Embedded runtime | Done | Staged-runtime gate: ready from nothing, password-only PostgreSQL, user-script worker, no process left 0.6 s after a killed supervisor. |
 | 6 Electron shell | Done | 12 smoke tests (first run, window sets over BroadcastChannel, navigation lock, drag regions, permissions, crash view, quit, `--quit`, restart). |
-| 7 Accounts | Done; Google needs the real client | Password flow end to end; guest refusal test. Google: the shell's button opens the system browser, and the real gateway sends it to Google with the client, PKCE and loopback callback (`desktop/tests/google.spec.ts`). The callback and handoff legs pass against a local identity provider (mirrored S-5 tests). What remains is Google's own servers with the publisher's OAuth Desktop client (owner). |
+| 7 Accounts | Done; Google off by the owner's choice | Password flow end to end; guest refusal test. Google: the shell's button opens the system browser, and the real gateway sends it to Google with the client, PKCE and loopback callback (`desktop/tests/google.spec.ts`). The callback and handoff legs pass against a local identity provider (mirrored S-5 tests). Google stays off for now (owner, 2026-10-17): it appears only when a build carries `google-oauth.json`. |
 | 8 Alerts, tray, background | Done | Notification while hidden, click-through to the chart, taskbar/Dock badge, simulated sleep with exactly-once delivery, keep-awake option. |
-| 9 Windows packaging | Done, unsigned | NSIS per-user installer. Install, update over a running app and uninstall checked in a scratch folder. Migration rollback test. electron-updater end to end against a local feed (`desktop/scripts/update-feed-builds.mjs`): 0.1.0 downloaded 0.1.1, installed it on quit, and 0.1.1 started on the same data. Signing and the public feed are owner actions. |
+| 9 Windows packaging | Done; signing waits for a certificate | NSIS per-user installer. Install, update over a running app and uninstall checked in a scratch folder. Migration rollback test. electron-updater end to end against a local feed (`desktop/scripts/update-feed-builds.mjs`): 0.1.0 downloaded 0.1.1, installed it on quit, and 0.1.1 started on the same data. Signing turns on from the environment (Azure Artifact Signing or a certificate file), checked with a throwaway self-signed certificate. Updates come from `autonomx/MarketPulse` releases once that repository is public. |
 | 10 Omnix data import | Done | File › Import from Omnix…: market reference data (MP-10.1) and, optionally, one workspace's documents, alerts and paper accounts as the owner's (MP-10.2). Dry run first, read-only on Omnix, each item whole or not at all, idempotent. Checked on a copy of the real schema under row-level security (336 paper accounts, 5770 rows). |
-| 11 macOS | Ready to build on a Mac | Per-platform pins and staging, mac targets, entitlements, notarization switch, tray template, Dock, Keychain (S-8), cross-platform tests. Not yet run on a Mac: see `docs/MACOS.md`. |
-| 12 Slim the mirror | Gate met; composition refactor not done | Trading-unused packages and build-only files are pruned (sizes below). The trading set, the staged gates and an installed run pass on the reduced runtime. The source still ships all of `src/app`. A trading-only boot loads 646 `app` modules across chat, agent runtime, assistant memory and RPG, so cutting the rest needs the Omnix composition refactor. Measured payoff: at most 4.1 MB of the 163 MB installer (all non-trading feature code, compressed). Left for the owner to decide. |
+| 11 macOS | Ready; the Mac run is deferred (owner) | Per-platform pins and staging, mac targets, entitlements, notarization switch, tray template, Dock, Keychain (S-8), cross-platform tests. Not yet run on a Mac: see `docs/MACOS.md`. |
+| 12 Slim the mirror | Done | Omnix refactors (owner approved): RPG's replay routes mount only with RPG, the chat store takes the desktop companion's hook only when it is enabled, and the persistence conftest follows `OMNIX_FEATURES`. A new S-1 test checks in a fresh process that a trading-only boot imports nothing of those features but their declarations. The mirror drops the code of rpg, story, audiobook, desktop_companion, character_interactions, live_speech, companion_activity and the vendored TTS. Each keeps its `feature.py`, declarations and migrations, because the full schema ships. Platform research (trading uses it), characters and image (the test conftest wires them) stay. Mirror 4572 to 3351 files; app source in the build 29 to 15 MB. The trading set, the staged gates, the Electron suite and an installed run pass on the reduced mirror. Dependencies and build-only files were pruned earlier (sizes below). |
 
 ### Changes from the plan
 
@@ -884,9 +884,9 @@ Omnix seams on branch `marketpulse-seams` (17 commits on `main`, not merged: mer
   reaches ready in about 30 s.
 - **First-run state comes from the database** ("the owner has no password"), not a marker file. A kill during the
   first-password step therefore gets a fresh login code on the next launch.
-- **No handoff-import switch in the child environment.** Until the owner stores a token, a private repository
-  answers 404 ("not published") and nothing is imported. If the `gh` CLI is installed and signed in, it is used
-  instead, with that account's access.
+- **No handoff-import switch in the child environment.** The research repository, `autonomx/omnix`, is public, so
+  MarketPulse imports handoffs and climatology without a token, as Omnix does. If the `gh` CLI is installed and
+  signed in, it is used instead.
 - **W-2's `sessionChanged` bridge was dropped.** Nothing needed it once first-run state came from the database.
 - **Installer shutdown.** electron-builder's own check force-killed PostgreSQL. `customCheckAppRunning` now runs
   `MarketPulse --quit`, which stops the backend cleanly; it waits up to a minute before forcing. The install folder
@@ -914,12 +914,12 @@ ibapi 10.50.2.
 | | Before Phase 12 | Now |
 |-|-----------------|-----|
 | Staged runtime | 637 MB | 260 MB |
-| Windows installer | 238 MB | 163 MB |
-| Installed | 878 MB | 582 MB |
+| Windows installer | 238 MB | 161 MB |
+| Installed | 878 MB | 571 MB |
 
 ### Verification at the last commit
 
-- Trading test set plus `src/tests_marketpulse`: 2184 tests (2148 + 36) in one run, none failed, 2 skipped. `src/tests_marketpulse` is now 40 after MP-10.2.
+- Trading test set plus `src/tests_marketpulse`, trading-only on the reduced mirror: 2189 tests (2149 + 40), none failed, 2 skipped.
 - Electron: 20 tests (13 smoke, 7 unit).
 - Web: both typechecks clean; vitest 1348 tests in 192 files; 15 Playwright e2e tests.
 - Installer: install, boot and uninstall in a scratch folder.
@@ -928,11 +928,11 @@ PostgreSQL tests ran on scratch clusters only.
 
 ### Owner actions
 
-1. Code signing for Windows (Azure Trusted Signing or an OV/EV certificate); Developer ID and notarization for macOS.
-2. Create `autonomx/marketpulse-releases` (public) for updates; the updater is already checked against a local feed.
-3. Create the Google OAuth Desktop client and add `desktop/config/google-oauth.json`.
+1. A Windows signing identity: Azure Artifact Signing, or an OV certificate on a hardware token or cloud HSM; then
+   set the variables in `desktop/scripts/dist.mjs`. Developer ID and notarization for macOS.
+2. Make `autonomx/MarketPulse` public (or move releases to a public repository) so installs can read its releases.
+3. Google sign-in: off for now; when wanted, add the OAuth Desktop client as `desktop/config/google-oauth.json`.
 4. Confirm the ibapi bundling decision above.
-5. Create and name the research data repository, then S-11's cutover (a weekend, outside the import window).
-6. Build and check on your Mac (`docs/MACOS.md`).
-7. Merge `marketpulse-seams` into Omnix `main`. Until then MarketPulse syncs from that branch.
-8. Before public distribution: the trademark and trade-dress check from R-8.
+5. Build and check on your Mac (`docs/MACOS.md`), when the rest is done.
+6. Merge `marketpulse-seams` (20 commits) into Omnix `main`. Until then MarketPulse syncs from that branch.
+7. Before public distribution: the trademark and trade-dress check from R-8.
