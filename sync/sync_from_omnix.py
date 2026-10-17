@@ -145,7 +145,8 @@ def derive_pyproject(manifest: dict, blobs: dict[str, bytes]) -> bytes:
 
 
 def _locked_version(lock: dict, name: str) -> str:
-    entry = lock.get("packages", {}).get(f"node_modules/{name}") or lock.get("packages", {}).get(f"web/node_modules/{name}")
+    # The web workspace's own copy wins over the hoisted one: npm nests it when versions differ.
+    entry = lock.get("packages", {}).get(f"web/node_modules/{name}") or lock.get("packages", {}).get(f"node_modules/{name}")
     if not entry or "version" not in entry:
         raise SyncError(f"{name} is not in Omnix's package-lock.json")
     return str(entry["version"])

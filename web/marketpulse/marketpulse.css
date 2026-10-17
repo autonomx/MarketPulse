@@ -1,0 +1,97 @@
+@layer features {
+  /* Loading and first-run pages: the dark terminal background, centred. */
+  .mp-startup,
+  .mp-welcome {
+    display: grid;
+    place-items: center;
+    min-height: 100vh;
+    background: var(--c-slate-170-2, #0f1116);
+    color: var(--c-slate-850, #d1d4dc);
+  }
+
+  .mp-startup {
+    gap: 12px;
+    align-content: center;
+    font-size: 14px;
+  }
+
+  .mp-startup-mark {
+    border-radius: 14px;
+  }
+
+  .mp-welcome-card {
+    width: min(420px, calc(100vw - 32px));
+  }
+
+  /* Settings: one scrolling page with an anchor bar, not Omnix's settings workspace. */
+  .mp-settings {
+    min-height: 100vh;
+    background: var(--c-slate-170-2, #0f1116);
+    color: var(--c-slate-850, #d1d4dc);
+  }
+
+  .mp-settings-header {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 20px;
+    padding: 12px 24px;
+    border-bottom: 1px solid color-mix(in srgb, var(--c-blue-660) 14%, transparent);
+    background: var(--c-indigo-190, #0c1222);
+  }
+
+  .mp-settings-header h1 {
+    margin: 0;
+    font-size: 18px;
+  }
+
+  .mp-settings-header nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+
+  .mp-settings-header a {
+    color: inherit;
+    text-decoration: none;
+    opacity: 0.8;
+  }
+
+  .mp-settings-header a:hover,
+  .mp-settings-header a[aria-current='true'] {
+    opacity: 1;
+    text-decoration: underline;
+  }
+
+  .mp-settings-main {
+    display: grid;
+    gap: 24px;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+
+  .mp-settings-main > section {
+    scroll-margin-top: 72px;
+  }
+
+  .mp-settings-note {
+    margin: 4px 0;
+    opacity: 0.8;
+    font-size: 13px;
+  }
+
+  .mp-settings-inline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .mp-settings-inline input {
+    min-width: min(320px, 100%);
+  }
+}
