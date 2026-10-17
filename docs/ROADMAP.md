@@ -863,12 +863,12 @@ Omnix seams on branch `marketpulse-seams` (17 commits on `main`, not merged: mer
 | 4 Web app | Done | MarketPulse build (trading only), 15 Playwright e2e tests, own screenshot baselines. |
 | 5 Embedded runtime | Done | Staged-runtime gate: ready from nothing, password-only PostgreSQL, user-script worker, no process left 0.6 s after a killed supervisor. |
 | 6 Electron shell | Done | 12 smoke tests (first run, window sets over BroadcastChannel, navigation lock, drag regions, permissions, crash view, quit, `--quit`, restart). |
-| 7 Accounts | Done except Google end to end | Password flow end to end. S-5 nonce tests pass in the mirror. Guest refusal test. Google needs the publisher's OAuth Desktop client (owner). |
+| 7 Accounts | Done; Google needs the real client | Password flow end to end; guest refusal test. Google: the shell's button opens the system browser, and the real gateway sends it to Google with the client, PKCE and loopback callback (`desktop/tests/google.spec.ts`). The callback and handoff legs pass against a local identity provider (mirrored S-5 tests). What remains is Google's own servers with the publisher's OAuth Desktop client (owner). |
 | 8 Alerts, tray, background | Done | Notification while hidden, click-through to the chart, taskbar/Dock badge, simulated sleep with exactly-once delivery, keep-awake option. |
-| 9 Windows packaging | Done, unsigned | NSIS per-user installer. Install, update over a running app and uninstall checked in a scratch folder. Migration rollback test. Signing and the release feed are owner actions. |
-| 10 Omnix data import | MP-10.1 done | File › Import market data from Omnix…: dry run first, read-only on Omnix, idempotent. MP-10.2 (account data) is not built; it is the owner's call. |
+| 9 Windows packaging | Done, unsigned | NSIS per-user installer. Install, update over a running app and uninstall checked in a scratch folder. Migration rollback test. electron-updater end to end against a local feed (`desktop/scripts/update-feed-builds.mjs`): 0.1.0 downloaded 0.1.1, installed it on quit, and 0.1.1 started on the same data. Signing and the public feed are owner actions. |
+| 10 Omnix data import | Done | File › Import from Omnix…: market reference data (MP-10.1) and, optionally, one workspace's documents, alerts and paper accounts as the owner's (MP-10.2). Dry run first, read-only on Omnix, each item whole or not at all, idempotent. Checked on a copy of the real schema under row-level security (336 paper accounts, 5770 rows). |
 | 11 macOS | Ready to build on a Mac | Per-platform pins and staging, mac targets, entitlements, notarization switch, tray template, Dock, Keychain (S-8), cross-platform tests. Not yet run on a Mac: see `docs/MACOS.md`. |
-| 12 Slim the mirror | Dependencies and runtime done; source mirror unchanged | Trading-unused packages and build-only files are pruned (sizes below). The source mirror still carries all of `src/app`: slimming it needs the Omnix refactors this section names. |
+| 12 Slim the mirror | Gate met; composition refactor not done | Trading-unused packages and build-only files are pruned (sizes below). The trading set, the staged gates and an installed run pass on the reduced runtime. The source still ships all of `src/app`. A trading-only boot loads 646 `app` modules across chat, agent runtime, assistant memory and RPG, so cutting the rest needs the Omnix composition refactor. Measured payoff: at most 4.1 MB of the 163 MB installer (all non-trading feature code, compressed). Left for the owner to decide. |
 
 ### Changes from the plan
 
@@ -919,8 +919,8 @@ ibapi 10.50.2.
 
 ### Verification at the last commit
 
-- Trading test set plus `src/tests_marketpulse`: 2184 tests (2148 + 36) in one run, none failed, 2 skipped.
-- Electron: 19 tests (12 smoke, 7 unit).
+- Trading test set plus `src/tests_marketpulse`: 2184 tests (2148 + 36) in one run, none failed, 2 skipped. `src/tests_marketpulse` is now 40 after MP-10.2.
+- Electron: 20 tests (13 smoke, 7 unit).
 - Web: both typechecks clean; vitest 1348 tests in 192 files; 15 Playwright e2e tests.
 - Installer: install, boot and uninstall in a scratch folder.
 
@@ -929,7 +929,7 @@ PostgreSQL tests ran on scratch clusters only.
 ### Owner actions
 
 1. Code signing for Windows (Azure Trusted Signing or an OV/EV certificate); Developer ID and notarization for macOS.
-2. Create `autonomx/marketpulse-releases` (public) for updates.
+2. Create `autonomx/marketpulse-releases` (public) for updates; the updater is already checked against a local feed.
 3. Create the Google OAuth Desktop client and add `desktop/config/google-oauth.json`.
 4. Confirm the ibapi bundling decision above.
 5. Create and name the research data repository, then S-11's cutover (a weekend, outside the import window).
