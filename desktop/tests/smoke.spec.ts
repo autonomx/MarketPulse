@@ -127,8 +127,56 @@ test('permissions other than notifications are refused', async () => {
   expect(camera).not.toBe('granted');
 });
 
+test('an alert that fires while every window is hidden raises a native notification', async () => {
+  await app.evaluate(({ BrowserWindow, Notification }) => {
+    const shown: string[] = [];
+    (globalThis as unknown as { shown: string[] }).shown = shown;
+    Notification.prototype.show = function show(this: Electron.Notification) {
+      shown.push(`${this.title}|${this.body}`);
+    };
+    for (const window of BrowserWindow.getAllWindows()) window.hide();
+  });
+  const created = await main.evaluate(async () => {
+    const csrf = decodeURIComponent((document.cookie.split('; ').find((part) => part.startsWith('omnix_csrf=')) ?? '').split('=')[1] ?? '');
+    const headers = { 'Content-Type': 'application/json', 'X-Omnix-Client': 'web', 'X-Omnix-CSRF': csrf };
+    const instrument = 'crypto:BINANCE:spot:BTC-USDT';
+    const alert = await fetch('/api/trading/alerts', { method: 'POST', headers, body: JSON.stringify({
+      alert_id: `smoke-${Date.now()}`,
+      instrument_id: instrument,
+      conditions: [{ source: { kind: 'price', field: 'close' }, operator: 'crossing_up', target: { kind: 'value', value: '100' } }],
+      parameters: { notification_channels: ['app', 'desktop'], message: 'BTC crossed 100 (smoke test)' },
+    }) });
+    const observed = Date.now();
+    for (const [price, offset] of [['99', 0], ['101', 30_000]] as const) {
+      await fetch('/api/trading/alerts/evaluate', { method: 'POST', headers, body: JSON.stringify({
+        instrument_id: instrument, observed_price: price, observed_at: new Date(observed + offset).toISOString(),
+      }) });
+    }
+    return alert.status === 201 ? 201 : `${alert.status} ${await alert.text()}`;
+  });
+  expect(created).toBe(201);
+  // The delivery monitor runs every 10 s; the listener shows the notification, then answers 200.
+  await expect.poll(() => app.evaluate(() => (globalThis as unknown as { shown: string[] }).shown), { timeout: 90_000 })
+    .toContain('MarketPulse alert|BTC crossed 100 (smoke test)');
+  await app.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows()[0]?.show());
+});
+
 test('quitting leaves no backend process', async () => {
   expect(backendProcesses(dataDir).length).toBeGreaterThan(0);
+  await app.close();
+  await expect.poll(() => backendProcesses(dataDir).length, { timeout: 60_000 }).toBe(0);
+});
+
+test('the next launch opens the charts signed in, without the first-run page', async () => {
+  app = await electron.launch({
+    args: [join(DESKTOP, 'out', 'main.js')],
+    env: { ...Object.fromEntries(Object.entries(process.env).filter(([name]) => name !== 'ELECTRON_RUN_AS_NODE')) as Record<string, string>,
+      MARKETPULSE_DATA_DIR: dataDir, MARKETPULSE_RESOURCES: STAGE },
+  });
+  const page = await appWindow(app, (url) => url.startsWith(origin) && url.includes('/trading'), 300_000);
+  await expect(page.locator('.trading-workspace')).toBeVisible({ timeout: 120_000 });
+  expect(page.url()).not.toContain('/welcome');
+  expect(await page.evaluate(async () => (await (await fetch('/api/auth/session')).json()).account?.has_password)).toBe(true);
   await app.close();
   await expect.poll(() => backendProcesses(dataDir).length, { timeout: 60_000 }).toBe(0);
 });

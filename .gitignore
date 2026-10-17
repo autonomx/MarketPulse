@@ -35,3 +35,6 @@ Thumbs.db
 # Desktop test output
 desktop/test-results/
 desktop/playwright-report/
+
+# The publisher's Google OAuth Desktop client (optional; see desktop/config/google-oauth.example.json)
+desktop/config/google-oauth.json

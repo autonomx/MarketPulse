@@ -2,6 +2,7 @@ import {
   app, BrowserWindow, ipcMain, Menu, nativeImage, Notification, powerSaveBlocker, session, shell, Tray,
   type IpcMainEvent, type IpcMainInvokeEvent, type MenuItemConstructorOptions,
 } from 'electron';
+import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { NotificationListener } from './notifications';
 import { desktopPaths } from './paths';
@@ -125,7 +126,10 @@ async function main(): Promise<void> {
     errorWindow?.destroy();
     errorWindow = null;
     if (!startHidden && (!splash || splash.isDestroyed())) splash = windows.shellPage('splash');
-    supervisor = new BackendSupervisor(paths, settings, secretEnvironment(secrets));
+    const google = googleClient();
+    supervisor = new BackendSupervisor(paths, settings,
+      { ...secretEnvironment(secrets), ...(google ? { MARKETPULSE_GOOGLE_CLIENT_SECRET: google.clientSecret } : {}) },
+      google?.clientId ?? null);
     supervisor.on('event', (event: SupervisorEvent) => {
       if (event.event === 'step') sendStatus({ kind: 'step', message: event.message, step: event.step });
       else if (event.event === 'ready') {
@@ -226,6 +230,25 @@ async function main(): Promise<void> {
   });
 
   startBackend();
+}
+
+/**
+ * The build's Google OAuth client of type Desktop (google-oauth.json next to the app, or desktop/config in
+ * development), or null: Google sign-in is offered only when the publisher configured one. A Desktop client's secret
+ * is not confidential (it ships with every install); PKCE protects the flow.
+ */
+function googleClient(): { clientId: string; clientSecret: string } | null {
+  const candidates = [join(process.resourcesPath ?? '', 'google-oauth.json'), join(__dirname, '..', 'config', 'google-oauth.json')];
+  for (const candidate of candidates) {
+    if (!existsSync(candidate)) continue;
+    try {
+      const parsed = JSON.parse(readFileSync(candidate, 'utf8')) as { client_id?: string; client_secret?: string };
+      if (parsed.client_id && parsed.client_secret) return { clientId: parsed.client_id, clientSecret: parsed.client_secret };
+    } catch {
+      // A broken file means no Google sign-in, not a broken app.
+    }
+  }
+  return null;
 }
 
 function hardenSession(): void {

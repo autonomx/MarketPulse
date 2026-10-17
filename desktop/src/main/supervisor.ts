@@ -31,7 +31,7 @@ export class BackendSupervisor extends EventEmitter {
   ready: { origin: string; first_run: boolean } | null = null;
 
   constructor(private readonly paths: DesktopPaths, private readonly settings: DesktopSettings,
-              private readonly secrets: Record<string, string>) {
+              private readonly secrets: Record<string, string>, private readonly googleClientId: string | null = null) {
     super();
   }
 
@@ -49,6 +49,8 @@ export class BackendSupervisor extends EventEmitter {
       metrics_port: this.settings.metricsPort,
       notify_port: this.settings.notifyPort,
       postgres_bin: this.paths.postgresBin,
+      // Google sign-in when the build carries a Desktop OAuth client (roadmap §4.7); its secret comes in the env.
+      ...(this.googleClientId ? { google_client_id: this.googleClientId } : {}),
     }, null, 2), 'utf8');
   }
 
