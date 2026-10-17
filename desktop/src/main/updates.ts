@@ -6,7 +6,9 @@ import { autoUpdater } from 'electron-updater';
  * start snapshots the database before migrating (marketpulse.supervise), so a failed migration can be rolled back.
  */
 export function startUpdateChecks(onStatus: (status: string) => void): void {
-  if (!app.isPackaged || process.env.MARKETPULSE_DATA_DIR) return;
+  // Installed apps only. A test run of an installed app (MARKETPULSE_DATA_DIR) checks only when asked to; the feed it
+  // checks is the one built into the app (app-update.yml).
+  if (!app.isPackaged || (process.env.MARKETPULSE_DATA_DIR && process.env.MARKETPULSE_UPDATE_CHECKS !== '1')) return;
   autoUpdater.autoDownload = true;
   autoUpdater.autoInstallOnAppQuit = true;
   autoUpdater.on('update-available', (info) => onStatus(`Downloading MarketPulse ${info.version}…`));
