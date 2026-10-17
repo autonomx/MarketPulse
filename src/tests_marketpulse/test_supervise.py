@@ -110,6 +110,41 @@ def test_the_gateway_log_pump_rotates_while_the_gateway_runs(tmp_path, monkeypat
     assert all(path.stat().st_size <= 100 + 40 for path in tmp_path.iterdir())
 
 
+def test_a_failed_migration_offers_only_the_snapshot_this_start_took(tmp_path, secrets_env, monkeypatch):
+    supervisor = Supervisor(_config(tmp_path), lambda event: None)
+    for step in ("check_ports", "init_cluster", "start_postgres", "ensure_database"):
+        monkeypatch.setattr(supervisor, step, lambda: None)
+
+    def failing_migration():
+        raise SupervisorError("migrate", "a migration failed")
+
+    monkeypatch.setattr(supervisor, "migrate", failing_migration)
+    # Nothing pending, so no snapshot: an older snapshot from an earlier update must not be offered.
+    monkeypatch.setattr(supervisor, "pending_migrations", lambda: [])
+    with pytest.raises(SupervisorError) as without:
+        supervisor.start()
+    assert without.value.snapshot is None
+
+    monkeypatch.setattr(supervisor, "pending_migrations", lambda: ["0162"])
+    monkeypatch.setattr(supervisor, "snapshot", lambda: tmp_path / "data" / "snapshots" / "pgdata-20261017T120000Z")
+    with pytest.raises(SupervisorError) as taken:
+        supervisor.start()
+    assert taken.value.snapshot == str(tmp_path / "data" / "snapshots" / "pgdata-20261017T120000Z")
+
+
+def test_only_a_snapshot_of_this_data_folder_can_be_restored(tmp_path, secrets_env):
+    supervisor = Supervisor(_config(tmp_path), lambda event: None)
+    elsewhere = tmp_path / "elsewhere" / "pgdata-20261017T120000Z"
+    elsewhere.mkdir(parents=True)
+    (elsewhere / "PG_VERSION").write_text("17", encoding="utf-8")
+    unfinished = tmp_path / "data" / "snapshots" / ".partial-pgdata-20261017T120000Z"
+    unfinished.mkdir(parents=True)
+
+    for candidate in (elsewhere, unfinished, tmp_path / "data" / "snapshots" / "pgdata-missing"):
+        with pytest.raises(SupervisorError, match="not a snapshot"):
+            supervisor.restore_snapshot(candidate)
+
+
 def test_only_the_newest_snapshots_are_kept(tmp_path):
     for stamp in ("20261001", "20261003", "20261002", "20261005", "20261004"):
         (tmp_path / f"pgdata-{stamp}").mkdir()
@@ -205,6 +240,11 @@ def test_serve_children_get_the_secrets_and_the_gateway_environment(tmp_path, se
     assert env["MARKETPULSE_DB_OWNER_PASSWORD"] == "owner-pw"
     assert env["OMNIX_FEATURES"] == "trading"
     assert "MARKETPULSE_DB_OWNER_PASSWORD" not in supervisor.env
+    # The gateway and PostgreSQL's tools get no owner credentials at all.
+    gateway = supervisor._serve_env(owner=False)
+    assert "MARKETPULSE_DB_OWNER_PASSWORD" not in gateway and "OMNIX_MIGRATION_DATABASE_URL" not in gateway
+    assert gateway["MARKETPULSE_DB_APP_PASSWORD"] == "app-pw"
+    assert not any("DATABASE_URL" in name or "PASSWORD" in name or "SECRET" in name for name in supervisor.pg_env)
 
 
 staged = pytest.mark.skipif(not STAGED_PYTHON.is_file() or not (STAGE / "postgres" / "bin").is_dir(),
@@ -328,10 +368,60 @@ def test_a_failed_update_migration_is_rolled_back_from_the_snapshot(tmp_path):
     failed = run({"MARKETPULSE_TEST_FAIL_MIGRATION": "1"})
     assert failed[-1]["event"] == "error" and failed[-1]["step"] == "migrate"
     assert "snapshot" in [event.get("step") for event in failed]
-    assert len(list((config.data_dir / "snapshots").glob("pgdata-*"))) == 1
+    snapshots = list((config.data_dir / "snapshots").glob("pgdata-*"))
+    assert len(snapshots) == 1
+    # The error names the snapshot this start took: the only data the user may put back.
+    assert Path(failed[-1]["snapshot"]) == snapshots[0]
+    assert not list((config.data_dir / "snapshots").glob(".partial-*"))
 
-    restored = run({}, "--restore-snapshot")
-    assert restored[-1]["event"] == "ready", restored
+    restored = run({}, "--restore-snapshot", failed[-1]["snapshot"])
+    # Restored, then stopped: this build would only migrate the old data again, so the shell sends the user to the
+    # previous release instead of starting.
+    assert restored[-1] == {"event": "restored", "snapshot": str(snapshots[0].resolve())}, restored
+    assert "ready" not in [event["event"] for event in restored]
     assert "restore" in [event.get("step") for event in restored]
     assert marker.read_text(encoding="utf-8") == "before the update"
     assert list(config.data_dir.glob("pgdata-failed-*"))
+
+
+@staged
+@pytest.mark.postgres
+@pytest.mark.skipif(sys.platform != "win32", reason="the Job Object is Windows'; macOS reconnects instead")
+def test_killing_the_supervisor_leaves_no_backend_process(tmp_path):
+    """Phase 5 gate: a supervisor killed outright (no clean stop) takes PostgreSQL and the gateway with it."""
+    import psutil
+
+    config = _config(tmp_path)
+    launch = tmp_path / "launch.json"
+    launch.write_text(json.dumps({
+        "install_root": str(STAGE), "data_dir": str(config.data_dir), "http_port": config.http_port,
+        "pg_port": config.pg_port, "metrics_port": config.metrics_port, "notify_port": config.notify_port,
+        "postgres_bin": str(STAGE / "postgres" / "bin"),
+    }), encoding="utf-8")
+    env = {**{k: v for k, v in os.environ.items() if not k.startswith(("PYTHON", "OMNIX_"))}, **SECRETS}
+    process = subprocess.Popen([str(STAGED_PYTHON), "-m", "marketpulse.supervise", "--config", str(launch)],
+                               stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, env=env,
+                               cwd=str(tmp_path))
+    for line in process.stdout:  # type: ignore[union-attr]
+        event = json.loads(line)
+        if event["event"] in {"ready", "error"}:
+            break
+    assert event["event"] == "ready", event
+    needle = str(config.data_dir).lower()
+
+    def backend() -> list[int]:
+        found = []
+        for item in psutil.process_iter(["pid", "cmdline"]):
+            line = " ".join(item.info["cmdline"] or []).lower()
+            if needle in line or needle.replace("\\", "/") in line:
+                found.append(item.info["pid"])
+        return found
+
+    assert backend()
+    process.kill()
+    process.wait(10)
+    deadline = time.monotonic() + 10
+    while backend() and time.monotonic() < deadline:
+        time.sleep(0.2)
+
+    assert backend() == []

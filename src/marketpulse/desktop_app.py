@@ -70,12 +70,18 @@ class DesktopApplication:
         """(file, is_asset): the requested file inside the build, or index.html for an app route."""
         if self.web_dist is None:
             return None
-        relative = path.lstrip("/")
+        relative = path.strip("/")
         if relative:
-            candidate = (self.web_dist / relative).resolve()
+            parts = relative.split("/")
+            # Plain names only: a backslash, drive colon or NUL could name a UNC or absolute path (on Windows, merely
+            # resolving \\host\share opens an SMB connection with the user's credentials), and . or .. could leave the
+            # build. Nothing from the request is ever resolved.
+            if any(part in {"", ".", ".."} or "\\" in part or ":" in part or "\x00" in part for part in parts):
+                return None
+            candidate = self.web_dist.joinpath(*parts)
             if candidate.is_relative_to(self.web_dist) and candidate.is_file():
-                return candidate, relative.startswith("assets/")
-            if "." in relative.rsplit("/", 1)[-1]:
+                return candidate, parts[0] == "assets"
+            if "." in parts[-1]:
                 # A missing file (has an extension) is a 404, not the app.
                 return None
         index = self.web_dist / "index.html"

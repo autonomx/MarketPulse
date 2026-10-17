@@ -72,6 +72,21 @@ def mirrored(path: str, manifest: dict) -> bool:
     return "__pycache__" not in path and any(_glob_regex(pattern).match(path) for pattern in rules.get("keep", []))
 
 
+def _include_roots(manifest: dict) -> set[str]:
+    """The folder (or file) each include pattern can match under: up to its first wildcard, then whole folders."""
+    roots = set()
+    for pattern in manifest["mirror"]["include"]:
+        head = pattern.split("*", 1)[0]
+        if "*" not in pattern:
+            roots.add(pattern)
+        elif head.endswith("/"):
+            roots.add(head.rstrip("/"))
+        else:
+            # scripts/run_trading_strategy_*.py lives in scripts/.
+            roots.add(head.rsplit("/", 1)[0] if "/" in head else ".")
+    return roots
+
+
 def _git(checkout: Path, *args: str, input_bytes: bytes | None = None) -> bytes:
     completed = subprocess.run(["git", "-C", str(checkout), *args], input=input_bytes, capture_output=True, check=False)
     if completed.returncode != 0:
@@ -250,14 +265,18 @@ def command_check(args: argparse.Namespace) -> int:
         elif sha256(target.read_bytes()) != digest:
             problems.append(f"changed  {path}")
     recorded = set(lock["files"])
-    roots = {pattern.split("*", 1)[0].rstrip("/") for pattern in manifest["mirror"]["include"]}
-    for root in sorted(roots):
+    # Any file an include pattern names that the lock does not record is extra, also inside an excluded subtree
+    # (stage.py copies only recorded files, but the working tree must not carry them either).
+    includes = [_glob_regex(pattern) for pattern in manifest["mirror"]["include"]]
+    artifacts = [_glob_regex(pattern) for pattern in ("**/__pycache__/**", "**/*.pyc", "**/.pytest_cache/**")]
+    for root in sorted(_include_roots(manifest)):
         base = ROOT / root
         candidates = [base] if base.is_file() else (base.rglob("*") if base.is_dir() else [])
         for candidate in candidates:
             if candidate.is_file():
                 relative = candidate.relative_to(ROOT).as_posix()
-                if mirrored(relative, manifest) and relative not in recorded:
+                if (relative not in recorded and any(rule.match(relative) for rule in includes)
+                        and not any(rule.match(relative) for rule in artifacts)):
                     problems.append(f"extra    {relative}")
     checkout = Path(args.omnix or lock.get("source") or manifest["source"]["checkout"])
     try:

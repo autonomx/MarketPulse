@@ -26,17 +26,22 @@
 ; process in the install folder after about a second, PostgreSQL included, and the uninstall then races their file
 ; handles. Instead ask MarketPulse to quit (`--quit`: it stops the backend and shuts PostgreSQL down cleanly), wait
 ; for every process started from the install folder to exit, and force them only after a minute.
+;
+; The install folder reaches PowerShell through an environment variable, never inside its command text, so a folder
+; with an apostrophe (C:\Users\O'Brien\...) cannot break the check. Exit code 3 alone means "nothing running"; any
+; other result, a PowerShell failure included, is treated as still running.
 !macro customCheckAppRunning
-  StrCpy $R8 `"$PowerShellPath" -NoProfile -NonInteractive -C "if (@(Get-CimInstance -ClassName Win32_Process | ? {$$_.Path -and $$_.Path.StartsWith('$INSTDIR\', 'CurrentCultureIgnoreCase')}).Count -gt 0) { exit 0 } else { exit 1 }"`
+  System::Call 'Kernel32::SetEnvironmentVariable(t "MARKETPULSE_INSTDIR", t "$INSTDIR\")i'
+  StrCpy $R8 `"$PowerShellPath" -NoProfile -NonInteractive -C "if (@(Get-CimInstance -ClassName Win32_Process | ? {$$_.Path -and $$_.Path.StartsWith($$env:MARKETPULSE_INSTDIR, 'CurrentCultureIgnoreCase')}).Count -gt 0) { exit 0 } else { exit 3 }"`
   nsExec::Exec $R8
   Pop $R0
-  ${if} $R0 == 0
+  ${if} $R0 != 3
     DetailPrint "$(appClosing)"
     ${if} ${FileExists} "$INSTDIR\${APP_EXECUTABLE_FILENAME}"
       Exec `"$INSTDIR\${APP_EXECUTABLE_FILENAME}" --quit`
     ${endIf}
     StrCpy $R1 0
-    ${doWhile} $R0 == 0
+    ${doWhile} $R0 != 3
       ${if} $R1 >= 60
         ${exitDo}
       ${endIf}
@@ -45,9 +50,9 @@
       nsExec::Exec $R8
       Pop $R0
     ${loop}
-    ${if} $R0 == 0
+    ${if} $R0 != 3
       DetailPrint `"${PRODUCT_NAME}" did not quit within a minute; closing it.`
-      nsExec::Exec `"$PowerShellPath" -NoProfile -NonInteractive -C "Get-CimInstance -ClassName Win32_Process | ? {$$_.Path -and $$_.Path.StartsWith('$INSTDIR\', 'CurrentCultureIgnoreCase')} | % { Stop-Process -Id $$_.ProcessId -Force }"`
+      nsExec::Exec `"$PowerShellPath" -NoProfile -NonInteractive -C "Get-CimInstance -ClassName Win32_Process | ? {$$_.Path -and $$_.Path.StartsWith($$env:MARKETPULSE_INSTDIR, 'CurrentCultureIgnoreCase')} | % { Stop-Process -Id $$_.ProcessId -Force }"`
       Sleep 2000
     ${endIf}
   ${endIf}

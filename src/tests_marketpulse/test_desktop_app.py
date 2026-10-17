@@ -84,6 +84,29 @@ def test_missing_files_traversal_and_writes_are_refused(dist):
     assert client.post("/trading").status_code == 405
 
 
+def test_backslash_unc_and_drive_paths_never_reach_the_filesystem(dist, monkeypatch):
+    # Resolving \\host\share on Windows opens an SMB connection (NTLM): such paths are refused before any file access.
+    from pathlib import Path
+
+    touched = []
+    real_is_file = Path.is_file
+
+    def watched_is_file(self):
+        touched.append(str(self))
+        return real_is_file(self)
+
+    monkeypatch.setattr(Path, "is_file", watched_is_file)
+    client = TestClient(DesktopApplication(FakeGateway(), dist))
+
+    for path in ("/%5C%5Cattacker.example%5Cshare%5Cx.js", "/%5C%5Cattacker.example%5Cshare", "/C:%5CWindows%5Cwin.ini",
+                 "/assets%5C..%5C..%5Csecret.txt", "/assets/%00.js"):
+        response = client.get(path)
+        assert response.status_code == 404, path
+    assert not any("attacker" in item or "Windows" in item or "secret" in item for item in touched), touched
+    # App routes, with or without a trailing slash, still get the app.
+    assert client.get("/trading/").status_code == 200
+
+
 def test_without_a_build_app_routes_are_404(tmp_path):
     response = TestClient(DesktopApplication(FakeGateway(), None)).get("/trading")
 

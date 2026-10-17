@@ -92,6 +92,19 @@ def test_the_supervisor_must_pass_the_secrets(config):
         child_environment(config, inherited)
 
 
+def test_the_gateway_environment_has_no_owner_credentials(config):
+    inherited = _inherited()
+    gateway = child_environment(config, inherited, owner=False)
+    del inherited["MARKETPULSE_DB_OWNER_PASSWORD"]
+
+    # The running gateway reaches PostgreSQL only as omnix_app; the owner role is the cluster's superuser.
+    assert "OMNIX_MIGRATION_DATABASE_URL" not in gateway
+    assert not any("marketpulse_owner" in value or "owner pw" in value for value in gateway.values())
+    assert child_environment(config, inherited, owner=False)["OMNIX_DATABASE_URL"].startswith("postgresql://omnix_app:")
+    with pytest.raises(ValueError, match="MARKETPULSE_DB_OWNER_PASSWORD"):
+        child_environment(config, inherited)
+
+
 def test_gateway_command_line(config):
     command = gateway_command(config, "python.exe", Path("scripts"))
 

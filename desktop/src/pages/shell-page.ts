@@ -4,6 +4,8 @@ interface ShellStatus {
   message: string;
   log?: string | null;
   step?: string;
+  /** A failed update's snapshot, as a time: the data that can be put back. */
+  snapshot?: string | null;
 }
 
 interface ShellBridge {
@@ -11,6 +13,7 @@ interface ShellBridge {
   retry(): void;
   newPorts(): void;
   restore(): void;
+  previousRelease(): void;
   exportDiagnostics(): void;
   revealLogs(): void;
   quit(): void;
@@ -30,8 +33,16 @@ bridge?.onStatus((status) => {
     text('log', status.log ?? '');
     const newPort = document.getElementById('new-port');
     if (newPort) newPort.hidden = !status.message.startsWith('port_busy');
+    // Restore only the snapshot this failed update took; after restoring, the previous release is the way on.
     const restore = document.getElementById('restore');
-    if (restore) restore.hidden = status.step !== 'migrate';
+    if (restore) {
+      restore.hidden = !status.snapshot;
+      restore.textContent = `Restore data from ${status.snapshot ?? 'before the update'}`;
+    }
+    const previous = document.getElementById('previous-release');
+    if (previous) previous.hidden = status.step !== 'restored' && !status.snapshot;
+    const retry = document.getElementById('retry');
+    if (retry) retry.hidden = status.step === 'restored';
   }
 });
 
@@ -39,5 +50,6 @@ document.getElementById('retry')?.addEventListener('click', () => bridge?.retry(
 document.getElementById('new-port')?.addEventListener('click', () => bridge?.newPorts());
 document.getElementById('logs')?.addEventListener('click', () => bridge?.revealLogs());
 document.getElementById('restore')?.addEventListener('click', () => bridge?.restore());
+document.getElementById('previous-release')?.addEventListener('click', () => bridge?.previousRelease());
 document.getElementById('diagnostics')?.addEventListener('click', () => bridge?.exportDiagnostics());
 document.getElementById('quit')?.addEventListener('click', () => bridge?.quit());

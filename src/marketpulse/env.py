@@ -80,11 +80,17 @@ def _database_url(user: str, password: str, port: int) -> str:
     return f"postgresql://{quote(user, safe='')}:{quote(password, safe='')}@127.0.0.1:{port}/{DB_NAME}"
 
 
-def child_environment(config: LaunchConfig, inherited: Mapping[str, str] | None = None) -> dict[str, str]:
-    """The complete environment for the gateway, the job worker and the database tools."""
+def child_environment(config: LaunchConfig, inherited: Mapping[str, str] | None = None, *,
+                      owner: bool = True) -> dict[str, str]:
+    """The complete environment for the gateway, the job worker and the database tools.
+
+    ``owner`` adds the owner role's URL (OMNIX_MIGRATION_DATABASE_URL) for migrations, backup, restore, grants and
+    imports. The running gateway gets ``owner=False``: it, its job worker and its script workers reach PostgreSQL
+    only as omnix_app under row-level security, never as the cluster's superuser."""
     source = dict(os.environ if inherited is None else inherited)
-    missing = [name for name in ("MARKETPULSE_DB_OWNER_PASSWORD", "MARKETPULSE_DB_APP_PASSWORD",
-                                 "MARKETPULSE_NOTIFY_SECRET") if not source.get(name)]
+    required = ("MARKETPULSE_DB_OWNER_PASSWORD",) if owner else ()
+    missing = [name for name in (*required, "MARKETPULSE_DB_APP_PASSWORD", "MARKETPULSE_NOTIFY_SECRET")
+               if not source.get(name)]
     if missing:
         raise ValueError(f"the supervisor must pass {', '.join(missing)}")
     env = {name: source[name] for name in SYSTEM_ALLOWLIST if source.get(name)}
@@ -100,7 +106,6 @@ def child_environment(config: LaunchConfig, inherited: Mapping[str, str] | None 
 
     data = config.data_dir
     secrets = data / "secrets"
-    owner_url = _database_url(DB_OWNER, source["MARKETPULSE_DB_OWNER_PASSWORD"], config.pg_port)
     app_url = _database_url(DB_APP, source["MARKETPULSE_DB_APP_PASSWORD"], config.pg_port)
     env.update({
         # Omnix, trading only, as a deployed single-machine install.
@@ -115,7 +120,6 @@ def child_environment(config: LaunchConfig, inherited: Mapping[str, str] | None 
         # The one origin the windows load from; nothing else may post.
         "OMNIX_ALLOWED_ORIGINS": config.origin,
         # Migrations, backup and restore as the owner; the runtime as omnix_app under row-level security.
-        "OMNIX_MIGRATION_DATABASE_URL": owner_url,
         "OMNIX_DATABASE_URL": app_url,
         "OMNIX_JOB_WORKER_METRICS_PORT": str(config.metrics_port),
         # Writable data and every credential under the MarketPulse data folder.
@@ -128,11 +132,16 @@ def child_environment(config: LaunchConfig, inherited: Mapping[str, str] | None 
         "OMNIX_LOG_FORMAT": "json",
         # Bytecode caches go to the data folder: the install folder (a signed bundle on macOS) is never written.
         "PYTHONPYCACHEPREFIX": str(data / "pycache"),
+        # macOS has no ._pth: no user site-packages, and no working folder on the bundled interpreter's path.
+        "PYTHONNOUSERSITE": "1",
+        "PYTHONSAFEPATH": "1",
         # Desktop notifications go to the supervisor's loopback listener (S-6).
         "OMNIX_TRADING_DESKTOP_NOTIFY_URL": f"http://127.0.0.1:{config.notify_port}/notify",
         "OMNIX_TRADING_DESKTOP_NOTIFY_SECRET": source["MARKETPULSE_NOTIFY_SECRET"],
         "MARKETPULSE_WEB_DIST": str(config.web_dist),
     })
+    if owner:
+        env["OMNIX_MIGRATION_DATABASE_URL"] = _database_url(DB_OWNER, source["MARKETPULSE_DB_OWNER_PASSWORD"], config.pg_port)
     google_secret = source.get("MARKETPULSE_GOOGLE_CLIENT_SECRET")
     if config.google_client_id and google_secret:
         # All three or none (auth/settings.py); the redirect is the usual callback on the persisted port.

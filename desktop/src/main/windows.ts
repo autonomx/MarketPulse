@@ -125,6 +125,12 @@ export class WindowManager {
       event.preventDefault();
       if (decision === 'open-external') void shell.openExternal(url);
     });
+    // A server redirect gets the same rules as a navigation.
+    contents.on('will-redirect', (event, url) => {
+      const origin = this.origin();
+      if (origin && classify(url, origin, 'navigate') === 'stay') return;
+      event.preventDefault();
+    });
     contents.on('will-attach-webview', (event) => event.preventDefault());
     // The crash view (MP-6.2): a page whose renderer died says so and offers a reload, instead of a blank window.
     contents.on('render-process-gone', (_event, details) => {

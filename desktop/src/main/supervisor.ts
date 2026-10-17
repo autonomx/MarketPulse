@@ -23,7 +23,8 @@ export function rotateLog(path: string, maxBytes = 10 * 2 ** 20, keep = 3): void
 export type SupervisorEvent =
   | { event: 'step'; step: string; message: string }
   | { event: 'ready'; origin: string; first_run: boolean }
-  | { event: 'error'; step: string; message: string; log?: string | null }
+  | { event: 'error'; step: string; message: string; log?: string | null; snapshot?: string | null }
+  | { event: 'restored'; snapshot: string }
   | { event: 'result'; id: number; cmd: string; [key: string]: unknown }
   | { event: 'stopped' };
 
@@ -71,7 +72,8 @@ export class BackendSupervisor extends EventEmitter {
     }, null, 2), 'utf8');
   }
 
-  start(options: { restoreSnapshot?: boolean } = {}): void {
+  /** `restoreSnapshot`: the snapshot a failed update took (from its error event), put back instead of starting. */
+  start(options: { restoreSnapshot?: string } = {}): void {
     if (this.child) return;
     this.ready = null;
     this.writeLaunchConfig();
@@ -84,7 +86,11 @@ export class BackendSupervisor extends EventEmitter {
     Object.assign(env, this.secrets);
     // Bytecode caches go to the data folder, never into the install folder (a signed bundle on macOS).
     env.PYTHONPYCACHEPREFIX = join(this.paths.data, 'pycache');
-    const args = ['-m', 'marketpulse.supervise', '--config', this.launchConfigPath(), ...(options.restoreSnapshot ? ['--restore-snapshot'] : [])];
+    // macOS has no ._pth: keep the user's site-packages and the working folder off the bundled interpreter's path.
+    env.PYTHONNOUSERSITE = '1';
+    env.PYTHONSAFEPATH = '1';
+    const args = ['-m', 'marketpulse.supervise', '--config', this.launchConfigPath(),
+      ...(options.restoreSnapshot ? ['--restore-snapshot', options.restoreSnapshot] : [])];
     const child = spawn(this.paths.python, args, {
       cwd: this.paths.data,
       env,
@@ -139,8 +145,11 @@ export class BackendSupervisor extends EventEmitter {
     });
   }
 
-  /** Closes stdin, which stops the gateway and PostgreSQL; waits up to `timeoutMs` before killing. */
-  stop(timeoutMs = 45_000): Promise<void> {
+  /**
+   * Closes stdin, which stops the gateway and PostgreSQL; waits up to `timeoutMs` before killing. The supervisor's own
+   * stop takes up to 20 s for the gateway and 60 s for PostgreSQL, so the shell waits longer than both.
+   */
+  stop(timeoutMs = 120_000): Promise<void> {
     const child = this.child;
     if (!child) return Promise.resolve();
     return new Promise((resolvePromise) => {

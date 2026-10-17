@@ -9,14 +9,17 @@ texts ship next to the component inside the installed app (resources/licenses/).
 
 - Electron and Chromium (MIT; Chromium's component licences in LICENSES.chromium.html)
   https://github.com/electron/electron
-- PostgreSQL 17 (PostgreSQL License), Windows binaries from EnterpriseDB, with their command-line tool licences
+- PostgreSQL 17 (PostgreSQL License), Windows and macOS binaries from EnterpriseDB, with their command-line tool
+  licences
   https://www.postgresql.org/about/licence/
 - CPython 3.11 (Python Software Foundation License), from python-build-standalone (BSD-3-Clause build scripts)
   https://github.com/astral-sh/python-build-standalone
 - The Python packages in requirements/gateway.lock.txt, each under its own licence
 - The npm packages in web/package-lock.json and desktop/package-lock.json, each under its own licence
-- TWS API Python client (ibapi), Interactive Brokers LLC, under the TWS API licence; redistribution is subject to
-  the owner's confirmation of that licence before any build leaves the owner's machines (roadmap MP-5.1b)
+- Interactive Brokers' Python API client (ibapi 10.50.2), Interactive Brokers LLC, under the GNU General Public
+  License v3.0 or later (https://www.gnu.org/licenses/gpl-3.0.txt). It is bundled as unmodified, pure-Python
+  source: the installed ibapi folder is its complete source, and its licence text ships in
+  resources/runtime/licenses/ibapi. The owner confirmed bundling it (2026-10-17).
 
 MarketPulse's visual design resembles TradingView Desktop's but uses only its own code and assets. TradingView is a
 trademark of TradingView, Inc.; MarketPulse is not affiliated with or endorsed by TradingView, Inc.

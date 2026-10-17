@@ -30,6 +30,7 @@ import hashlib
 import json
 import os
 import platform
+import re
 import shutil
 import stat
 import subprocess
@@ -56,7 +57,6 @@ import site
 # Relative to python/lib/python3.11/site-packages.
 MACOS_PTH = "../../../../app/src\n../../../../app/scripts\n"
 POSTGRES_KEEP = ("bin", "lib", "share", "server_license.txt", "commandlinetools_3rd_party_licenses.txt")
-APP_SOURCES = ("src/app", "src/marketpulse")
 APP_SCRIPTS = ("scripts/run_omnix_gateway.py", "scripts/gateway_cluster.py")
 # The longest path below the stage that a Windows install may hold. NSIS cannot remove paths over 260 characters, so
 # desktop/build-resources/installer.nsh caps the install folder at 112 characters: 260, less 19 for the
@@ -78,7 +78,7 @@ PRUNE_PYTHON = (
     "**/site-packages/*/tests", "**/site-packages/*/*/tests", "**/site-packages/*/*/*/tests",
 )
 # Packages only Omnix's other features use (embeddings, speech, documents, images, smart plugs). Trading never
-# imports them: a trading-only boot loads none, and all 2148 tests in sync/trading-tests.txt pass with them made
+# imports them: a trading-only boot loads none, and all 2148 tests then in sync/trading-tests.txt pass with them made
 # unimportable. numpy stays (gateway-level code reaches it).
 TRADING_UNUSED = (
     "onnxruntime", "onnxruntime-*.dist-info", "tokenizers", "tokenizers-*.dist-info",
@@ -300,21 +300,30 @@ def prune(_target_platform: str) -> None:
     print(f"pruned {python_freed / 2**20:.0f} MB from python, {postgres_freed / 2**20:.0f} MB from postgres")
 
 
+def _test_file(relative: str) -> bool:
+    parts = relative.split("/")
+    return "tests" in parts[:-1] or parts[-1].startswith("test_")
+
+
 def stage_app(target_platform: str) -> None:
     app_dir = STAGE / "app"
     _reset(app_dir)
-    ignore = shutil.ignore_patterns("__pycache__", "*.pyc", "tests", "test_*.py")
-    for relative in APP_SOURCES:
-        shutil.copytree(ROOT / relative, app_dir / relative, ignore=ignore)
-    for relative in APP_SCRIPTS:
+    lock = json.loads((ROOT / "sync" / "omnix-sync.json").read_text(encoding="utf-8"))
+    # Mirrored code comes from the sync lock's file list, never the working tree wholesale: a stray or unrecorded
+    # file cannot reach the installer. MarketPulse's own package is copied whole.
+    mirrored = [path for path in lock["files"] if path.startswith("src/app/") and not _test_file(path)]
+    for relative in [*sorted(mirrored), *APP_SCRIPTS]:
+        if relative not in lock["files"]:
+            raise StageError(f"{relative} is not in the sync lock")
         (app_dir / relative).parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(ROOT / relative, app_dir / relative)
+    shutil.copytree(ROOT / "src" / "marketpulse", app_dir / "src" / "marketpulse",
+                    ignore=shutil.ignore_patterns("__pycache__", "*.pyc", "tests", "test_*.py"))
     licenses = STAGE / "licenses"
     licenses.mkdir(parents=True, exist_ok=True)
     for name in ("LICENSE", "NOTICE", "THIRD_PARTY_NOTICES.md"):
         shutil.copy2(ROOT / name, licenses / name)
     # Which code this build is: shown in exported diagnostics.
-    lock = json.loads((ROOT / "sync" / "omnix-sync.json").read_text(encoding="utf-8"))
     commit = subprocess.run(["git", "-C", str(ROOT), "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip()
     (STAGE / "build-info.json").write_text(json.dumps({
         "platform": target_platform, "marketpulse_commit": commit or None, "omnix_commit": lock.get("commit"),
@@ -323,10 +332,18 @@ def stage_app(target_platform: str) -> None:
     print("app staged")
 
 
+# Chunks of Omnix's other features (roadmap Phase 4 gate): the MarketPulse build registers trading only.
+OTHER_FEATURE_CHUNK = re.compile(r"(?:^|[a-z_])(?:Rpg|Audiobook|Assistant|Voice|Story|Companion|Character)"
+                                 r"|^(?:rpg|audiobook|assistant|voice|story|companion|character)")
+
+
 def stage_web(_target_platform: str) -> None:
     dist = ROOT / "web" / "dist"
     if not (dist / "index.html").is_file():
         raise StageError("web/dist is missing: run `npm --prefix web run build` first")
+    others = sorted(path.name for path in (dist / "assets").iterdir() if OTHER_FEATURE_CHUNK.search(path.name))
+    if others:
+        raise StageError(f"web/dist carries other features' chunks: {', '.join(others)}")
     target = STAGE / "web" / "dist"
     if target.exists():
         shutil.rmtree(target)

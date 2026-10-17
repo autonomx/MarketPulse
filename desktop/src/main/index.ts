@@ -3,7 +3,8 @@ import {
   type IpcMainEvent, type IpcMainInvokeEvent, type MenuItemConstructorOptions,
 } from 'electron';
 import { existsSync, readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { AlertBadge, alertDotBitmap, NotificationListener } from './notifications';
 import { desktopPaths } from './paths';
 import { SecretStore, secretEnvironment } from './secrets';
@@ -60,13 +61,17 @@ async function main(): Promise<void> {
     }
   };
 
-  const showError = (event: { message: string; log?: string | null; step?: string }) => {
+  // The snapshot a failed update took just before migrating: the only data the user may put back (roadmap MP-9.3).
+  let failedUpdateSnapshot: string | null = null;
+  const showError = (event: { message: string; log?: string | null; step?: string; snapshot?: string | null }) => {
     splash?.destroy();
     splash = null;
     if (!errorWindow || errorWindow.isDestroyed()) {
       errorWindow = windows.shellPage('error', { width: 680, height: 420 });
     }
-    sendStatus({ kind: 'error', message: event.message, log: event.log ?? '', step: event.step });
+    failedUpdateSnapshot = event.snapshot ?? null;
+    const taken = failedUpdateSnapshot ? snapshotTime(failedUpdateSnapshot) : null;
+    sendStatus({ kind: 'error', message: event.message, log: event.log ?? '', step: event.step, snapshot: taken });
     errorWindow.show();
   };
 
@@ -95,12 +100,15 @@ async function main(): Promise<void> {
       const notification = new Notification({ title, body, icon: join(paths.icons, 'icon-256.png') });
       notification.on('click', () => {
         if (!origin) return;
+        // Only a page of the app itself: the delivery's link is relative, and anything else is ignored.
+        const target = new URL(url, origin);
+        if (target.origin !== origin) return;
         const main = windows.get('main');
         if (main) {
-          void main.loadURL(new URL(url, origin).toString());
+          void main.loadURL(target.toString());
           windows.focusMain();
         } else {
-          windows.open('main', new URL(url, origin).toString());
+          windows.open('main', target.toString());
         }
       });
       notification.show();
@@ -108,11 +116,18 @@ async function main(): Promise<void> {
       badge.alert(BrowserWindow.getFocusedWindow() !== null);
     },
   });
-  try {
-    await listener.listen(settings.notifyPort);
-  } catch {
-    showError({ message: `port_busy: notifications ${settings.notifyPort}`, step: 'ports' });
-  }
+  // The listener must own its port: if another process held it, alerts would go to that process (with the secret).
+  let notificationsListening = false;
+  const listenForNotifications = async (): Promise<boolean> => {
+    if (notificationsListening) return true;
+    try {
+      await listener.listen(settings.notifyPort);
+      notificationsListening = true;
+    } catch {
+      showError({ message: `port_busy: notifications ${settings.notifyPort}`, step: 'ports' });
+    }
+    return notificationsListening;
+  };
 
   const openApp = async (firstRun: boolean) => {
     if (!origin) return;
@@ -140,7 +155,7 @@ async function main(): Promise<void> {
     splash = null;
   };
 
-  const startBackend = (options: { restoreSnapshot?: boolean } = {}) => {
+  const startBackend = (options: { restoreSnapshot?: string } = {}) => {
     errorWindow?.destroy();
     errorWindow = null;
     if (!startHidden && (!splash || splash.isDestroyed())) splash = windows.shellPage('splash');
@@ -155,6 +170,14 @@ async function main(): Promise<void> {
         origin = event.origin;
         if (firstLaunch || !windows.get('main')) void openApp(event.first_run);
       } else if (event.event === 'error') showError(event);
+      else if (event.event === 'restored') {
+        // The data is back as the previous release left it; this build would only migrate it again.
+        showError({
+          step: 'restored',
+          message: 'Your data is back as it was before the update. This version of MarketPulse cannot use it: '
+            + 'install the previous release, then start MarketPulse again.',
+        });
+      }
     });
     supervisor.on('exit', (code: number | null) => {
       if (!quitting && code !== 0 && !errorWindow) showError({ message: `The backend stopped (exit ${code}).`, step: 'backend' });
@@ -169,7 +192,9 @@ async function main(): Promise<void> {
   ipcMain.on('mp:status-ready', (event) => event.sender.send('mp:status', lastStatus));
   ipcMain.on('mp:retry', (event) => {
     if (!fromShellPage(event)) return;
-    void supervisor.stop().then(() => startBackend());
+    void supervisor.stop().then(async () => {
+      if (await listenForNotifications()) startBackend();
+    });
   });
   ipcMain.on('mp:new-ports', async (event) => {
     if (!fromShellPage(event)) return;
@@ -182,9 +207,13 @@ async function main(): Promise<void> {
     app.exit(0);
   });
   ipcMain.on('mp:restore-snapshot', (event) => {
-    if (!fromShellPage(event)) return;
-    // A failed update migration: put back the database as it was before the update (roadmap MP-9.3).
-    void supervisor.stop().then(() => startBackend({ restoreSnapshot: true }));
+    const snapshot = failedUpdateSnapshot;
+    if (!fromShellPage(event) || !snapshot) return;
+    // A failed update migration: put back exactly the snapshot it took (roadmap MP-9.3).
+    void supervisor.stop().then(() => startBackend({ restoreSnapshot: snapshot }));
+  });
+  ipcMain.on('mp:previous-release', (event) => {
+    if (fromShellPage(event)) void shell.openExternal(RELEASES_URL);
   });
   ipcMain.on('mp:export-diagnostics', (event) => {
     if (fromShellPage(event) || fromApp(event)) void exportDiagnostics(paths, settings, BrowserWindow.fromWebContents(event.sender));
@@ -203,7 +232,24 @@ async function main(): Promise<void> {
   }
   function fromShellPage(event: IpcMainEvent | IpcMainInvokeEvent): boolean {
     const url = event.senderFrame?.url ?? '';
-    return url.startsWith('file:') && url.includes('/pages/');
+    if (!url.startsWith('file:')) return false;
+    // Exactly one of the bundled pages: the file must sit in the app's own pages folder.
+    try {
+      return dirname(fileURLToPath(url)).toLowerCase() === resolve(paths.pages).toLowerCase();
+    } catch {
+      return false;
+    }
+  }
+  // The imports write into the install owner's workspace: only the owner, signed in, may run them.
+  async function ownerSignedIn(): Promise<boolean> {
+    if (!origin) return false;
+    try {
+      const response = await session.fromPartition(SESSION_PARTITION).fetch(`${origin}/api/auth/session`, { credentials: 'include' });
+      const body = await response.json() as { authenticated?: boolean; user_id?: string | null };
+      return Boolean(body.authenticated && body.user_id === 'user:local');
+    } catch {
+      return false;
+    }
   }
   ipcMain.on('mp:title-bar-overlay', (event, colors: { color: string; symbolColor: string }) => {
     if (!fromApp(event) || process.platform === 'darwin') return;
@@ -223,6 +269,7 @@ async function main(): Promise<void> {
   });
   ipcMain.handle('mp:import-reference', async (event, source: string, apply: boolean) => {
     if (!fromShellPage(event)) return { error: 'refused' };
+    if (!(await ownerSignedIn())) return { error: 'Only the owner can import: sign in to MarketPulse as the owner first.' };
     // Omnix's market reference data (roadmap MP-10.1); the URL goes to the supervisor on stdin, never a command line.
     try {
       return await supervisor.command('import-reference', 30 * 60_000, { source: String(source), apply: Boolean(apply) });
@@ -232,6 +279,7 @@ async function main(): Promise<void> {
   });
   ipcMain.handle('mp:import-account-data', async (event, source: string, apply: boolean, workspace: string) => {
     if (!fromShellPage(event)) return { error: 'refused' };
+    if (!(await ownerSignedIn())) return { error: 'Only the owner can import: sign in to MarketPulse as the owner first.' };
     // One Omnix workspace's documents, alerts and paper accounts (roadmap MP-10.2), as the owner's.
     try {
       return await supervisor.command('import-account-data', 30 * 60_000,
@@ -253,7 +301,19 @@ async function main(): Promise<void> {
   });
 
   // Tray, menu, start at login and the optional keep-awake (roadmap Phase 8).
-  const tray: Tray | null = createTray(() => windows.focusMain(), () => app.quit());
+  // Start at login applies to an installed app only; a development or test run never touches the OS setting.
+  const manageLoginItem = app.isPackaged && !process.env.MARKETPULSE_DATA_DIR;
+  const tray: Tray | null = createTray(() => windows.focusMain(), () => app.quit(), {
+    startAtLogin: () => settings.startAtLogin,
+    setStartAtLogin: (on) => {
+      settings = store.update((current) => Object.assign(current, { startAtLogin: on }));
+      if (manageLoginItem) app.setLoginItemSettings({ openAtLogin: on, args: ['--hidden'] });
+    },
+    keepAwake: () => settings.keepAwakeDuringMarketHours,
+    setKeepAwake: (on) => {
+      settings = store.update((current) => Object.assign(current, { keepAwakeDuringMarketHours: on }));
+    },
+  });
   if (process.platform === 'darwin') {
     // The Dock: its menu reopens the window; a development run shows the brand icon (packaged, the .icns does).
     app.dock?.setMenu(Menu.buildFromTemplate([{ label: 'Show MarketPulse', click: () => windows.focusMain() }]));
@@ -265,10 +325,9 @@ async function main(): Promise<void> {
     else importWindow = windows.shellPage('import', { width: 640, height: 520 });
   };
   Menu.setApplicationMenu(buildMenu(() => origin, windows, paths.logs, openImport));
-  // Only an installed app registers itself to start at login; a development or test run never touches the OS setting.
-  if (app.isPackaged && !process.env.MARKETPULSE_DATA_DIR) {
-    app.setLoginItemSettings({ openAtLogin: settings.startAtLogin, args: ['--hidden'] });
-  }
+  if (manageLoginItem) app.setLoginItemSettings({ openAtLogin: settings.startAtLogin, args: ['--hidden'] });
+  // A daily pg_dump while the backend runs (roadmap §4.5); the supervisor keeps the newest seven.
+  setInterval(() => void backupIfDue(), 60 * 60_000);
   setInterval(() => {
     const want = settings.keepAwakeDuringMarketHours && isMarketHours(new Date());
     if (want && awakeBlocker === null) awakeBlocker = powerSaveBlocker.start('prevent-app-suspension');
@@ -293,7 +352,28 @@ async function main(): Promise<void> {
   startUpdateChecks((status) => {
     if (status) tray?.setToolTip(`MarketPulse — ${status}`);
   });
-  startBackend();
+  if (await listenForNotifications()) startBackend();
+
+  async function backupIfDue(): Promise<void> {
+    const last = settings.lastBackupAt ? Date.parse(settings.lastBackupAt) : 0;
+    if (!origin || Date.now() - last < 24 * 60 * 60_000) return;
+    try {
+      const result = await supervisor.command('backup', 30 * 60_000);
+      if (typeof result.path === 'string') {
+        settings = store.update((current) => Object.assign(current, { lastBackupAt: new Date().toISOString() }));
+      }
+    } catch {
+      // Retried within the hour.
+    }
+  }
+}
+
+const RELEASES_URL = 'https://github.com/autonomx/MarketPulse/releases';
+
+/** The time in a snapshot's name (pgdata-20261017T183955Z), as the error page shows it. */
+function snapshotTime(snapshot: string): string {
+  const match = /pgdata-(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})/.exec(snapshot);
+  return match ? `${match[1]}-${match[2]}-${match[3]} ${match[4]}:${match[5]} UTC` : 'before the update';
 }
 
 /**
@@ -330,7 +410,14 @@ function hardenSession(): void {
   });
 }
 
-function createTray(show: () => void, quit: () => void): Tray | null {
+interface TrayToggles {
+  startAtLogin: () => boolean;
+  setStartAtLogin: (on: boolean) => void;
+  keepAwake: () => boolean;
+  setKeepAwake: (on: boolean) => void;
+}
+
+function createTray(show: () => void, quit: () => void, toggles: TrayToggles): Tray | null {
   try {
     // macOS: a black-on-transparent template (with @2x) that the menu bar tints for light and dark.
     const name = process.platform === 'darwin' ? 'trayTemplate.png' : process.platform === 'win32' ? 'icon-32.png' : 'icon-16.png';
@@ -338,11 +425,19 @@ function createTray(show: () => void, quit: () => void): Tray | null {
     if (process.platform === 'darwin') icon.setTemplateImage(true);
     const tray = new Tray(icon);
     tray.setToolTip('MarketPulse');
-    tray.setContextMenu(Menu.buildFromTemplate([
+    const menu = () => Menu.buildFromTemplate([
       { label: 'Show MarketPulse', click: show },
       { type: 'separator' },
+      { label: 'Start MarketPulse when I sign in', type: 'checkbox', checked: toggles.startAtLogin(),
+        click: (item) => toggles.setStartAtLogin(item.checked) },
+      // Market hours: 04:00-20:00 New York time on weekdays (roadmap MP-8.3); off by default.
+      { label: 'Keep the computer awake during market hours', type: 'checkbox', checked: toggles.keepAwake(),
+        click: (item) => toggles.setKeepAwake(item.checked) },
+      { type: 'separator' },
       { label: 'Quit MarketPulse', click: quit },
-    ]));
+    ]);
+    tray.setContextMenu(menu());
+    tray.on('right-click', () => tray.setContextMenu(menu()));
     tray.on('click', show);
     return tray;
   } catch {
@@ -370,7 +465,7 @@ function buildMenu(origin: () => string | null, windows: WindowManager, logs: st
         { id: 'import-omnix', label: 'Import from Omnix…', click: openImport },
         { type: 'separator' },
         { label: 'Open logs folder', click: () => void shell.openPath(logs) },
-        { label: 'Export diagnostics…', click: () => void exportDiagnostics(desktopPaths(), SettingsStore.in(desktopPaths().data).load(), null) },
+        { label: 'Export diagnostics…', click: () => void exportDiagnostics(paths, SettingsStore.in(paths.data).load(), null) },
         { type: 'separator' },
         { role: 'quit' },
       ],

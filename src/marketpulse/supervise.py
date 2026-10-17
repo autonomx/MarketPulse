@@ -38,6 +38,7 @@ import argparse
 import contextlib
 import json
 import os
+import queue
 import secrets
 import shutil
 import socket
@@ -52,13 +53,17 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from marketpulse.env import DB_APP, DB_NAME, DB_OWNER, SECRET_VARIABLES, LaunchConfig, child_environment, owner_database_url
+from marketpulse.env import (
+    DB_APP, DB_NAME, DB_OWNER, SECRET_VARIABLES, SYSTEM_ALLOWLIST, LaunchConfig, child_environment, owner_database_url,
+)
 
 ROOT = Path(__file__).resolve().parents[2]
 SNAPSHOTS_KEPT = 3
 BACKUPS_KEPT = 7
 READY_TIMEOUT_SECONDS = 420.0
 GATEWAY_RESTARTS = 3
+# A gateway that has run this long since its last restart has its restart count cleared.
+GATEWAY_HEALTHY_SECONDS = 600.0
 # Logs: rotated past LOG_MAX_BYTES into name.1 … name.LOGS_KEPT (the gateway's while it runs, the rest at start).
 LOG_MAX_BYTES = 10 * 2**20
 LOGS_KEPT = 3
@@ -75,10 +80,12 @@ logging_collector = off
 
 
 class SupervisorError(RuntimeError):
-    def __init__(self, step: str, message: str, log: str | None = None) -> None:
+    def __init__(self, step: str, message: str, log: str | None = None, snapshot: str | None = None) -> None:
         super().__init__(message)
         self.step = step
         self.log = log
+        # A failed update migration: the snapshot this start took just before it, the only one the user may restore.
+        self.snapshot = snapshot
 
 
 # Process containment ---------------------------------------------------------------------------------------------
@@ -207,6 +214,7 @@ class Supervisor:
         self._import_lock = threading.Lock()
         self.first_run = False
         self._lock = threading.Lock()
+        self.stopped = threading.Event()
 
     # Paths and tools
 
@@ -215,9 +223,20 @@ class Supervisor:
         executable = f"{name}.exe" if sys.platform == "win32" else name
         return str(folder / executable) if folder else executable
 
-    def _serve_env(self) -> dict[str, str]:
-        """marketpulse.serve rebuilds the child environment itself, so it gets the secrets the supervisor holds."""
-        return {**self.env, **{name: os.environ[name] for name in SECRET_VARIABLES if os.environ.get(name)}}
+    def _serve_env(self, *, owner: bool = True) -> dict[str, str]:
+        """marketpulse.serve rebuilds the child environment itself, so it gets the secrets the supervisor holds.
+
+        The gateway (``owner=False``) gets neither the owner password nor the owner URL."""
+        env = {**self.env, **{name: os.environ[name] for name in SECRET_VARIABLES if os.environ.get(name)}}
+        if not owner:
+            env.pop("MARKETPULSE_DB_OWNER_PASSWORD", None)
+            env.pop("OMNIX_MIGRATION_DATABASE_URL", None)
+        return env
+
+    @property
+    def pg_env(self) -> dict[str, str]:
+        """PostgreSQL's own tools get the system variables only: no database URLs or other secrets."""
+        return {name: value for name, value in self.env.items() if name in SYSTEM_ALLOWLIST or name in {"PATH", "Path"}}
 
     def _step(self, step: str, message: str) -> None:
         self.emit({"event": "step", "step": step, "message": message})
@@ -259,7 +278,7 @@ class Supervisor:
             pwfile.write(os.environ["MARKETPULSE_DB_OWNER_PASSWORD"])
         try:
             self._run("initdb", [self._bin("initdb"), "-D", str(self.pgdata), "-U", DB_OWNER, "--auth=scram-sha-256",
-                                 f"--pwfile={pwfile.name}", "-E", "UTF8", "--locale=C"], log="initdb.log")
+                                 f"--pwfile={pwfile.name}", "-E", "UTF8", "--locale=C"], env=self.pg_env, log="initdb.log")
         finally:
             Path(pwfile.name).unlink(missing_ok=True)
         with (self.pgdata / "postgresql.conf").open("a", encoding="utf-8") as conf:
@@ -269,12 +288,18 @@ class Supervisor:
         """Whether this data folder's cluster is already up (e.g. left by a supervisor that was killed on macOS)."""
         if not (self.pgdata / "postmaster.pid").exists():
             return False
-        status = subprocess.run([self._bin("pg_ctl"), "-D", str(self.pgdata), "status"], env=self.env,
+        status = subprocess.run([self._bin("pg_ctl"), "-D", str(self.pgdata), "status"], env=self.pg_env,
                                 stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
                                 check=False, creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
         return status.returncode == 0
 
+    def _not_stopping(self, step: str) -> None:
+        # A stop that arrives while starting (the shell quit) wins: nothing is started after it.
+        if self.stopping.is_set():
+            raise SupervisorError(step, "MarketPulse is stopping")
+
     def start_postgres(self) -> None:
+        self._not_stopping("postgres")
         if self.postgres_running():
             self._step("postgres", "Reconnecting to the database")
             return
@@ -282,7 +307,7 @@ class Supervisor:
         log = self.logs / "postgres.log"
         command = [self._bin("pg_ctl"), "-D", str(self.pgdata), "-l", str(log), "-w", "-t", "120",
                    "-o", f"-p {self.config.pg_port}", "start"]
-        completed = subprocess.run(command, env=self.env, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
+        completed = subprocess.run(command, env=self.pg_env, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
                                    stderr=subprocess.DEVNULL, check=False, cwd=str(self.data),
                                    creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
         if completed.returncode != 0:
@@ -292,7 +317,7 @@ class Supervisor:
         if not (self.pgdata / "postmaster.pid").exists():
             return
         subprocess.run([self._bin("pg_ctl"), "-D", str(self.pgdata), "-w", "-t", "60", "stop", "-m", "fast"],
-                       env=self.env, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                       env=self.pg_env, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
                        check=False, creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
 
     def _connect(self, database: str):
@@ -332,29 +357,37 @@ class Supervisor:
         return list(report.get("pending") or [])
 
     def snapshot(self) -> Path:
-        """A stopped copy of pgdata, taken before migrations change the schema."""
+        """A stopped copy of pgdata, taken before migrations change the schema.
+
+        It is copied under a temporary name and renamed when complete, so an interrupted copy is never mistaken for a
+        snapshot."""
         self._step("snapshot", "Saving a copy of your data before the update")
         self.stop_postgres()
         folder = self.data / "snapshots"
         folder.mkdir(parents=True, exist_ok=True)
-        target = folder / f"pgdata-{_stamp()}"
-        shutil.copytree(self.pgdata, target, ignore=shutil.ignore_patterns("postmaster.pid", "postmaster.opts"))
+        for leftover in folder.glob(".partial-*"):
+            shutil.rmtree(leftover, ignore_errors=True)
+        stamp = _stamp()
+        partial = folder / f".partial-pgdata-{stamp}"
+        shutil.copytree(self.pgdata, partial, ignore=shutil.ignore_patterns("postmaster.pid", "postmaster.opts"))
+        target = folder / f"pgdata-{stamp}"
+        partial.rename(target)
         keep_newest(folder, SNAPSHOTS_KEPT)
         self.start_postgres()
         return target
 
-    def restore_latest_snapshot(self) -> Path | None:
-        """Puts back the newest pgdata snapshot after a failed update; the failed copy is kept beside it."""
-        folder = self.data / "snapshots"
-        snapshots = sorted(folder.glob("pgdata-*"), reverse=True) if folder.is_dir() else []
-        if not snapshots:
-            return None
+    def restore_snapshot(self, snapshot: Path) -> Path:
+        """Puts back the snapshot a failed update took (named by the error), keeping the failed data beside it."""
+        folder = (self.data / "snapshots").resolve()
+        chosen = snapshot.resolve()
+        if chosen.parent != folder or not chosen.name.startswith("pgdata-") or not (chosen / "PG_VERSION").is_file():
+            raise SupervisorError("restore", f"{snapshot} is not a snapshot of this data folder")
         self._step("restore", "Restoring your data from before the update")
         self.stop_postgres()
         if self.pgdata.exists():
             self.pgdata.rename(self.data / f"pgdata-failed-{_stamp()}")
-        shutil.copytree(snapshots[0], self.pgdata)
-        return snapshots[0]
+        shutil.copytree(chosen, self.pgdata)
+        return chosen
 
     def migrate(self) -> None:
         self._step("migrate", "Updating the database")
@@ -363,8 +396,9 @@ class Supervisor:
         self._run("migrate", self._serve_command("migrate"), env=self._serve_env(), log="migrations.log")
 
     def start_gateway(self) -> None:
+        self._not_stopping("gateway")
         self._step("gateway", "Starting MarketPulse")
-        self.gateway = subprocess.Popen(self._serve_command("serve"), env=self._serve_env(), stdin=subprocess.PIPE,
+        self.gateway = subprocess.Popen(self._serve_command("serve"), env=self._serve_env(owner=False), stdin=subprocess.PIPE,
                                         stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd=str(self.data),
                                         creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
         threading.Thread(target=pump_log, args=(self.gateway.stdout, self.logs / "gateway.log"), name="gateway-log",
@@ -441,9 +475,12 @@ class Supervisor:
         self.init_cluster()
         self.start_postgres()
         self.ensure_database()
-        if not self.first_run and self.pending_migrations():
-            self.snapshot()
-        self.migrate()
+        taken = self.snapshot() if not self.first_run and self.pending_migrations() else None
+        try:
+            self.migrate()
+        except SupervisorError as exc:
+            exc.snapshot = str(taken) if taken is not None else None
+            raise
         self.start_gateway()
         self.wait_ready()
         ready = {"event": "ready", "origin": self.config.origin, "first_run": not self.owner_has_password()}
@@ -453,13 +490,18 @@ class Supervisor:
     def watch_gateway(self) -> None:
         """Restarts a gateway that exits on its own, up to GATEWAY_RESTARTS times, then reports the error."""
         restarts = 0
+        last_restart = time.monotonic()
         while not self.stopping.is_set():
+            if restarts and time.monotonic() - last_restart > GATEWAY_HEALTHY_SECONDS:
+                # Running well again: an occasional crash weeks later starts a fresh count.
+                restarts = 0
             if self.gateway is not None and self.gateway.poll() is not None and not self.stopping.is_set():
                 if restarts >= GATEWAY_RESTARTS:
                     self.emit({"event": "error", "step": "gateway", "message": "the gateway keeps stopping",
                                "log": _tail(self.logs / "gateway.log")})
                     return
                 restarts += 1
+                last_restart = time.monotonic()
                 self._step("gateway", f"Restarting MarketPulse ({restarts}/{GATEWAY_RESTARTS})")
                 time.sleep(2.0 * restarts)
                 try:
@@ -471,8 +513,10 @@ class Supervisor:
             self.stopping.wait(1.0)
 
     def stop(self) -> None:
+        """Stops the gateway, then PostgreSQL. A second caller waits until the first has finished."""
         with self._lock:
             if self.stopping.is_set():
+                self.stopped.wait(timeout=180)
                 return
             self.stopping.set()
         if self.gateway is not None and self.gateway.poll() is None:
@@ -485,6 +529,7 @@ class Supervisor:
                 self.gateway.kill()
         self.stop_postgres()
         self.emit({"event": "stopped"})
+        self.stopped.set()
 
     def handle(self, command: dict[str, Any]) -> None:
         name = command.get("cmd")
@@ -537,7 +582,8 @@ def _emitter() -> Callable[[dict[str, Any]], None]:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="python -m marketpulse.supervise", description=__doc__.splitlines()[0])
     parser.add_argument("--config", required=True, type=Path)
-    parser.add_argument("--restore-snapshot", action="store_true", help="put back the newest pgdata snapshot first")
+    parser.add_argument("--restore-snapshot", type=Path, metavar="SNAPSHOT",
+                        help="put back this snapshot (from a failed update's error) and stop: this build cannot use it")
     args = parser.parse_args(argv)
     emit = _emitter()
     job = contain_children()
@@ -547,15 +593,38 @@ def main(argv: list[str] | None = None) -> int:
     config_copy.parent.mkdir(parents=True, exist_ok=True)
     if args.config.resolve() != config_copy.resolve():
         shutil.copyfile(args.config, config_copy)
+    # Commands arrive on stdin from the start. When the shell closes it (quit or crash), or sends stop, the
+    # supervisor stops at once, even in the middle of starting (a migration or a snapshot).
+    commands: queue.Queue[dict[str, Any] | None] = queue.Queue()
+
+    def read_commands() -> None:
+        for line in sys.stdin:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                command = json.loads(line)
+            except ValueError:
+                continue
+            if command.get("cmd") == "stop":
+                break
+            commands.put(command)
+        commands.put(None)
+        supervisor.stop()
+
+    threading.Thread(target=read_commands, name="commands", daemon=True).start()
     try:
-        if args.restore_snapshot:
+        if args.restore_snapshot is not None:
             supervisor.data.mkdir(parents=True, exist_ok=True)
             supervisor.logs.mkdir(parents=True, exist_ok=True)
-            if supervisor.restore_latest_snapshot() is None:
-                raise SupervisorError("restore", "there is no snapshot to restore")
+            restored = supervisor.restore_snapshot(args.restore_snapshot)
+            # The data is now as the previous release left it; this build would migrate it and fail again, so the
+            # shell points the user to the previous installer instead of starting (roadmap MP-9.3).
+            emit({"event": "restored", "snapshot": str(restored)})
+            return 0
         supervisor.start()
     except SupervisorError as exc:
-        emit({"event": "error", "step": exc.step, "message": str(exc), "log": exc.log})
+        emit({"event": "error", "step": exc.step, "message": str(exc), "log": exc.log, "snapshot": exc.snapshot})
         supervisor.stop()
         return 1
     except Exception as exc:
@@ -563,18 +632,11 @@ def main(argv: list[str] | None = None) -> int:
         supervisor.stop()
         return 1
     threading.Thread(target=supervisor.watch_gateway, name="gateway-watch", daemon=True).start()
-    # Commands until the shell closes stdin (quit or crash), then a clean stop.
-    for line in sys.stdin:
-        line = line.strip()
-        if not line:
-            continue
-        try:
-            command = json.loads(line)
-        except ValueError:
-            continue
-        threading.Thread(target=supervisor.handle, args=(command,), daemon=True).start()
-        if command.get("cmd") == "stop":
+    while True:
+        command = commands.get()
+        if command is None:
             break
+        threading.Thread(target=supervisor.handle, args=(command,), daemon=True).start()
     supervisor.stop()
     del job
     return 0

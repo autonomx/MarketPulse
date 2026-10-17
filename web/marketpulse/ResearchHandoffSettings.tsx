@@ -7,7 +7,8 @@ import { SettingsField, SettingsSection } from '../src/features/settings/Setting
 type Status = components['schemas']['ResearchRepositoryCredentialStatus'];
 
 /**
- * Where premarket research handoffs come from (Omnix S-7): the research data repository and its read-only token.
+ * Where premarket research handoffs come from (Omnix S-7): Omnix's own public repository (D-9), and an optional
+ * read-only token for GitHub's rate limit.
  * The owner sets the token; the gateway never returns it.
  */
 export function ResearchHandoffSettings() {
@@ -39,8 +40,9 @@ export function ResearchHandoffSettings() {
   return (
     <SettingsSection title="Research handoffs" scope="global">
       <p className="mp-settings-note">
-        Premarket research handoffs and the gap climatology are imported from the research data repository each
-        morning (04:00–09:30 ET).
+        Premarket research handoffs and the gap climatology are imported each morning (04:00–09:30 ET) from the
+        repository below, the one Omnix publishes them to. It is public, so no token is needed; a read-only token
+        only raises GitHub&apos;s rate limit.
       </p>
       {status ? (
         <>
@@ -52,7 +54,7 @@ export function ResearchHandoffSettings() {
           </SettingsField>
           {status.token_editable ? (
             <form className="mp-settings-inline" onSubmit={(event) => { event.preventDefault(); save({ token }); }}>
-              <input type="password" aria-label="Research repository token" placeholder="Fine-grained token, contents: read" value={token}
+              <input type="password" aria-label="Research repository token" placeholder="Optional fine-grained token, contents: read" value={token}
                 autoComplete="off" maxLength={500} onChange={(event) => setToken(event.target.value)} />
               <button type="submit" disabled={busy || !token.trim()}>Save token</button>
               {status.token_configured ? <button type="button" disabled={busy} onClick={() => save({ clear_token: true })}>Remove</button> : null}

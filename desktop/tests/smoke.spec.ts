@@ -180,6 +180,21 @@ test('the window can be dragged by the title bar strip but not by a tab', async 
   });
   expect(regions.strip).toBe('drag');
   expect(regions.tab).toBe('no-drag');
+  // The native window controls are drawn over the bar's right end (Windows overlay): nothing of the app sits there.
+  const overlay = await main.evaluate(() => {
+    const bar = document.querySelector('.trading-title-bar') as HTMLElement;
+    const controls = (navigator as Navigator & { windowControlsOverlay?: { getTitlebarAreaRect(): DOMRect; visible: boolean } })
+      .windowControlsOverlay;
+    const reserved = parseFloat(getComputedStyle(bar).paddingRight);
+    const rightmost = Math.max(...Array.from(bar.querySelectorAll('button, [role="tab"], a, input'))
+      .map((element) => element.getBoundingClientRect().right));
+    return { reserved, rightmost, width: window.innerWidth, area: controls?.visible ? controls.getTitlebarAreaRect().right : null };
+  });
+  if (process.platform === 'win32') {
+    expect(overlay.reserved).toBeGreaterThanOrEqual(138);
+    expect(overlay.rightmost).toBeLessThanOrEqual(overlay.width - overlay.reserved);
+    if (overlay.area !== null) expect(overlay.rightmost).toBeLessThanOrEqual(overlay.area);
+  }
 });
 
 test('permissions other than notifications are refused', async () => {

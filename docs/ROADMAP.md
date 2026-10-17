@@ -68,6 +68,8 @@ gateway (`deploy/docker/gateway.Dockerfile`). The composition root, the schema a
 tree (§3), and cutting them before v1 would put hard refactors of Omnix on the critical path. Shrinking the mirror is
 Phase 12, after v1 ships.
 
+> **As built (2026-10-17):** Phase 12 is done. The mirror keeps the platform and trading; the other features (rpg, story, audiobook, desktop_companion, character_interactions, live_speech, companion_activity, vendored TTS) keep only their `feature.py`, declarations and migrations, because the full schema still ships (`sync/omnix-manifest.toml`, §11). The "MIRRORED: all of Omnix src/app" line below predates that.
+
 ```
 MarketPulse/
   src/app/…                  MIRRORED: all of Omnix src/app (never edited here)
@@ -144,6 +146,8 @@ MarketPulse.exe (Electron main: shell + supervisor), all children in one Windows
 - **Shutdown:** close stdin of `run_omnix_gateway` (managed-stdin), then `pg_ctl stop -m fast`. If Electron dies, the
   Job Object kills every child. This needs a small native helper or N-API module (`desktop/native/job`) because Node
   has no Job Object API.
+
+> **As built (2026-10-17):** there is no native helper. The supervisor is Python (`marketpulse.supervise`) and puts itself in a kill-on-close Job Object through ctypes; Electron is a thin client over its stdin and stdout. The bundled interpreter is isolated on Windows by `python311._pth`, and on macOS by `PYTHONNOUSERSITE` and `PYTHONSAFEPATH`.
 - **Ports are chosen once and kept.** The HTTP port is part of the origin, and window sets, layouts and other
   localStorage state are per origin. If the port is busy at startup, the error view says so and offers "Choose a new
   port (resets window layout)". The app never moves silently.
@@ -180,13 +184,19 @@ window.
 | Preload bridge | One preload exposing `window.marketPulse` = `{ version, notify, openWindow, onUpdateStatus, revealLogs, sessionChanged, requestLoginCode, setTitleBarOverlay }`. `requestLoginCode` works only before the first-run marker exists (§4.7). The web app runs unchanged in a browser when it is absent (W-2). |
 | Updates | `electron-updater` (Phase 9). |
 
+> **As built (2026-10-17):** the bridge is `{ version, platform, setTitleBarOverlay, revealLogs, openExternal,
+> requestLoginCode }` (`desktop/src/preload/index.ts`, Omnix `web/src/shared/desktopBridge.ts`). Notifications come
+> from the backend's desktop channel (S-6), windows open through `window.open` and the navigation rules, and update
+> status shows in the tray. There is no `sessionChanged`: the notification listener asks `/api/auth/session` on each
+> delivery instead (§4.9). `requestLoginCode` works while the owner has no password, as the database says (§4.7).
+
 ### 4.5 Data locations (Windows)
 
 | Path | Contents |
 |------|----------|
 | `%LOCALAPPDATA%\Programs\MarketPulse\` | Per-user install, read-only at runtime: Electron, `resources\{python,postgres,app,web}` |
 | `%LOCALAPPDATA%\MarketPulse\pgdata\` | PostgreSQL cluster |
-| `%LOCALAPPDATA%\MarketPulse\snapshots\` | `pgdata` snapshots before migrations (keep 3), plus daily `pg_dump` (keep 7) |
+| `%LOCALAPPDATA%\MarketPulse\snapshots\` | `pgdata` snapshots before migrations (keep 3); as built, the daily `pg_dump` (keep 7) goes to `backups\` |
 | `%LOCALAPPDATA%\MarketPulse\resources\` | Writable resources, through `OMNIX_RESOURCES_DIR` (S-2): blobs, trade logs, caches. Bundled read-only resources stay in the install directory. |
 | `%LOCALAPPDATA%\MarketPulse\logs\` | Rotating logs per process |
 | `%LOCALAPPDATA%\MarketPulse\secrets\` | DPAPI-protected: provider keys (`OMNIX_PROVIDER_SECRETS_PATH`), secret store (`OMNIX_SECRET_STORE=dpapi`, `OMNIX_SECRET_STORE_PATH`), service token, install credential, `OMNIX_RUN_TOKEN_KEY`, DB role passwords |
@@ -237,6 +247,9 @@ owner's Omnix secrets on the same machine. Phase 3 gates this with a test. Unins
      - So this step needs seam S-10: with `OMNIX_AUTH_LAUNCHER_FIRST_PASSWORD=1`, the owner may set a *first* password
        when the session came from a login code (`auth_method="local"`) less than `REAUTHENTICATION_WINDOW_SECONDS`
        ago.
+
+  > **As built (2026-10-17):** there is no marker file. First run is "the owner has no password", read from the
+  > database each start, so a kill during the first-password step simply gets a fresh login code next launch.
 
   The supervisor writes a "first run done" marker in the data directory **only after the password is stored**. Until
   then, every launch issues a fresh code, so a crash mid-step cannot lock the owner out. If the owner takes longer
@@ -320,6 +333,10 @@ owner's Omnix secrets on the same machine. Phase 3 gates this with a test. Unins
 
 ### 4.10 Research handoff and climatology
 
+> **Superseded (2026-10-17, D-9):** there is no separate data repository. Omnix keeps publishing to `autonomx/omnix`,
+> which is public, and MarketPulse imports from it without a token, as Omnix does. The text below is the original
+> plan.
+
 - **Data-only repository (D-9).** The scheduled research process publishes the premarket handoff
   (`prospective_gap_inbox/YYYY-MM-DD.json`) and climatology (`prospective_gap_state/climatology.json`) to a separate
   private repository, working name `autonomx/trading-research-data`; the owner picks the final name. Both Omnix and
@@ -378,7 +395,7 @@ Each work package ends at its gate. A gate passes only when it runs after the la
 
 These land in **Omnix**, with Omnix tests. With the new settings unset, Omnix behaves exactly as today, with two
 deliberate exceptions the owner approved: S-11 changes Omnix's default research repository (D-9), and W-3 changes
-Omnix's look (D-11).
+Omnix's look (D-11). (S-11 was later dropped with D-9: the research repository stays `autonomx/omnix`.)
 
 - **S-1 Trading-only boot test.** An Omnix test boots `create_production_app` with `OMNIX_FEATURES=trading` against
   the scratch test DB, then checks `/health`, `/ready`, `/api/auth/session` and one trading route. This guards
@@ -431,7 +448,8 @@ Omnix's look (D-11).
   - refused after it;
   - refused once a password exists;
   - refused for a password or Google session.
-- **S-11 Research data repository (D-9).** An owner action plus an Omnix change.
+- **S-11 Research data repository (D-9).** ~~An owner action plus an Omnix change.~~ **Not needed (2026-10-17):**
+  D-9 was superseded and the research repository stays `autonomx/omnix`. The original plan follows.
   - **Nothing to migrate.** Omnix `main` tracks no `prospective_gap_*` files: the inbox was never committed, and
     `climatology.json` was removed in `ab39ca516a`. Its last state is the seed in migration `0124`, which stays as it
     is because migrations are checksummed.
@@ -465,7 +483,7 @@ Omnix's look (D-11).
     always be moved.
   - Popped-out window-set windows use the same mode. In a browser nothing changes.
 
-**Gate (in Omnix):** each seam's tests pass; S-1 passes; S-11's import gate passes; Omnix's trading pytest,
+**Gate (in Omnix):** each seam's tests pass; S-1 passes; ~~S-11's import gate passes~~ (S-11 dropped); Omnix's trading pytest,
 `typecheck:trading`, vitest for trading, and lint pass on `main`. The look (W-3) is not part of this gate. It runs in parallel with its own per-screen checks, and Phase 9's release needs it done.
 
 ### Phase 2: Mirror and sync tooling
@@ -546,6 +564,10 @@ Omnix's look (D-11).
   Omnix's `/api/trading/**` mocks, so the spec does not stop at the login page.
 
 ### Phase 5: Embedded runtime (Windows x64)
+
+> **As built (2026-10-17):** one cross-platform `build/stage.py` with per-platform pins (`build/pins.json`) replaces
+> the `.ps1` scripts below; `.pyc` files are not precompiled (Python writes them to the data folder); ibapi is pinned
+> by the tree hash of its source files rather than an archive's SHA-256, because IB's download is an installer.
 
 - **MP-5.1 Python.** `build/python.ps1` stages python-build-standalone CPython 3.11 (pinned + SHA-256), installs
   `requirements/gateway.lock.txt` with hashes, writes `python311._pth`, and pre-compiles `.pyc`.
@@ -715,7 +737,7 @@ Omnix's look (D-11).
 | R-7 | Trading research presented as authoritative. | No change to trading authority (AGENTS.md "Trading"). |
 | R-8 | A close resemblance to TradingView is mistaken for, or claimed to be, a TradingView product, or reuses its protected material. | Own name, logo, icons, sounds and fonts; no material taken from TradingView's app or site (§4.11); reference screenshots stay off-repo. Before public distribution, the owner gets a trademark and trade-dress check. |
 | R-9 | `ibapi` redistribution is not allowed. | MP-5.1b fallback: first-run download from IB. |
-| R-10 | The data-repo cutover misses a premarket session. | S-11 cuts over on a weekend; the manual import commands stay as the fallback. |
+| R-10 | ~~The data-repo cutover misses a premarket session.~~ | Gone with S-11 (D-9 superseded): no cutover. |
 
 ## 9. Out of scope for v1
 
@@ -849,8 +871,10 @@ Q-4 (data repo name, logo) is open and blocks nothing.
 
 ## 11. Implementation status (2026-10-17)
 
-Written for the owner and for whoever builds MarketPulse next. MarketPulse branch `implementation` (not pushed);
-Omnix seams on branch `marketpulse-seams` (17 commits on `main`, not merged: merging is the owner's call).
+Written for the owner and for whoever builds MarketPulse next. MarketPulse: branch `implementation`, pushed to
+`autonomx/MarketPulse` `main` (public), release `v0.1.0`. Omnix: the 20 seam commits on `marketpulse-seams` were
+fast-forwarded into the local `main` on 2026-10-17; that `main` is **not pushed** to `autonomx/omnix` yet, so the
+mirror's Omnix commit (`6e0cfd3392`) exists only on this machine until it is.
 
 ### Status by phase
 
@@ -860,11 +884,11 @@ Omnix seams on branch `marketpulse-seams` (17 commits on `main`, not merged: mer
 | 1 Omnix seams | Done | S-1, S-2, S-3, S-5, S-6, S-7, S-8, S-10 and W-1 to W-4 are committed on `marketpulse-seams`, each with tests. S-4 was dropped in revision 3. S-11 is not needed: the owner kept Omnix's own public repository for research data (D-9), which MarketPulse's mirrored default already reads without a token. |
 | 2 Mirror and sync | Done | `sync/sync_from_omnix.py`; mirror at Omnix `6e0cfd3392`, 3351 files after Phase 12, `check` clean. |
 | 3 Headless server | Done | Full schema migrates on PostgreSQL 17.11; trading-only `/ready`; `src/tests_marketpulse` env tests. |
-| 4 Web app | Done | MarketPulse build (trading only), 15 Playwright e2e tests, own screenshot baselines. |
-| 5 Embedded runtime | Done | Staged-runtime gate: ready from nothing, password-only PostgreSQL, user-script worker, no process left 0.6 s after a killed supervisor. |
-| 6 Electron shell | Done | 12 smoke tests (first run, window sets over BroadcastChannel, navigation lock, drag regions, permissions, crash view, quit, `--quit`, restart). |
+| 4 Web app | Done | MarketPulse build (trading only), 15 Playwright e2e tests, own screenshot baselines. The e2e config serves the MarketPulse entry with Omnix's trading mocks and no 401s instead of a separate auth-session mock. `stage.py web` refuses a build carrying other features' chunks (the bundle check). |
+| 5 Embedded runtime | Done | Staged-runtime gate: ready from nothing, password-only PostgreSQL, user-script worker; a killed supervisor leaves no backend process (`test_killing_the_supervisor_leaves_no_backend_process`). The "clean Windows user account" run was a fresh data folder on this machine, not a separate account. |
+| 6 Electron shell | Done | 12 smoke tests plus the Google shell test (first run, window sets over BroadcastChannel, navigation lock, drag regions and the window-controls area, permissions, crash view, quit, `--quit`, restart). The crash view is a native dialog (Reload or Close), not a bundled page. |
 | 7 Accounts | Done; Google off by the owner's choice | Password flow end to end; guest refusal test. Google: the shell's button opens the system browser, and the real gateway sends it to Google with the client, PKCE and loopback callback (`desktop/tests/google.spec.ts`). The callback and handoff legs pass against a local identity provider (mirrored S-5 tests). Google stays off for now (owner, 2026-10-17): it appears only when a build carries `google-oauth.json`. |
-| 8 Alerts, tray, background | Done | Notification while hidden, click-through to the chart, taskbar/Dock badge, simulated sleep with exactly-once delivery, keep-awake option. |
+| 8 Alerts, tray, background | Done | Notification while hidden, click-through to the chart, taskbar/Dock badge, simulated sleep with exactly-once delivery. Tray toggles for start at login and keep-awake during market hours; a daily `pg_dump` while running (keep 7). A delivery retried after the listener was down is covered by Omnix's sender tests, not an end-to-end test. |
 | 9 Windows packaging | Done; signing waits for a certificate | NSIS per-user installer. Install, update over a running app and uninstall checked in a scratch folder. Migration rollback test. electron-updater end to end against a local feed (`desktop/scripts/update-feed-builds.mjs`): 0.1.0 downloaded 0.1.1, installed it on quit, and 0.1.1 started on the same data. Signing turns on from the environment (Azure Artifact Signing or a certificate file), checked with a throwaway self-signed certificate. Updates come from `autonomx/MarketPulse` releases; the repository is public (2026-10-17), so installs read them without a token. Release `v0.1.0` (unsigned installer, `latest.yml` and blockmap) is published there; the installer was installed, started and uninstalled before publishing, and the feed answers anonymously. |
 | 10 Omnix data import | Done | File › Import from Omnix…: market reference data (MP-10.1) and, optionally, one workspace's documents, alerts and paper accounts as the owner's (MP-10.2). Dry run first, read-only on Omnix, each item whole or not at all, idempotent. Checked on a copy of the real schema under row-level security (336 paper accounts, 5770 rows). |
 | 11 macOS | Ready; the Mac run is deferred (owner) | Per-platform pins and staging, mac targets, entitlements, notarization switch, tray template, Dock, Keychain (S-8), cross-platform tests. Not yet run on a Mac: see `docs/MACOS.md`. |
@@ -887,12 +911,32 @@ Omnix seams on branch `marketpulse-seams` (17 commits on `main`, not merged: mer
 - **No handoff-import switch in the child environment.** The research repository, `autonomx/omnix`, is public, so
   MarketPulse imports handoffs and climatology without a token, as Omnix does. If the `gh` CLI is installed and
   signed in, it is used instead.
-- **W-2's `sessionChanged` bridge was dropped.** Nothing needed it once first-run state came from the database.
+- **W-2's `sessionChanged` bridge was dropped.** Notification ownership (§4.9) is checked by asking
+  `/api/auth/session` on each delivery, and first-run state comes from the database.
+- **W-3's acceptance is narrower than §4.11.** Omnix's DECISIONS entry baselines four screens (terminal, symbol
+  search, indicators, alert dialog); the watchlist, settings, context menus and the desktop chrome have the palette
+  but no screenshot baseline yet.
 - **Installer shutdown.** electron-builder's own check force-killed PostgreSQL. `customCheckAppRunning` now runs
   `MarketPulse --quit`, which stops the backend cleanly; it waits up to a minute before forcing. The install folder
   is capped at 112 characters so every file stays under Windows' 260-character limit.
 - **Additions found while building:** log rotation (gateway output rotated while it runs), a renderer crash view, an
   alert badge, cross-platform test helpers.
+- **Fixes from the independent review (2026-10-17):**
+  - the static-file handler followed Windows UNC paths: a `\\host\share` request could make MarketPulse
+    connect to a remote share with the user's credentials; requests now take plain path segments only;
+  - the running gateway and its workers no longer get the owner (superuser) URL, and PostgreSQL's tools get system
+    variables only;
+  - restoring after a failed update restores only the snapshot that update took, then stops and points to the
+    previous release; snapshots are written under a temporary name;
+  - a busy notification port stops startup with an error instead of being hidden;
+  - only the signed-in owner can run the Omnix imports;
+  - the installer's running-app check works with an apostrophe in the install path and treats a PowerShell failure as
+    "still running";
+  - a quit during startup stops promptly; the shell waits longer than the supervisor's own stop; gateway restarts are
+    counted afresh after ten healthy minutes;
+  - `sync check` reports unrecorded files inside excluded subtrees, and `stage.py` copies mirrored code from the lock;
+  - smaller hardening: notification clicks and redirects follow the navigation rules, shell-page IPC is matched
+    exactly, installed apps ignore `MARKETPULSE_RESOURCES`, diagnostics read the right folder on macOS.
 
 ### Findings for the owner
 
@@ -919,10 +963,10 @@ ibapi 10.50.2.
 
 ### Verification at the last commit
 
-- Trading test set plus `src/tests_marketpulse`, trading-only on the reduced mirror: 2189 tests (2149 + 40), none failed, 2 skipped.
-- Electron: 20 tests (13 smoke, 7 unit).
+- Trading test set plus `src/tests_marketpulse`, trading-only on the reduced mirror: 2194 tests (2149 + 45), none failed, 2 skipped.
+- Electron: 20 tests (12 smoke, the Google shell test, 7 unit).
 - Web: both typechecks clean; vitest 1348 tests in 192 files; 15 Playwright e2e tests.
-- Installer: install, boot and uninstall in a scratch folder.
+- Installer: install, update over the running app and uninstall in a scratch folder whose path has an apostrophe.
 
 PostgreSQL tests ran on scratch clusters only.
 

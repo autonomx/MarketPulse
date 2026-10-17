@@ -22,10 +22,12 @@ body. Then run the gate set.
 ## Gate set (after every sync and before every release)
 
 1. `python sync/sync_from_omnix.py check`
-2. `python -m pytest $(python sync/sync_from_omnix.py tests) src/tests_marketpulse -q` with PostgreSQL tests on a
-   scratch database (`OMNIX_TEST_DATABASE_URL`), never a live one
+2. `OMNIX_FEATURES=trading python -m pytest $(python sync/sync_from_omnix.py tests) src/tests_marketpulse -q`, with
+   PostgreSQL tests on a scratch database (`OMNIX_TEST_DATABASE_URL`), never a live one; trading-only, as MarketPulse
+   runs Omnix and because other features' code is not mirrored
 3. `ruff check src/marketpulse src/tests_marketpulse`
-4. `npm --prefix web run typecheck:trading`, `typecheck:marketpulse`, `test:trading`, `build`
+4. `npm --prefix web run typecheck:trading`, `typecheck:marketpulse`, `test:trading`, `build`, then
+   `python build/stage.py web`, which refuses a build carrying other features' chunks (the bundle check)
 5. `npm --prefix desktop run test` (Electron smoke suite on the staged runtime)
 6. Release only: the install, upgrade and recovery checks in docs/ROADMAP.md Phase 9
 

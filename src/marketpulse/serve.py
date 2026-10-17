@@ -33,9 +33,9 @@ SCRIPTS = ROOT / "scripts"
 _REDACT = ("PASSWORD", "SECRET", "TOKEN", "DATABASE_URL")
 
 
-def _prepare(config_path: Path) -> LaunchConfig:
+def _prepare(config_path: Path, *, owner: bool = True) -> LaunchConfig:
     config = LaunchConfig.load(config_path)
-    env = child_environment(config)
+    env = child_environment(config, owner=owner)
     # Under the bundled interpreter the ._pth file sets the import roots and ignores PYTHONPATH; a development
     # interpreter needs it for the job worker, which starts with the same executable.
     env["PYTHONPATH"] = f"{SRC}{';' if sys.platform == 'win32' else ':'}{SCRIPTS}"
@@ -154,7 +154,8 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     # Read before _prepare replaces the environment (it drops MARKETPULSE_* variables).
     import_source = os.environ.get("MARKETPULSE_IMPORT_SOURCE_URL")
-    config = _prepare(args.config)
+    # The gateway runs without the owner role's URL; the one-shot commands (migrate, backup, imports, …) need it.
+    config = _prepare(args.config, owner=args.command != "serve")
     if args.command == "serve":
         return _serve(config)
     if args.command == "migrate":

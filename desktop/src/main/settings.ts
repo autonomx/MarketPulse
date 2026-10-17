@@ -22,6 +22,8 @@ export interface DesktopSettings {
   notifyPort: number;
   startAtLogin: boolean;
   keepAwakeDuringMarketHours: boolean;
+  /** When the daily backup last succeeded (ISO time); absent before the first. */
+  lastBackupAt?: string;
   windows: Record<string, WindowState>;
 }
 

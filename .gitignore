@@ -1,4 +1,4 @@
-# Build cache and staged runtimes (downloaded PostgreSQL, CPython, ibapi; rebuilt by build/*.ps1)
+# Build cache and staged runtimes (downloaded PostgreSQL, CPython, ibapi; rebuilt by build/stage.py)
 build/cache/
 build/stage/
 build/out/

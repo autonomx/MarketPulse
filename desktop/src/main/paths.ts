@@ -20,7 +20,8 @@ export interface DesktopPaths {
 }
 
 export function desktopPaths(): DesktopPaths {
-  const resources = process.env.MARKETPULSE_RESOURCES
+  // MARKETPULSE_RESOURCES chooses which python runs, so an installed app never takes it from the environment.
+  const resources = process.env.MARKETPULSE_RESOURCES && !app.isPackaged
     ? resolve(process.env.MARKETPULSE_RESOURCES)
     : app.isPackaged ? join(process.resourcesPath, 'runtime') : resolve(__dirname, '..', '..', 'build', 'stage');
   const data = process.env.MARKETPULSE_DATA_DIR

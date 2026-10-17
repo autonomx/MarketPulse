@@ -13,6 +13,7 @@ if (location.protocol === 'file:') {
     retry: () => ipcRenderer.send('mp:retry'),
     newPorts: () => ipcRenderer.send('mp:new-ports'),
     restore: () => ipcRenderer.send('mp:restore-snapshot'),
+    previousRelease: () => ipcRenderer.send('mp:previous-release'),
     exportDiagnostics: () => ipcRenderer.send('mp:export-diagnostics'),
     revealLogs: () => ipcRenderer.send('mp:reveal-logs'),
     quit: () => ipcRenderer.send('mp:quit'),
