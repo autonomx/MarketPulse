@@ -169,9 +169,11 @@ test('permissions other than notifications are refused', async () => {
 test('an alert that fires while every window is hidden raises a native notification', async () => {
   await app.evaluate(({ BrowserWindow, Notification }) => {
     const shown: string[] = [];
-    (globalThis as unknown as { shown: string[] }).shown = shown;
+    const notifications: Electron.Notification[] = [];
+    Object.assign(globalThis, { shown, notifications });
     Notification.prototype.show = function show(this: Electron.Notification) {
       shown.push(`${this.title}|${this.body}`);
+      notifications.push(this);
     };
     for (const window of BrowserWindow.getAllWindows()) window.hide();
   });
@@ -197,7 +199,12 @@ test('an alert that fires while every window is hidden raises a native notificat
   // The delivery monitor runs every 10 s; the listener shows the notification, then answers 200.
   await expect.poll(() => app.evaluate(() => (globalThis as unknown as { shown: string[] }).shown), { timeout: 90_000 })
     .toContain('MarketPulse alert|BTC crossed 100 (smoke test)');
-  await app.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows()[0]?.show());
+  // Clicking the notification opens the alert's chart in the main window.
+  await main.goto(`${origin}/settings`);
+  await app.evaluate(() => (globalThis as unknown as { notifications: Electron.Notification[] }).notifications.at(-1)?.emit('click'));
+  await expect.poll(() => main.url(), { timeout: 30_000 }).toContain('BTC-USDT');
+  expect(main.url()).toContain('/trading');
+  expect(await app.evaluate(({ BrowserWindow }, url) => BrowserWindow.getAllWindows().find((window) => window.webContents.getURL() === url)?.isVisible(), main.url())).toBe(true);
 });
 
 test('after a simulated sleep, a pending alert is delivered once and monitors keep working', async () => {
