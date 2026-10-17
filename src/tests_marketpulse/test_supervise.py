@@ -198,6 +198,31 @@ def test_the_staged_interpreter_writes_bytecode_to_the_data_folder(tmp_path):
     assert result.stdout.strip() == str(tmp_path / "pycache")
 
 
+USER_SCRIPT_CHECK = """
+from app.apps.trading.scripts_service import ScriptBars, ScriptRunService
+
+SOURCE = '//@version=5\\nindicator("SMA")\\nplot(ta.sma(close, 3), "SMA")\\n'
+closes = tuple(float(value) for value in range(1, 21))
+bars = ScriptBars(time=tuple(1_760_000_000_000 + index * 60_000 for index in range(20)), open=closes, high=closes,
+                  low=closes, close=closes, volume=(100.0,) * 20, session=("regular",) * 20)
+result = ScriptRunService(workers=1).run(SOURCE, bars, symbol="X", timeframe="1")
+print("ran" if "plots" in result or "series" in result or result.get("bars") else result)
+"""
+
+
+@staged
+def test_a_user_script_runs_in_a_worker_of_the_staged_runtime(tmp_path):
+    """Phase 5 gate: scripts_service starts its worker with the bundled interpreter and gets a result."""
+    check = tmp_path / "user_script_check.py"
+    check.write_text(USER_SCRIPT_CHECK, encoding="utf-8")
+    result = subprocess.run([str(STAGE / "python" / "python.exe"), str(check)], cwd=str(STAGE), capture_output=True,
+                            text=True, timeout=120, env={"SystemRoot": os.environ.get("SystemRoot", r"C:\Windows"),
+                                                        "OMNIX_FEATURES": "trading"})
+
+    assert result.returncode == 0, result.stderr[-2000:]
+    assert result.stdout.strip().splitlines()[-1] == "ran"
+
+
 @staged
 @pytest.mark.postgres
 def test_the_staged_runtime_starts_from_nothing_and_stops_cleanly(tmp_path):

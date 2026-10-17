@@ -16,6 +16,45 @@ function backendProcesses(dataDir: string): string[] {
   return out.split(/\r?\n/).filter((line) => line.toLowerCase().includes(needle) || line.toLowerCase().includes(needle.replaceAll('\\', '/')));
 }
 
+/** The backend's process tree for this data folder: its python and postgres processes and their children. */
+function backendTree(dataDir: string): number[] {
+  const out = execFileSync('powershell', ['-NoProfile', '-Command',
+    'Get-CimInstance Win32_Process | Select-Object ProcessId, ParentProcessId, CommandLine | ConvertTo-Json -Compress'],
+  { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+  const rows = JSON.parse(out) as { ProcessId: number; ParentProcessId: number; CommandLine: string | null }[];
+  const needle = dataDir.toLowerCase();
+  const roots = rows.filter((row) => {
+    const line = (row.CommandLine ?? '').toLowerCase();
+    return line.includes(needle) || line.includes(needle.replaceAll('\\', '/'));
+  }).map((row) => row.ProcessId);
+  const tree = new Set(roots);
+  let grew = true;
+  while (grew) {
+    grew = false;
+    for (const row of rows) {
+      if (tree.has(row.ParentProcessId) && !tree.has(row.ProcessId)) {
+        tree.add(row.ProcessId);
+        grew = true;
+      }
+    }
+  }
+  return [...tree];
+}
+
+/** Pauses or resumes processes as a laptop's sleep would (NtSuspendProcess, through the staged Python). */
+function setSuspended(pids: number[], suspended: boolean): void {
+  const call = suspended ? 'NtSuspendProcess' : 'NtResumeProcess';
+  const script = [
+    'import ctypes, sys',
+    'k = ctypes.WinDLL("kernel32"); n = ctypes.WinDLL("ntdll")',
+    'k.OpenProcess.restype = ctypes.c_void_p',
+    `for pid in map(int, sys.argv[1:]):`,
+    '    h = k.OpenProcess(0x0800, False, pid)',
+    `    if h: n.${call}(ctypes.c_void_p(h)); k.CloseHandle(ctypes.c_void_p(h))`,
+  ].join('\n');
+  execFileSync(join(STAGE, 'python', 'python.exe'), ['-c', script, ...pids.map(String)]);
+}
+
 async function appWindow(app: ElectronApplication, matcher: (url: string) => boolean, timeout = 300_000): Promise<Page> {
   const deadline = Date.now() + timeout;
   while (Date.now() < deadline) {
@@ -159,6 +198,44 @@ test('an alert that fires while every window is hidden raises a native notificat
   await expect.poll(() => app.evaluate(() => (globalThis as unknown as { shown: string[] }).shown), { timeout: 90_000 })
     .toContain('MarketPulse alert|BTC crossed 100 (smoke test)');
   await app.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows()[0]?.show());
+});
+
+test('after a simulated sleep, a pending alert is delivered once and monitors keep working', async () => {
+  // Phase 8 gate: pause the whole backend past the 10 s delivery monitor, resume, and count the notifications.
+  // Each alert has its own instrument: a second price cross on one instrument would rightly fire its alert again.
+  const fire = (message: string, instrument: string) => main.evaluate(async ([text, instrument]) => {
+    const csrf = decodeURIComponent((document.cookie.split('; ').find((part) => part.startsWith('omnix_csrf=')) ?? '').split('=')[1] ?? '');
+    const headers = { 'Content-Type': 'application/json', 'X-Omnix-Client': 'web', 'X-Omnix-CSRF': csrf };
+    const created = await fetch('/api/trading/alerts', { method: 'POST', headers, body: JSON.stringify({
+      alert_id: `sleep-${Date.now()}`,
+      instrument_id: instrument,
+      conditions: [{ source: { kind: 'price', field: 'close' }, operator: 'crossing_up', target: { kind: 'value', value: '100' } }],
+      parameters: { notification_channels: ['desktop'], message: text },
+    }) });
+    const observed = Date.now();
+    for (const [price, offset] of [['99', 0], ['101', 30_000]] as const) {
+      await fetch('/api/trading/alerts/evaluate', { method: 'POST', headers, body: JSON.stringify({
+        instrument_id: instrument, observed_price: price, observed_at: new Date(observed + offset).toISOString(),
+      }) });
+    }
+    return created.status;
+  }, [message, instrument] as const);
+  const count = (text: string) => app.evaluate((_electron, wanted) => (globalThis as unknown as { shown: string[] }).shown
+    .filter((item) => item.endsWith(`|${wanted}`)).length, text);
+
+  expect(await fire('Before the sleep', 'crypto:BINANCE:spot:ETH-USDT')).toBe(201);
+  const tree = backendTree(dataDir);
+  expect(tree.length).toBeGreaterThan(2);
+  setSuspended(tree, true);
+  await new Promise((resolveLater) => setTimeout(resolveLater, 25_000));
+  setSuspended(tree, false);
+
+  await expect.poll(() => count('Before the sleep'), { timeout: 90_000 }).toBe(1);
+  expect(await fire('After the sleep', 'crypto:BINANCE:spot:SOL-USDT')).toBe(201);
+  await expect.poll(() => count('After the sleep'), { timeout: 90_000 }).toBe(1);
+  // A few more monitor passes: still once each.
+  await new Promise((resolveLater) => setTimeout(resolveLater, 25_000));
+  expect([await count('Before the sleep'), await count('After the sleep')]).toEqual([1, 1]);
 });
 
 test('a window whose page crashes offers a reload and comes back', async () => {
