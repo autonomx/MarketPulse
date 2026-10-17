@@ -33,7 +33,7 @@ MarketPulse never authors database migrations: the schema comes from Omnix (one 
 | D-3 | LLM features included. |
 | D-4 | Accounts included (sign-in, guests, invites, Google). |
 | D-5 | Windows first; macOS after. |
-| D-6 | Source is Omnix `main` (the Phase 1 seams are on Omnix branch `marketpulse-seams` until merged). |
+| D-6 | Source is Omnix `main` (the MarketPulse seams were merged into it on 2026-10-17). |
 | D-7 | TradingView Desktop is an architecture reference only; nothing from it is copied. |
 | D-8 | `ibapi` is bundled, from Interactive Brokers' official distribution. |
 | D-9 | Research handoffs come from Omnix's own public repository, `autonomx/omnix` (owner, 2026-10-17; replaces the separate data repository). |

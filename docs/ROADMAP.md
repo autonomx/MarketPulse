@@ -896,7 +896,7 @@ Omnix seams on branch `marketpulse-seams` (17 commits on `main`, not merged: mer
 
 ### Findings for the owner
 
-- **ibapi is GPL-3.0-or-later.** Bundling it is allowed with its licence and source; both ship under
+- **ibapi is GPL-3.0-or-later.** The owner confirmed bundling it (2026-10-17). Its licence and source ship under
   `licenses/ibapi`. The Python client is only in IB's "Latest" API release; the staged copy is version 10.50.2 from
   your install. Separately, IB's terms forbid passing IB market data on to third parties without their approval.
 - **Provider status reads are open to guests** (Omnix's design): they show "configured" and a masked key, never the
@@ -931,7 +931,6 @@ PostgreSQL tests ran on scratch clusters only.
 1. A Windows signing identity: Azure Artifact Signing, or an OV certificate on a hardware token or cloud HSM; then
    set the variables in `desktop/scripts/dist.mjs`. Developer ID and notarization for macOS.
 2. Google sign-in: off for now; when wanted, add the OAuth Desktop client as `desktop/config/google-oauth.json`.
-3. Confirm the ibapi bundling decision above.
-4. Build and check on your Mac (`docs/MACOS.md`), when the rest is done.
-5. Merge `marketpulse-seams` (20 commits) into Omnix `main`. Until then MarketPulse syncs from that branch.
-6. Before public distribution: the trademark and trade-dress check from R-8.
+3. Build and check on your Mac (`docs/MACOS.md`), when the rest is done.
+4. ~~Merge `marketpulse-seams` (20 commits) into Omnix `main`. Until then MarketPulse syncs from that branch.~~ Merged (fast-forward) on 2026-10-17; MarketPulse syncs from `main`.
+5. Before public distribution: the trademark and trade-dress check from R-8.
