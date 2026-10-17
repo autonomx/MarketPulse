@@ -1,5 +1,5 @@
 {
- "commit": "b4910695053cdca048d154961c925dbe9dfd32da",
+ "commit": "fc0b51d119fc30dc5492d3b8f97db1789c273da8",
  "derived": {
   "pyproject.toml": "418462422a19766d7cd9e09accea65f94fc5b9a908e5fb41eb4279e167522a44",
   "web/package.json": "937d3d627e85e0db5106a9f7a1e2b43b87cd88fb6750de181fcd2ea5153a10a0"
@@ -2846,7 +2846,7 @@
   "web/src/features/trading/TradingIntervalMenu.tsx": "597bb2a941549bcad3b8729e68d2b9ae7ab56b8c8b55cb51333a2b11f94da46b",
   "web/src/features/trading/TradingLayoutConstraints.css": "04d1a69aa782c317e3881ab7e6d458f842206529925aa049b75985a5ddee979f",
   "web/src/features/trading/TradingLayoutPanel.tsx": "ccfc64a11931e47a83f9670e8ef8702de46435048dfa716b7377804a21709986",
-  "web/src/features/trading/TradingLightTheme.css": "c78c0676a7a6aa2e2fbde7b1ca51eca9cb743fb48af8c43ed6f3b10b4754fc1d",
+  "web/src/features/trading/TradingLightTheme.css": "c71ceb4bb29f40445e85f953b92abdce81bd5029809f3da147a4eeb45f71abd8",
   "web/src/features/trading/TradingNews.css": "54067478b6fa1717dbecf40f2d545a4ddd8f02884dff0fb2eb129bd896a312e9",
   "web/src/features/trading/TradingNewsPanel.test.tsx": "32d4650368b91b74eac51ddc7b197ce3ece4360c78e8b2d8a18ae94dc70fd5cb",
   "web/src/features/trading/TradingNewsPanel.tsx": "87bf11c56df17f3ba7762bacb6ffa77d28c413345554c2e5a9f707e6433506c2",
@@ -3358,5 +3358,5 @@
   "web/vitest.workspace.config.ts": "f1f2382afdf7550337092061b966ac32b22fb2286174c89b691bc35703795507"
  },
  "source": "F:/LLM/omnix",
- "synced_at": "2026-10-17T21:06:28+00:00"
+ "synced_at": "2026-10-17T21:07:19+00:00"
 }

@@ -10,6 +10,14 @@
     --trading-light-muted: #787b86;
   }
 
+  /* The desktop title bar (W-4) sits outside .trading-workspace: without its own light colours it kept the dark
+     fallback, and so did the window controls drawn from it. */
+  :root[data-omnix-appearance='light'] .trading-title-bar {
+    --trading-title-bar-bg: #ffffff;
+    --trading-title-bar-fg: #131722;
+    border-bottom-color: #e0e3eb;
+  }
+
   /* Watchlist rows and hover actions need an explicit light palette because
      their base styles intentionally use dark trading-terminal surfaces. */
 
