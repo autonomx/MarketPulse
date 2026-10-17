@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self'; style-src 'self'; script-src 'self'" />
+    <title>Import market data from Omnix</title>
+    <link rel="stylesheet" href="shell.css" />
+  </head>
+  <body class="shell import">
+    <main>
+      <h1>Import market data from Omnix</h1>
+      <p class="note">
+        Copies the public market reference data an Omnix database has fetched (company profiles, financials, filing
+        snapshots, corporate events and market breadth) into MarketPulse. Omnix is only read, and nothing from its
+        accounts, alerts, layouts or settings is copied. Data MarketPulse already has is kept.
+      </p>
+      <label for="source">Omnix database URL</label>
+      <input id="source" type="password" autocomplete="off" spellcheck="false"
+             placeholder="postgresql://user:password@127.0.0.1:5432/omnix" />
+      <p id="state" role="status"></p>
+      <table id="report" hidden>
+        <thead><tr><th>Data</th><th>In Omnix</th><th id="new-heading">New</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <div class="actions">
+        <button type="button" id="close">Close</button>
+        <button type="button" id="check">Check</button>
+        <button type="button" id="apply" class="primary" disabled>Import</button>
+      </div>
+    </main>
+    <script src="import-page.js"></script>
+  </body>
+</html>

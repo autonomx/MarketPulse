@@ -105,8 +105,8 @@ export class BackendSupervisor extends EventEmitter {
     this.emit('event', event);
   }
 
-  /** Sends a command and waits for its result. */
-  command(cmd: string, timeoutMs = 60_000): Promise<Record<string, unknown>> {
+  /** Sends a command (with any payload fields) and waits for its result. */
+  command(cmd: string, timeoutMs = 60_000, payload: Record<string, unknown> = {}): Promise<Record<string, unknown>> {
     const child = this.child;
     if (!child) return Promise.reject(new Error('the backend is not running'));
     const id = this.nextId++;
@@ -119,7 +119,7 @@ export class BackendSupervisor extends EventEmitter {
         clearTimeout(timer);
         resolvePromise(result);
       });
-      child.stdin.write(`${JSON.stringify({ cmd, id })}\n`);
+      child.stdin.write(`${JSON.stringify({ ...payload, cmd, id })}\n`);
     });
   }
 

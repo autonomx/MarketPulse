@@ -25,6 +25,8 @@ Events (stdout):  {"event": "step", "step": ..., "message": ...}  {"event": "rea
 Commands (stdin): {"cmd": "login-code", "id": 1}   a one-time owner sign-in code, only while first_run
                   {"cmd": "owner-status", "id": 2}
                   {"cmd": "backup", "id": 3}
+                  {"cmd": "import-reference", "id": 4, "source": "postgresql://…", "apply": false}
+                      Omnix's market reference data (MP-10.1), on a worker thread; a dry run unless apply
                   {"cmd": "stop"}
 """
 from __future__ import annotations
@@ -168,6 +170,7 @@ class Supervisor:
         self.logs = self.data / "logs"
         self.gateway: subprocess.Popen[bytes] | None = None
         self.stopping = threading.Event()
+        self._import_lock = threading.Lock()
         self.first_run = False
         self._lock = threading.Lock()
 
@@ -361,6 +364,18 @@ class Supervisor:
         output = self._run("login-code", self._serve_command("login-code"), env=self._serve_env(), log="supervisor.log")
         return output.strip().splitlines()[-1]
 
+    def import_reference(self, source: str, *, apply: bool) -> dict[str, Any]:
+        if not source.startswith(("postgresql://", "postgres://")):
+            raise ValueError("the source must be a postgresql:// URL")
+        if not self._import_lock.acquire(blocking=False):
+            raise RuntimeError("an import is already running")
+        try:
+            output = self._run("import", self._serve_command("import-reference", *(["--apply"] if apply else [])),
+                               env={**self._serve_env(), "MARKETPULSE_IMPORT_SOURCE_URL": source}, log="import.log")
+        finally:
+            self._import_lock.release()
+        return json.loads(output)
+
     def backup(self) -> Path:
         folder = self.data / "backups"
         folder.mkdir(parents=True, exist_ok=True)
@@ -433,12 +448,25 @@ class Supervisor:
                 reply["has_password"] = self.owner_has_password()
             elif name == "backup":
                 reply["path"] = str(self.backup())
+            elif name == "import-reference":
+                # Minutes for a large Omnix: off the command loop, so stop and other commands still answer.
+                threading.Thread(target=self._import_command, args=(command, reply), name="import-reference",
+                                 daemon=True).start()
+                return
             elif name == "stop":
                 self.stop()
                 return
             else:
                 reply["error"] = "unknown_command"
         except Exception as exc:  # reported to the shell, never fatal for the backend
+            reply["error"] = f"{type(exc).__name__}: {exc}"
+        self.emit(reply)
+
+
+    def _import_command(self, command: dict[str, Any], reply: dict[str, Any]) -> None:
+        try:
+            reply.update(self.import_reference(str(command.get("source") or ""), apply=bool(command.get("apply"))))
+        except Exception as exc:  # reported to the shell
             reply["error"] = f"{type(exc).__name__}: {exc}"
         self.emit(reply)
 

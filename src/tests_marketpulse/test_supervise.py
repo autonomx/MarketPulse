@@ -109,6 +109,37 @@ def test_commands_report_results_and_unknown_ones(tmp_path, secrets_env, monkeyp
     ]
 
 
+def test_the_omnix_import_runs_off_the_command_loop_with_the_source_in_its_environment(tmp_path, secrets_env, monkeypatch):
+    events = []
+    supervisor = Supervisor(_config(tmp_path), events.append)
+    calls = []
+
+    def run(step, command, *, env=None, log):
+        calls.append((command, env["MARKETPULSE_IMPORT_SOURCE_URL"]))
+        return '{"applied": false, "tables": []}'
+
+    monkeypatch.setattr(supervisor, "_run", run)
+    supervisor.handle({"cmd": "import-reference", "id": 9, "source": "postgresql://u:pw@127.0.0.1/omnix"})
+    supervisor.handle({"cmd": "import-reference", "id": 10, "source": "http://elsewhere"})
+    deadline = time.monotonic() + 10
+    while len(events) < 2 and time.monotonic() < deadline:
+        time.sleep(0.01)
+
+    by_id = {event["id"]: event for event in events}
+    assert by_id[9]["applied"] is False and by_id[9]["tables"] == []
+    assert "postgresql://" in by_id[10]["error"]
+    # The URL (with its password) is never on a command line.
+    assert calls == [(supervisor._serve_command("import-reference"), "postgresql://u:pw@127.0.0.1/omnix")]
+
+
+def test_only_one_omnix_import_runs_at_a_time(tmp_path, secrets_env):
+    supervisor = Supervisor(_config(tmp_path), lambda event: None)
+    supervisor._import_lock.acquire()
+
+    with pytest.raises(RuntimeError, match="already running"):
+        supervisor.import_reference("postgresql://u@127.0.0.1/omnix", apply=True)
+
+
 def test_serve_children_get_the_secrets_and_the_gateway_environment(tmp_path, secrets_env):
     supervisor = Supervisor(_config(tmp_path), lambda event: None)
 

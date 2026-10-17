@@ -8,6 +8,8 @@
     python -m marketpulse.serve restore PATH --config launch.json  # then the runtime role's grants are re-applied
     python -m marketpulse.serve grants      --config launch.json   # re-apply migration 0101's runtime grants
     python -m marketpulse.serve env         --config launch.json   # the child environment, secrets redacted
+    python -m marketpulse.serve import-reference [--apply] --config launch.json
+        # Omnix's market reference data (MP-10.1) from MARKETPULSE_IMPORT_SOURCE_URL; a dry run without --apply
 
 Each command first replaces this process's environment with marketpulse.env.child_environment, so the gateway, the
 job worker it starts and the database tools all run with exactly that environment.
@@ -16,6 +18,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import runpy
 import sys
 from pathlib import Path
@@ -84,6 +87,28 @@ def _login_code() -> int:
     return 0
 
 
+def _import_reference(source_url: str | None, *, apply: bool) -> int:
+    """Prints {"applied", "tables"} or {"error"}: a refused import is a result for the shell to show, not a crash."""
+    import psycopg
+
+    from app.persistence.config import migration_database_settings
+    from marketpulse.import_omnix import ReferenceImportError, import_reference
+
+    if not source_url:
+        print(json.dumps({"error": "no source: MARKETPULSE_IMPORT_SOURCE_URL is not set"}))
+        return 0
+    try:
+        tables = import_reference(source_url, migration_database_settings().url, apply=apply)
+    except ReferenceImportError as exc:
+        print(json.dumps({"error": str(exc)}))
+        return 0
+    except psycopg.OperationalError as exc:
+        print(json.dumps({"error": f"could not reach a database: {str(exc).strip()}"}))
+        return 0
+    print(json.dumps({"applied": apply, "tables": tables}))
+    return 0
+
+
 def _show_env() -> int:
     import os
 
@@ -95,10 +120,14 @@ def _show_env() -> int:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="python -m marketpulse.serve", description=__doc__.splitlines()[0])
-    parser.add_argument("command", choices=["serve", "migrate", "status", "login-code", "backup", "restore", "grants", "env"])
+    parser.add_argument("command", choices=["serve", "migrate", "status", "login-code", "backup", "restore", "grants", "env",
+                                            "import-reference"])
     parser.add_argument("path", nargs="?", type=Path, help="backup or restore file")
     parser.add_argument("--config", required=True, type=Path, help="the supervisor's launch config (JSON)")
+    parser.add_argument("--apply", action="store_true", help="import-reference: write the rows (default: a dry run)")
     args = parser.parse_args(argv)
+    # Read before _prepare replaces the environment (it drops MARKETPULSE_* variables).
+    import_source = os.environ.get("MARKETPULSE_IMPORT_SOURCE_URL")
     config = _prepare(args.config)
     if args.command == "serve":
         return _serve(config)
@@ -115,6 +144,8 @@ def main(argv: list[str] | None = None) -> int:
         return _grants()
     if args.command == "login-code":
         return _login_code()
+    if args.command == "import-reference":
+        return _import_reference(import_source, apply=args.apply)
     return _show_env()
 
 

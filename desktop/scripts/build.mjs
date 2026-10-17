@@ -12,7 +12,9 @@ mkdirSync(out, { recursive: true });
 const common = { bundle: true, platform: 'node', target: 'node22', format: 'cjs', external: ['electron'], sourcemap: true, logLevel: 'warning' };
 await build({ ...common, entryPoints: [join(root, 'src/main/index.ts')], outfile: join(out, 'main.js') });
 await build({ ...common, entryPoints: [join(root, 'src/preload/index.ts')], outfile: join(out, 'preload.js') });
-await build({ ...common, platform: 'browser', format: 'iife', entryPoints: [join(root, 'src/pages/shell-page.ts')], outfile: join(out, 'pages/shell-page.js') });
+for (const page of ['shell-page', 'import-page']) {
+  await build({ ...common, platform: 'browser', format: 'iife', entryPoints: [join(root, `src/pages/${page}.ts`)], outfile: join(out, `pages/${page}.js`) });
+}
 
 cpSync(join(root, 'pages'), join(out, 'pages'), { recursive: true });
 mkdirSync(join(out, 'icons'), { recursive: true });

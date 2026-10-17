@@ -161,6 +161,25 @@ test('an alert that fires while every window is hidden raises a native notificat
   await app.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows()[0]?.show());
 });
 
+test('the Omnix import page checks a source before importing, through the backend', async () => {
+  await app.evaluate(({ Menu }) => Menu.getApplicationMenu()?.getMenuItemById('import-omnix')?.click());
+  const page = await appWindow(app, (url) => url.endsWith('/pages/import.html'), 30_000);
+  await page.locator('#source').fill('http://not-a-database');
+  await page.locator('#check').click();
+  await expect(page.locator('#state')).toContainText('postgresql://');
+  await expect(page.locator('#apply')).toBeDisabled();
+  // A real source when the scratch Omnix test database is configured (OMNIX_TEST_DATABASE_URL).
+  const omnix = process.env.OMNIX_TEST_DATABASE_URL;
+  if (omnix) {
+    await page.locator('#source').fill(omnix);
+    await page.locator('#check').click();
+    await expect(page.locator('#report tbody tr')).toHaveCount(5, { timeout: 60_000 });
+    await expect(page.locator('#report tbody')).toContainText('Company profiles');
+  }
+  await page.locator('#close').click();
+  await expect.poll(() => app.windows().some((candidate) => candidate.url().endsWith('/pages/import.html'))).toBe(false);
+});
+
 test('quitting leaves no backend process', async () => {
   expect(backendProcesses(dataDir).length).toBeGreaterThan(0);
   await app.close();

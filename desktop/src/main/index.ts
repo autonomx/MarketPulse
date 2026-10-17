@@ -212,6 +212,18 @@ async function main(): Promise<void> {
       // Not a URL: ignored.
     }
   });
+  ipcMain.handle('mp:import-reference', async (event, source: string, apply: boolean) => {
+    if (!fromShellPage(event)) return { error: 'refused' };
+    // Omnix's market reference data (roadmap MP-10.1); the URL goes to the supervisor on stdin, never a command line.
+    try {
+      return await supervisor.command('import-reference', 30 * 60_000, { source: String(source), apply: Boolean(apply) });
+    } catch (error) {
+      return { error: error instanceof Error ? error.message : String(error) };
+    }
+  });
+  ipcMain.on('mp:close-window', (event) => {
+    if (fromShellPage(event)) BrowserWindow.fromWebContents(event.sender)?.close();
+  });
   ipcMain.handle('mp:request-login-code', async (event) => {
     if (!fromApp(event) || !origin) return false;
     // Only while the owner has no password; the supervisor refuses otherwise (roadmap §4.7).
@@ -228,7 +240,12 @@ async function main(): Promise<void> {
     app.dock?.setMenu(Menu.buildFromTemplate([{ label: 'Show MarketPulse', click: () => windows.focusMain() }]));
     if (!app.isPackaged) app.dock?.setIcon(join(paths.icons, 'icon-256.png'));
   }
-  Menu.setApplicationMenu(buildMenu(() => origin, windows, paths.logs));
+  let importWindow: BrowserWindow | null = null;
+  const openImport = () => {
+    if (importWindow && !importWindow.isDestroyed()) importWindow.focus();
+    else importWindow = windows.shellPage('import', { width: 640, height: 520 });
+  };
+  Menu.setApplicationMenu(buildMenu(() => origin, windows, paths.logs, openImport));
   // Only an installed app registers itself to start at login; a development or test run never touches the OS setting.
   if (app.isPackaged && !process.env.MARKETPULSE_DATA_DIR) {
     app.setLoginItemSettings({ openAtLogin: settings.startAtLogin, args: ['--hidden'] });
@@ -312,7 +329,7 @@ function createTray(show: () => void, quit: () => void): Tray | null {
   }
 }
 
-function buildMenu(origin: () => string | null, windows: WindowManager, logs: string): Menu {
+function buildMenu(origin: () => string | null, windows: WindowManager, logs: string, openImport: () => void): Menu {
   const go = (path: string) => () => {
     const current = origin();
     const main = windows.get('main');
@@ -328,6 +345,8 @@ function buildMenu(origin: () => string | null, windows: WindowManager, logs: st
       submenu: [
         { label: 'Charts', click: go('/trading') },
         { label: 'Settings…', click: go('/settings') },
+        { type: 'separator' },
+        { id: 'import-omnix', label: 'Import market data from Omnix…', click: openImport },
         { type: 'separator' },
         { label: 'Open logs folder', click: () => void shell.openPath(logs) },
         { label: 'Export diagnostics…', click: () => void exportDiagnostics(desktopPaths(), SettingsStore.in(desktopPaths().data).load(), null) },

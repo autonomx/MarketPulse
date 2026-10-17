@@ -16,6 +16,9 @@ if (location.protocol === 'file:') {
     exportDiagnostics: () => ipcRenderer.send('mp:export-diagnostics'),
     revealLogs: () => ipcRenderer.send('mp:reveal-logs'),
     quit: () => ipcRenderer.send('mp:quit'),
+    importReference: (source: string, apply: boolean): Promise<unknown> =>
+      ipcRenderer.invoke('mp:import-reference', String(source), Boolean(apply)),
+    closeWindow: () => ipcRenderer.send('mp:close-window'),
   });
 } else if (info.origin && location.origin === info.origin) {
   contextBridge.exposeInMainWorld('marketPulse', {

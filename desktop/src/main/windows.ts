@@ -129,7 +129,7 @@ export class WindowManager {
   }
 
   /** A small local page (splash, error, crash) from the app bundle. */
-  shellPage(name: 'splash' | 'error', options: Partial<BrowserWindowConstructorOptions> = {}): BrowserWindow {
+  shellPage(name: 'splash' | 'error' | 'import', options: Partial<BrowserWindowConstructorOptions> = {}): BrowserWindow {
     const window = new BrowserWindow({
       width: 520,
       height: 340,

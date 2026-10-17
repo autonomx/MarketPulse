@@ -90,3 +90,28 @@ button {
 
 button:hover { border-color: var(--accent); }
 button#retry { background: var(--accent); border-color: var(--accent); color: #111; }
+
+/* The Omnix import page (MP-10.1). */
+body.import main { justify-items: stretch; text-align: left; max-width: 600px; }
+body.import h1 { justify-self: start; }
+.note { margin: 0; color: var(--muted); }
+label { margin-top: 6px; font-weight: 600; }
+input {
+  -webkit-app-region: no-drag;
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--panel);
+  color: var(--text);
+  font: 12px/1.4 Consolas, "Cascadia Mono", monospace;
+  user-select: text;
+}
+input:focus { outline: none; border-color: var(--accent); }
+#state { margin: 0; min-height: 1.4em; user-select: text; }
+#report { width: 100%; border-collapse: collapse; }
+#report th, #report td { padding: 4px 8px; border-bottom: 1px solid var(--border); text-align: right; }
+#report th:first-child, #report td:first-child { text-align: left; }
+#report th { color: var(--muted); font-weight: 600; }
+button.primary { background: var(--accent); border-color: var(--accent); color: #111; }
+button:disabled { opacity: 0.5; cursor: default; }
+button:disabled:hover { border-color: var(--border); }
