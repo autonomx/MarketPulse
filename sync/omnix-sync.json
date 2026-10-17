@@ -1,5 +1,5 @@
 {
- "commit": "1d51102844a057bf75cf9e0b828c0208150762b0",
+ "commit": "5eb3f34459bd14f4befa200f0674f0e51f5a0b1d",
  "derived": {
   "pyproject.toml": "418462422a19766d7cd9e09accea65f94fc5b9a908e5fb41eb4279e167522a44",
   "web/package.json": "937d3d627e85e0db5106a9f7a1e2b43b87cd88fb6750de181fcd2ea5153a10a0"
@@ -2720,13 +2720,13 @@
   "src/tests/persistence/test_trading_company_financials_integration.py": "cc24c22d86dd897447c82bf1f33e73b048e2d111b95d46620ef1caff375fa480",
   "src/tests/persistence/test_trading_company_profiles_integration.py": "21df0cd5380e5d199648ec1c3cb243f5c834c25dbe07e3e3c70a2ff131b5680e",
   "src/tests/persistence/test_trading_corporate_events_integration.py": "6ea0c82cf0a2f17914eef4a663751725c3cb4fcf9d80a8bdc9bcb66cb413647b",
-  "src/tests/persistence/test_trading_desktop_notifications_integration.py": "ec7e89607820f1c3742c9aa0fe0a1be4a274efa21ceef805a610480e0325a857",
+  "src/tests/persistence/test_trading_desktop_notifications_integration.py": "ef37c7c3ef861a6a017887c2c51664b2269be007cbb29900cf5b402b1ea32bc5",
   "src/tests/persistence/test_trading_fundamental_snapshots_integration.py": "4b93d0d047db6522aa51ecbc435fb1d086d1463e08f66d528232e728adff86a2",
   "src/tests/persistence/test_trading_market_breadth_integration.py": "395278e24db516d554be7f36fe62ddb8e4aa101cb7c2b0cc1a969dbcbaf1daa9",
   "src/tests/persistence/test_trading_notification_delivery_integration.py": "fdcc60d8ccbfd4f4f24825af5f1645ef1e49d76047915d4899a6afff2893672c",
   "src/tests/persistence/test_trading_order_gateway_integration.py": "c65e05bf20ff40ed84b5356490c4d96d2b266b6733e8caed670d1409218045b1",
   "src/tests/persistence/test_trading_paper_liquidity_integration.py": "795deaedaf410a2a9d065ce9e5275f809e2a49dfe599310499d51288672e5d86",
-  "src/tests/persistence/test_trading_paper_margin_integration.py": "34e576ca4c8ebf7f1a01832a61d5a329054bb26e9ef68da831121883d0383960",
+  "src/tests/persistence/test_trading_paper_margin_integration.py": "d92eb4a19057e9fa7df81c5cbed94931527ec18c1c873b2c3aedc18603e1cab5",
   "src/tests/persistence/test_trading_paper_order_types_integration.py": "b66d0555295362991fc7fb6f2e0b7f1288099874a2a1c8c990ef8366c0b131b6",
   "src/tests/persistence/test_trading_scanner_runs_integration.py": "0ff5ad3876ea159e84f421a7c769d1bb5e31e7ee238994366d283c62846a6cbe",
   "src/tests/persistence/test_trading_script_alerts_integration.py": "a71f42af4bed84ced5d47410a9516e541dc95b8db452d3ed015dc0f36a470548",
@@ -4579,5 +4579,5 @@
   "web/vitest.workspace.config.ts": "f1f2382afdf7550337092061b966ac32b22fb2286174c89b691bc35703795507"
  },
  "source": "F:/LLM/omnix",
- "synced_at": "2026-10-17T07:18:59+00:00"
+ "synced_at": "2026-10-17T08:04:10+00:00"
 }

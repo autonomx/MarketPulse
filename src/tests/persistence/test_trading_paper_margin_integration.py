@@ -289,6 +289,14 @@ def test_a_margin_call_is_sent_by_email_once_when_the_account_asks(paper) -> Non
         assert "Sold" in delivery.message and symbol in delivery.message and "notified" in delivery.message
     finally:
         settings().save_email(previous)
+        # Pending rows left behind would be claimed by other tests' delivery monitors.
+        with paper.uow() as work:
+            work.connection.execute(
+                "DELETE FROM omnix_trading_notification_deliveries WHERE workspace_id = %s AND event_kind = 'margin_call' "
+                "AND created_at >= %s",
+                (paper.context.workspace_id, started),
+            )
+            work.commit()
 
 
 def test_margin_call_notifications_are_a_setting_that_keeps_the_rest(paper) -> None:

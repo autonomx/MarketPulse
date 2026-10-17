@@ -86,6 +86,8 @@ def test_a_desktop_alert_is_queued_claimed_with_its_target_and_delivered(outbox)
     monitor = NotificationDeliveryMonitor(
         repository_factory=lambda: NotificationDeliveryRepository(context=context, uow_factory=uow),
         senders={"desktop": DesktopSender(post=post)},
+        # One pass reaches this row even behind other tests' leftover due rows in the shared workspace.
+        max_sends=10_000,
         clock=lambda: BASE,
     )
     asyncio.run(monitor.run_once())
