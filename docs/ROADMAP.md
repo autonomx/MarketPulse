@@ -871,10 +871,10 @@ Q-4 (data repo name, logo) is open and blocks nothing.
 
 ## 11. Implementation status (2026-10-17)
 
-Written for the owner and for whoever builds MarketPulse next. MarketPulse: branch `implementation`, pushed to
-`autonomx/MarketPulse` `main` (public), release `v0.1.0`. Omnix: the 20 seam commits on `marketpulse-seams` were
-fast-forwarded into the local `main` on 2026-10-17; that `main` is **not pushed** to `autonomx/omnix` yet, so the
-mirror's Omnix commit (`6e0cfd3392`) exists only on this machine until it is.
+Written for the owner and for whoever builds MarketPulse next. MarketPulse: pushed to `autonomx/MarketPulse` `main`
+(public), latest release `v0.1.2`. Omnix: the seam commits on `marketpulse-seams` are fast-forwarded into the local
+`main`; that `main` is **not pushed** to `autonomx/omnix` yet, so the mirror's Omnix commit (`148212c788`) exists
+only on this machine until it is.
 
 ### Status by phase
 
@@ -882,14 +882,14 @@ mirror's Omnix commit (`6e0cfd3392`) exists only on this machine until it is.
 |-------|--------|----------|
 | 0 Bootstrap | Done | Repo, licences, brand from the supplied logo (`brand/`, `build/render_brand.py`). |
 | 1 Omnix seams | Done | S-1, S-2, S-3, S-5, S-6, S-7, S-8, S-10 and W-1 to W-4 are committed on `marketpulse-seams`, each with tests. S-4 was dropped in revision 3. S-11 is not needed: the owner kept Omnix's own public repository for research data (D-9), which MarketPulse's mirrored default already reads without a token. |
-| 2 Mirror and sync | Done | `sync/sync_from_omnix.py`; mirror at Omnix `6e0cfd3392`, 3351 files after Phase 12, `check` clean. |
+| 2 Mirror and sync | Done | `sync/sync_from_omnix.py`; mirror at Omnix `148212c788`, 3354 files, `check` clean. |
 | 3 Headless server | Done | Full schema migrates on PostgreSQL 17.11; trading-only `/ready`; `src/tests_marketpulse` env tests. |
 | 4 Web app | Done | MarketPulse build (trading only), 15 Playwright e2e tests, own screenshot baselines. The e2e config serves the MarketPulse entry with Omnix's trading mocks and no 401s instead of a separate auth-session mock. `stage.py web` refuses a build carrying other features' chunks (the bundle check). |
 | 5 Embedded runtime | Done | Staged-runtime gate: ready from nothing, password-only PostgreSQL, user-script worker; a killed supervisor leaves no backend process (`test_killing_the_supervisor_leaves_no_backend_process`). The "clean Windows user account" run was a fresh data folder on this machine, not a separate account. |
 | 6 Electron shell | Done | 12 smoke tests plus the Google shell test (first run, window sets over BroadcastChannel, navigation lock, drag regions and the window-controls area, permissions, crash view, quit, `--quit`, restart). The crash view is a native dialog (Reload or Close), not a bundled page. |
 | 7 Accounts | Done; Google off by the owner's choice | Password flow end to end; guest refusal test. Google: the shell's button opens the system browser, and the real gateway sends it to Google with the client, PKCE and loopback callback (`desktop/tests/google.spec.ts`). The callback and handoff legs pass against a local identity provider (mirrored S-5 tests). Google stays off for now (owner, 2026-10-17): it appears only when a build carries `google-oauth.json`. |
 | 8 Alerts, tray, background | Done | Notification while hidden, click-through to the chart, taskbar/Dock badge, simulated sleep with exactly-once delivery. Tray toggles for start at login and keep-awake during market hours; a daily `pg_dump` while running (keep 7). A delivery retried after the listener was down is covered by Omnix's sender tests, not an end-to-end test. |
-| 9 Windows packaging | Done; signing waits for a certificate | NSIS per-user installer. Install, update over a running app and uninstall checked in a scratch folder. Migration rollback test. electron-updater end to end against a local feed (`desktop/scripts/update-feed-builds.mjs`): 0.1.0 downloaded 0.1.1, installed it on quit, and 0.1.1 started on the same data. Signing turns on from the environment (Azure Artifact Signing or a certificate file), checked with a throwaway self-signed certificate. Updates come from `autonomx/MarketPulse` releases; the repository is public (2026-10-17), so installs read them without a token. Releases `v0.1.0` and `v0.1.1` (the review fixes) are published there, unsigned. The public feed was checked end to end: 0.1.0 downloaded from GitHub and installed, found 0.1.1 on the feed, installed it on quit after a clean PostgreSQL shutdown, and 0.1.1 started on the same data without re-initialising or crash recovery. |
+| 9 Windows packaging | Done; signing waits for a certificate | NSIS per-user installer. Install, update over a running app and uninstall checked in a scratch folder. Migration rollback test. electron-updater end to end against a local feed (`desktop/scripts/update-feed-builds.mjs`): 0.1.0 downloaded 0.1.1, installed it on quit, and 0.1.1 started on the same data. Signing turns on from the environment (Azure Artifact Signing or a certificate file), checked with a throwaway self-signed certificate. Updates come from `autonomx/MarketPulse` releases; the repository is public (2026-10-17), so installs read them without a token. Releases `v0.1.0`, `v0.1.1` (the review fixes) and `v0.1.2` (the fixes below) are published there, unsigned. The public feed was checked end to end: 0.1.0 downloaded from GitHub and installed, found 0.1.1 on the feed, installed it on quit after a clean PostgreSQL shutdown, and 0.1.1 started on the same data without re-initialising or crash recovery. |
 | 10 Omnix data import | Done | File › Import from Omnix…: market reference data (MP-10.1) and, optionally, one workspace's documents, alerts and paper accounts as the owner's (MP-10.2). Dry run first, read-only on Omnix, each item whole or not at all, idempotent. Checked on a copy of the real schema under row-level security (336 paper accounts, 5770 rows). |
 | 11 macOS | Ready; the Mac run is deferred (owner) | Per-platform pins and staging, mac targets, entitlements, notarization switch, tray template, Dock, Keychain (S-8), cross-platform tests. Not yet run on a Mac: see `docs/MACOS.md`. |
 | 12 Slim the mirror | Done | Omnix refactors (owner approved): RPG's replay routes mount only with RPG, the chat store takes the desktop companion's hook only when it is enabled, and the persistence conftest follows `OMNIX_FEATURES`. A new S-1 test checks in a fresh process that a trading-only boot imports nothing of those features but their declarations. The mirror drops the code of rpg, story, audiobook, desktop_companion, character_interactions, live_speech, companion_activity and the vendored TTS. Each keeps its `feature.py`, declarations and migrations, because the full schema ships. Platform research (trading uses it), characters and image (the test conftest wires them) stay. Mirror 4572 to 3351 files; app source in the build 29 to 15 MB. The trading set, the staged gates, the Electron suite and an installed run pass on the reduced mirror. Dependencies and build-only files were pruned earlier (sizes below). |
@@ -937,6 +937,18 @@ mirror's Omnix commit (`6e0cfd3392`) exists only on this machine until it is.
   - `sync check` reports unrecorded files inside excluded subtrees, and `stage.py` copies mirrored code from the lock;
   - smaller hardening: notification clicks and redirects follow the navigation rules, shell-page IPC is matched
     exactly, installed apps ignore `MARKETPULSE_RESOURCES`, diagnostics read the right folder on macOS.
+- **Fixes found while taking the README screenshots (2026-10-17, release 0.1.2), all made in Omnix and synced:**
+  - Financials, earnings and company profiles never loaded: SEC refuses requests without a contact email. Each SEC
+    request now carries the signed-in user's account email (the owner's for guests and scheduled work; the owner
+    chose this). Without any email nothing is sent and Financials asks the user to add one under Settings, Account.
+    The account settings and the README say the email goes to the SEC.
+  - The scanner and the replay backtest rendered unstyled: their stylesheets were never imported. A web test now
+    fails on any stylesheet nothing imports. Backtest results show two decimal places.
+  - Multi-year charts repeated "Jan 2, 9:30 AM" on every year tick; ticks are labelled by kind (year, month, day,
+    time).
+  - Financials' revenue and income bars collapsed in the bottom dock.
+  - The indicator library's author label, two menu labels, the auto-created SHADOW paper accounts and the light
+    theme's title bar no longer show Omnix or TradingView names or the dark palette.
 
 ### Findings for the owner
 
@@ -963,10 +975,12 @@ ibapi 10.50.2.
 
 ### Verification at the last commit
 
-- Trading test set plus `src/tests_marketpulse`, trading-only on the reduced mirror: 2194 tests (2149 + 45), none failed, 2 skipped.
+- Trading test set plus `src/tests_marketpulse`, trading-only on the reduced mirror: 2205 tests, none failed, 2 skipped.
 - Electron: 20 tests (12 smoke, the Google shell test, 7 unit).
-- Web: both typechecks clean; vitest 1348 tests in 192 files; 15 Playwright e2e tests.
-- Installer: install, update over the running app and uninstall in a scratch folder whose path has an apostrophe.
+- Web: both typechecks clean; vitest 1351 tests; 15 Playwright e2e tests; the unimported-stylesheet check.
+- Installer (0.1.2): install, start to ready in 16 s, `--quit` with a clean PostgreSQL shutdown, and uninstall
+  keeping the data, in a scratch folder whose path has an apostrophe. Financials, the scanner, the backtest and a
+  five-year chart were checked in the running app with live data.
 
 PostgreSQL tests ran on scratch clusters only.
 
