@@ -9,7 +9,7 @@ describe('TradingChartTypeMenu', () => {
     render(<TradingChartTypeMenu value="candlestick" onChange={vi.fn()} />);
     fireEvent.click(screen.getByRole('button', { name: 'Chart type' }));
 
-    expect(screen.getByRole('listbox', { name: 'TradingView chart types' })).toBeInTheDocument();
+    expect(screen.getByRole('listbox', { name: 'Chart types' })).toBeInTheDocument();
     expect(screen.getByRole('option', { name: 'Candles' })).toHaveAttribute('aria-selected', 'true');
     expect(screen.getByRole('option', { name: 'Heikin Ashi' })).toBeInTheDocument();
   });

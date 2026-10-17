@@ -68,7 +68,7 @@ test('Trading terminal smoke covers flexible layout, saved workspaces, drawings,
     await expect(rangeButton).toHaveAttribute('aria-pressed', 'true');
   }
   await timeframe.click();
-  const intervalMenu = page.getByRole('dialog', { name: 'TradingView intervals' });
+  const intervalMenu = page.getByRole('dialog', { name: 'Intervals' });
   await expect(intervalMenu).toBeVisible();
   await expect(intervalMenu.getByRole('group', { name: 'Ticks' })).toContainText('1 tick');
   await expect(intervalMenu.getByRole('group', { name: 'Ranges' })).toContainText('1000 ranges');

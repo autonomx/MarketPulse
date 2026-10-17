@@ -121,7 +121,7 @@ export function TradingIntervalMenu({
           <span className="trading-menu-caret" aria-hidden="true">⌄</span>
         </summary>
         {/* A dialog, not a listbox: it holds a form and favourite buttons beside the intervals. */}
-        <div className="trading-interval-menu" role="dialog" aria-label="TradingView intervals">
+        <div className="trading-interval-menu" role="dialog" aria-label="Intervals">
           <form className="trading-interval-custom" aria-label="Custom interval" onSubmit={applyCustom}>
             <input
               aria-label="Custom interval"

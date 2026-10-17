@@ -135,7 +135,7 @@ export function TradingChartTypeMenu({
           ref={menuRef}
           className="trading-chart-type-menu"
           role="listbox"
-          aria-label="TradingView chart types"
+          aria-label="Chart types"
           style={{ top: menuPosition.top, left: menuPosition.left }}
           onPointerDown={(event) => event.stopPropagation()}
         >
