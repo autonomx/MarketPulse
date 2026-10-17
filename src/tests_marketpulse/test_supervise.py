@@ -13,7 +13,7 @@ from pathlib import Path
 import pytest
 
 from marketpulse.env import LaunchConfig
-from marketpulse.supervise import Supervisor, SupervisorError, keep_newest, port_free
+from marketpulse.supervise import Supervisor, SupervisorError, keep_newest, port_free, pump_log, rotate_log
 
 ROOT = Path(__file__).resolve().parents[2]
 STAGE = ROOT / "build" / "stage"
@@ -72,6 +72,39 @@ def test_this_data_folders_own_running_cluster_may_hold_the_postgres_port(tmp_pa
         supervisor.start_postgres()
 
     assert steps == [{"event": "step", "step": "postgres", "message": "Reconnecting to the database"}]
+
+
+def test_logs_rotate_past_their_size_keeping_the_newest(tmp_path):
+    log = tmp_path / "gateway.log"
+    for generation in "abcde":
+        log.write_text(generation * 20, encoding="utf-8")
+        rotate_log(log, max_bytes=10, keep=3)
+
+    assert not log.exists()
+    assert [(tmp_path / f"gateway.log.{index}").read_text(encoding="utf-8")[0] for index in (1, 2, 3)] == ["e", "d", "c"]
+    assert not (tmp_path / "gateway.log.4").exists()
+    small = tmp_path / "postgres.log"
+    small.write_text("short", encoding="utf-8")
+    rotate_log(small, max_bytes=10)
+    assert small.read_text(encoding="utf-8") == "short"
+
+
+def test_the_gateway_log_pump_rotates_while_the_gateway_runs(tmp_path, monkeypatch):
+    import io
+
+    import marketpulse.supervise as supervise
+
+    monkeypatch.setattr(supervise, "LOG_MAX_BYTES", 100)
+    # 29-byte lines: every fourth line takes the file past 100 bytes and rotates it.
+    lines = b"".join(f"line {index:03d} of the gateway log\n".encode() for index in range(22))
+
+    pump_log(io.BytesIO(lines), tmp_path / "gateway.log")
+
+    rotated = sorted(path.name for path in tmp_path.iterdir())
+    assert rotated == ["gateway.log", "gateway.log.1", "gateway.log.2", "gateway.log.3"]
+    assert (tmp_path / "gateway.log").read_bytes() == b"line 020 of the gateway log\nline 021 of the gateway log\n"
+    assert (tmp_path / "gateway.log.1").read_bytes().startswith(b"line 016 ")
+    assert all(path.stat().st_size <= 100 + 40 for path in tmp_path.iterdir())
 
 
 def test_only_the_newest_snapshots_are_kept(tmp_path):

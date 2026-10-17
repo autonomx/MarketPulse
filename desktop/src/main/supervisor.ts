@@ -1,10 +1,24 @@
 import { spawn, type ChildProcessWithoutNullStreams } from 'node:child_process';
 import { EventEmitter } from 'node:events';
-import { createWriteStream, mkdirSync, writeFileSync } from 'node:fs';
+import { createWriteStream, existsSync, mkdirSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { createInterface } from 'node:readline';
 import type { DesktopPaths } from './paths';
 import type { DesktopSettings } from './settings';
+
+/** supervisor.log -> .1 -> .2 -> .3 once it passes 10 MB, as marketpulse.supervise rotates the backend's logs. */
+export function rotateLog(path: string, maxBytes = 10 * 2 ** 20, keep = 3): void {
+  try {
+    if (!existsSync(path) || statSync(path).size <= maxBytes) return;
+    rmSync(`${path}.${keep}`, { force: true });
+    for (let index = keep - 1; index >= 1; index -= 1) {
+      if (existsSync(`${path}.${index}`)) renameSync(`${path}.${index}`, `${path}.${index + 1}`);
+    }
+    renameSync(path, `${path}.1`);
+  } catch {
+    // A log that cannot be rotated now is rotated at the next start.
+  }
+}
 
 export type SupervisorEvent =
   | { event: 'step'; step: string; message: string }
@@ -78,7 +92,9 @@ export class BackendSupervisor extends EventEmitter {
       windowsHide: true,
     });
     this.child = child;
-    const stderr = createWriteStream(join(this.paths.logs, 'supervisor.log'), { flags: 'a' });
+    const logPath = join(this.paths.logs, 'supervisor.log');
+    rotateLog(logPath);
+    const stderr = createWriteStream(logPath, { flags: 'a' });
     child.stderr.pipe(stderr);
     createInterface({ input: child.stdout }).on('line', (line) => this.receive(line));
     child.on('exit', (code) => {

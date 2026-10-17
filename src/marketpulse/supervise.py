@@ -56,6 +56,9 @@ SNAPSHOTS_KEPT = 3
 BACKUPS_KEPT = 7
 READY_TIMEOUT_SECONDS = 420.0
 GATEWAY_RESTARTS = 3
+# Logs: rotated past LOG_MAX_BYTES into name.1 … name.LOGS_KEPT (the gateway's while it runs, the rest at start).
+LOG_MAX_BYTES = 10 * 2**20
+LOGS_KEPT = 3
 POSTGRES_SETTINGS = """
 # MarketPulse desktop settings
 listen_addresses = '127.0.0.1'
@@ -145,6 +148,34 @@ def keep_newest(folder: Path, count: int) -> None:
             shutil.rmtree(stale, ignore_errors=True)
         else:
             stale.unlink(missing_ok=True)
+
+
+def rotate_log(path: Path, max_bytes: int | None = None, keep: int = LOGS_KEPT) -> None:
+    """Shifts path -> path.1 -> … -> path.<keep> (the oldest is dropped) once path is over max_bytes."""
+    limit = LOG_MAX_BYTES if max_bytes is None else max_bytes
+    if not path.is_file() or path.stat().st_size <= limit:
+        return
+    path.with_name(f"{path.name}.{keep}").unlink(missing_ok=True)
+    for index in range(keep - 1, 0, -1):
+        older = path.with_name(f"{path.name}.{index}")
+        if older.exists():
+            older.replace(path.with_name(f"{path.name}.{index + 1}"))
+    path.replace(path.with_name(f"{path.name}.1"))
+
+
+def pump_log(stream: Any, path: Path) -> None:
+    """Copies a child's output into path line by line, rotating it as it grows (the gateway runs for weeks)."""
+    output = path.open("ab")
+    try:
+        for line in iter(stream.readline, b""):
+            output.write(line)
+            output.flush()
+            if output.tell() > LOG_MAX_BYTES:
+                output.close()
+                rotate_log(path)
+                output = path.open("ab")
+    finally:
+        output.close()
 
 
 def _stamp() -> str:
@@ -330,11 +361,11 @@ class Supervisor:
 
     def start_gateway(self) -> None:
         self._step("gateway", "Starting MarketPulse")
-        log = (self.logs / "gateway.log").open("ab")
         self.gateway = subprocess.Popen(self._serve_command("serve"), env=self._serve_env(), stdin=subprocess.PIPE,
-                                        stdout=log, stderr=subprocess.STDOUT, cwd=str(self.data),
+                                        stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd=str(self.data),
                                         creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
-        log.close()
+        threading.Thread(target=pump_log, args=(self.gateway.stdout, self.logs / "gateway.log"), name="gateway-log",
+                         daemon=True).start()
 
     def wait_ready(self, timeout: float = READY_TIMEOUT_SECONDS) -> None:
         deadline = time.monotonic() + timeout
@@ -389,6 +420,11 @@ class Supervisor:
     def start(self) -> dict[str, Any]:
         self.data.mkdir(parents=True, exist_ok=True)
         self.logs.mkdir(parents=True, exist_ok=True)
+        for log in self.logs.glob("*.log"):
+            # supervisor.log is the shell's to rotate; a log another process holds open is left for next time.
+            if log.name != "supervisor.log":
+                with contextlib.suppress(OSError):
+                    rotate_log(log)
         self.check_ports()
         self.init_cluster()
         self.start_postgres()

@@ -3,6 +3,10 @@ import { request } from 'node:http';
 import { classify } from '../src/main/navigation';
 import { AlertBadge, alertDotBitmap, NotificationListener, type DesktopDelivery } from '../src/main/notifications';
 import { isMarketHours } from '../src/main/marketHours';
+import { rotateLog } from '../src/main/supervisor';
+import { mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
 const ORIGIN = 'http://127.0.0.1:47800';
 
@@ -102,6 +106,22 @@ test('the alert badge counts alerts that arrive while MarketPulse is not in fron
   expect(dot.length).toBe(16 * 16 * 4);
   expect([...dot.subarray((8 * 16 + 8) * 4, (8 * 16 + 8) * 4 + 4)]).toEqual([0x45, 0x36, 0xf2, 255]);
   expect(dot[3]).toBe(0); // a transparent corner
+});
+
+test('the shell rotates supervisor.log past its size, keeping three', () => {
+  const folder = mkdtempSync(join(tmpdir(), 'marketpulse-log-'));
+  const log = join(folder, 'supervisor.log');
+  for (const generation of ['a', 'b', 'c', 'd', 'e']) {
+    writeFileSync(log, generation.repeat(20));
+    rotateLog(log, 10, 3);
+  }
+  writeFileSync(log, 'short');
+  rotateLog(log, 10, 3);
+
+  expect(readdirSync(folder).sort()).toEqual(['supervisor.log', 'supervisor.log.1', 'supervisor.log.2', 'supervisor.log.3']);
+  expect(readFileSync(join(folder, 'supervisor.log.1'), 'utf8')[0]).toBe('e');
+  expect(readFileSync(join(folder, 'supervisor.log.3'), 'utf8')[0]).toBe('c');
+  rmSync(folder, { recursive: true, force: true });
 });
 
 test('market hours cover 04:00 to 20:00 New York time on weekdays', () => {

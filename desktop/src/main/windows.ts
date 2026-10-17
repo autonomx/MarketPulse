@@ -1,4 +1,4 @@
-import { BrowserWindow, screen, shell, type BrowserWindowConstructorOptions, type Rectangle } from 'electron';
+import { BrowserWindow, dialog, screen, shell, type BrowserWindowConstructorOptions, type Rectangle } from 'electron';
 import { join } from 'node:path';
 import { classify } from './navigation';
 import type { DesktopPaths } from './paths';
@@ -126,6 +126,25 @@ export class WindowManager {
       if (decision === 'open-external') void shell.openExternal(url);
     });
     contents.on('will-attach-webview', (event) => event.preventDefault());
+    // The crash view (MP-6.2): a page whose renderer died says so and offers a reload, instead of a blank window.
+    contents.on('render-process-gone', (_event, details) => {
+      if (details.reason === 'clean-exit' || window.isDestroyed()) return;
+      const cause = details.reason === 'oom' ? 'ran out of memory' : 'stopped unexpectedly';
+      void dialog.showMessageBox(window, {
+        type: 'warning',
+        title: 'MarketPulse',
+        message: 'This window stopped working.',
+        detail: `The page ${cause} (${details.reason}). Alerts, monitors and your data are unaffected: the MarketPulse `
+          + 'service keeps running.',
+        buttons: ['Reload', 'Close window'],
+        defaultId: 0,
+        cancelId: 1,
+      }).then(({ response }) => {
+        if (window.isDestroyed()) return;
+        if (response === 0) contents.reload();
+        else window.close();
+      });
+    });
   }
 
   /** A small local page (splash, error, crash) from the app bundle. */

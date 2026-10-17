@@ -161,6 +161,38 @@ test('an alert that fires while every window is hidden raises a native notificat
   await app.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows()[0]?.show());
 });
 
+test('a window whose page crashes offers a reload and comes back', async () => {
+  // The crash dialog is native; answer it with "Reload" from the main process.
+  await app.evaluate(({ dialog }) => {
+    (dialog as unknown as { showMessageBox: () => Promise<unknown> }).showMessageBox = async () => {
+      (globalThis as unknown as { crashDialogs: number }).crashDialogs = ((globalThis as unknown as { crashDialogs?: number }).crashDialogs ?? 0) + 1;
+      return { response: 0, checkboxChecked: false };
+    };
+  });
+  const id = await app.evaluate(({ BrowserWindow }, url) => {
+    const contents = BrowserWindow.getAllWindows().find((window) => window.webContents.getURL() === url)!.webContents;
+    contents.forcefullyCrashRenderer();
+    return contents.id;
+  }, main.url());
+  // Playwright keeps a crashed page dead, so the reloaded page is checked from the main process.
+  await expect.poll(() => app.evaluate(async ({ webContents }, contentsId) => {
+    const contents = webContents.fromId(contentsId);
+    const dialogs = (globalThis as unknown as { crashDialogs?: number }).crashDialogs ?? 0;
+    if (!contents) return 'gone';
+    if (contents.isCrashed()) return `crashed (dialogs ${dialogs})`;
+    try {
+      const found = await Promise.race([
+        contents.executeJavaScript("Boolean(document.querySelector('.trading-workspace'))"),
+        new Promise((resolveLater) => setTimeout(() => resolveLater(`timeout (dialogs ${dialogs}, loading ${contents.isLoading()})`), 2000)),
+      ]);
+      if (typeof found === 'string') return found;
+      return found ? 'ready' : `no workspace at ${contents.getURL()}`;
+    } catch (error) {
+      return `script failed: ${String(error)}`;
+    }
+  }, id), { timeout: 90_000 }).toBe('ready');
+});
+
 test('the Omnix import page checks a source before importing, through the backend', async () => {
   await app.evaluate(({ Menu }) => Menu.getApplicationMenu()?.getMenuItemById('import-omnix')?.click());
   const page = await appWindow(app, (url) => url.endsWith('/pages/import.html'), 30_000);
