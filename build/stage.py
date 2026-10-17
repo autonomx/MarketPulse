@@ -3,6 +3,7 @@
     python build/stage.py all [--platform windows-x64|macos-arm64|macos-x64]
     python build/stage.py python       # CPython 3.11 + requirements/gateway.lock.txt + ibapi, isolated import roots
     python build/stage.py postgres     # PostgreSQL 17 bin, lib, share (no pgAdmin, docs, headers, symbols)
+    python build/stage.py prune        # drop what the running app never loads (debug symbols, pip, Tk, tests, …)
     python build/stage.py app          # the backend source (src/app, src/marketpulse, the gateway scripts)
     python build/stage.py web          # the built web app (run `npm --prefix web run build` first)
     python build/stage.py check        # import check in the staged interpreter
@@ -61,6 +62,28 @@ APP_SCRIPTS = ("scripts/run_omnix_gateway.py", "scripts/gateway_cluster.py")
 # desktop/build-resources/installer.nsh caps the install folder at 112 characters: 260, less 19 for the
 # \resources\runtime\ between them, less this, less 1.
 MAX_RELATIVE_PATH = 128
+# What the running app never loads (roadmap Phase 12's installer size), as globs below python/ and postgres/.
+PRUNE_PYTHON = (
+    "**/*.pdb",  # debug symbols
+    "tcl", "DLLs/_tkinter.pyd", "DLLs/tcl86t.dll", "DLLs/tk86t.dll", "Lib/tkinter", "Lib/idlelib", "Lib/turtledemo",
+    "lib/tcl*", "lib/tk*", "lib/itcl*", "lib/python3.11/tkinter", "lib/python3.11/idlelib",
+    "lib/python3.11/turtledemo", "lib/python3.11/lib-dynload/_tkinter*",
+    # The installer's tools: dependencies are installed at staging, never at run time.
+    "*/site-packages/pip", "*/site-packages/pip-*.dist-info", "*/site-packages/setuptools",
+    "*/site-packages/setuptools-*.dist-info", "*/site-packages/_distutils_hack", "*/site-packages/distutils-precedence.pth",
+    "lib/python3.11/site-packages/pip", "lib/python3.11/site-packages/pip-*.dist-info",
+    "lib/python3.11/site-packages/setuptools", "lib/python3.11/site-packages/setuptools-*.dist-info",
+    "lib/python3.11/site-packages/_distutils_hack", "lib/python3.11/site-packages/distutils-precedence.pth",
+    # Third-party packages' own test suites.
+    "**/site-packages/*/tests", "**/site-packages/*/*/tests", "**/site-packages/*/*/*/tests",
+)
+PRUNE_POSTGRES = (
+    # pgAdmin's StackBuilder and its wxWidgets, embedded-SQL tooling, benchmarks and test helpers.
+    "bin/stackbuilder*", "bin/wx*", "bin/ecpg*", "bin/libecpg*", "bin/libpgtypes*", "bin/pgbench*", "bin/pg_test_*",
+    "bin/test_*", "bin/testplug*",
+    # Link-time libraries and message translations (the cluster runs with lc_messages C).
+    "bin/*.lib", "lib/*.lib", "lib/*.a", "share/locale",
+)
 
 
 class StageError(RuntimeError):
@@ -243,6 +266,28 @@ def stage_postgres(target_platform: str) -> None:
     print(f"postgres staged: {PINS['postgres']['version']} ({target_platform})")
 
 
+def _remove(root: Path, patterns: tuple[str, ...]) -> int:
+    """Deletes what the globs match below root; returns the bytes freed."""
+    freed = 0
+    for pattern in patterns:
+        for path in sorted(root.glob(pattern), key=lambda found: len(found.parts), reverse=True):
+            if not path.exists() and not path.is_symlink():
+                continue
+            if path.is_dir() and not path.is_symlink():
+                freed += sum(child.stat().st_size for child in path.rglob("*") if child.is_file() and not child.is_symlink())
+                shutil.rmtree(path)
+            else:
+                freed += path.lstat().st_size
+                path.unlink()
+    return freed
+
+
+def prune(_target_platform: str) -> None:
+    python_freed = _remove(STAGE / "python", PRUNE_PYTHON) if (STAGE / "python").is_dir() else 0
+    postgres_freed = _remove(STAGE / "postgres", PRUNE_POSTGRES) if (STAGE / "postgres").is_dir() else 0
+    print(f"pruned {python_freed / 2**20:.0f} MB from python, {postgres_freed / 2**20:.0f} MB from postgres")
+
+
 def stage_app(target_platform: str) -> None:
     app_dir = STAGE / "app"
     _reset(app_dir)
@@ -296,13 +341,14 @@ def check(target_platform: str) -> None:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("part", choices=["all", "python", "postgres", "app", "web", "check"])
+    parser.add_argument("part", choices=["all", "python", "postgres", "prune", "app", "web", "check"])
     parser.add_argument("--platform", choices=["windows-x64", "macos-arm64", "macos-x64"], default=None)
     args = parser.parse_args(argv)
-    steps = {"python": stage_python, "postgres": stage_postgres, "app": stage_app, "web": stage_web, "check": check}
+    steps = {"python": stage_python, "postgres": stage_postgres, "prune": prune, "app": stage_app, "web": stage_web,
+             "check": check}
     try:
         target_platform = args.platform or host_platform()
-        for name in (["postgres", "python", "app", "web", "check"] if args.part == "all" else [args.part]):
+        for name in (["postgres", "python", "prune", "app", "web", "check"] if args.part == "all" else [args.part]):
             steps[name](target_platform)
     except (StageError, subprocess.CalledProcessError) as exc:
         print(f"error: {exc}", file=sys.stderr)
