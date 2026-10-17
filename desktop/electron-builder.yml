@@ -29,7 +29,7 @@ win:
       arch: [x64]
   icon: ../brand/out/icon.ico
   executableName: MarketPulse
-  # Unsigned until the owner picks Azure Trusted Signing or an OV/EV certificate (MP-9.2).
+  # Signing comes from the environment (scripts/dist.mjs, MP-9.2); without it the build is unsigned.
   signAndEditExecutable: true
 nsis:
   oneClick: false
@@ -65,10 +65,11 @@ dmg:
   sign: false
   title: MarketPulse
 publish:
-  # A public releases feed, so no token ships in the app (MP-9.3). Owner creates autonomx/marketpulse-releases.
+  # Releases of autonomx/MarketPulse (MP-9.3). The repository must be public: the updater reads releases without a
+  # token, and none may ship inside the app.
   provider: github
   owner: autonomx
-  repo: marketpulse-releases
+  repo: MarketPulse
   releaseType: release
 electronFuses:
   runAsNode: false

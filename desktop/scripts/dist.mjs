@@ -37,6 +37,27 @@ const appleCredentials = Boolean(
 );
 if (mac && !appleCredentials) console.warn('no Apple notarization credentials: the app is not notarized');
 
+// Windows signing (roadmap MP-9.2), from the environment; without it the installer is unsigned.
+// - Azure Artifact Signing (formerly Trusted Signing): MARKETPULSE_AZURE_SIGNING_ENDPOINT, _ACCOUNT and _PROFILE, plus
+//   AZURE_TENANT_ID, AZURE_CLIENT_ID and AZURE_CLIENT_SECRET for the signing identity.
+// - A certificate file: electron-builder's own WIN_CSC_LINK (or CSC_LINK) and CSC_KEY_PASSWORD.
+// MARKETPULSE_SIGNING_PUBLISHER is the certificate's subject name; updates are installed only when signed by it.
+const env = process.env;
+const publisher = env.MARKETPULSE_SIGNING_PUBLISHER;
+const azure = env.MARKETPULSE_AZURE_SIGNING_ENDPOINT && env.MARKETPULSE_AZURE_SIGNING_ACCOUNT
+  && env.MARKETPULSE_AZURE_SIGNING_PROFILE;
+const certificate = env.WIN_CSC_LINK || env.CSC_LINK;
+let windowsSigning = {};
+if (!mac && (azure || certificate)) {
+  if (!publisher) fail('set MARKETPULSE_SIGNING_PUBLISHER to the signing certificate subject name');
+  windowsSigning = azure
+    ? { azureSignOptions: { publisherName: publisher, endpoint: env.MARKETPULSE_AZURE_SIGNING_ENDPOINT,
+      codeSigningAccountName: env.MARKETPULSE_AZURE_SIGNING_ACCOUNT, certificateProfileName: env.MARKETPULSE_AZURE_SIGNING_PROFILE } }
+    : { signtoolOptions: { publisherName: publisher } };
+} else if (!mac) {
+  console.warn('no signing configured: the installer is unsigned (SmartScreen warns on other machines)');
+}
+
 const targets = mac
   ? Platform.MAC.createTarget(['dmg', 'zip'], stagedPlatform === 'macos-arm64' ? Arch.arm64 : Arch.x64)
   : Platform.WINDOWS.createTarget(['nsis'], Arch.x64);
@@ -46,7 +67,7 @@ await build({
   targets,
   config: {
     extends: join(root, 'electron-builder.yml'),
-    ...(mac ? { mac: { notarize: appleCredentials } } : {}),
+    ...(mac ? { mac: { notarize: appleCredentials } } : { win: windowsSigning }),
   },
   publish: process.argv.includes('--publish') ? 'always' : 'never',
 });
