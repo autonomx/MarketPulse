@@ -123,3 +123,43 @@ export class NotificationListener {
     this.handlers.show(product, count === 1 ? '1 alert fired while you were away.' : `${count} alerts fired while you were away.`, '/trading');
   }
 }
+
+/**
+ * The alert badge (roadmap MP-8.2): alerts that arrive while MarketPulse is not in front are counted, and the count
+ * clears when the user comes back. `apply` shows it (a taskbar overlay on Windows, the Dock badge on macOS).
+ */
+export class AlertBadge {
+  private count = 0;
+
+  constructor(private readonly apply: (count: number) => void) {}
+
+  alert(focused: boolean): void {
+    if (focused) return;
+    this.count += 1;
+    this.apply(this.count);
+  }
+
+  seen(): void {
+    if (this.count === 0) return;
+    this.count = 0;
+    this.apply(0);
+  }
+}
+
+/** A 16 px red dot (the chart's down colour) for the Windows taskbar overlay, as premultiplied BGRA. */
+export function alertDotBitmap(size = 16): Buffer {
+  const pixels = Buffer.alloc(size * size * 4);
+  const centre = (size - 1) / 2;
+  const radius = size / 2 - 1;
+  for (let y = 0; y < size; y += 1) {
+    for (let x = 0; x < size; x += 1) {
+      const alpha = Math.max(0, Math.min(1, radius + 0.5 - Math.hypot(x - centre, y - centre)));
+      const offset = (y * size + x) * 4;
+      pixels[offset] = Math.round(0x45 * alpha);
+      pixels[offset + 1] = Math.round(0x36 * alpha);
+      pixels[offset + 2] = Math.round(0xf2 * alpha);
+      pixels[offset + 3] = Math.round(255 * alpha);
+    }
+  }
+  return pixels;
+}

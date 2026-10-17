@@ -4,7 +4,7 @@ import {
 } from 'electron';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { NotificationListener } from './notifications';
+import { AlertBadge, alertDotBitmap, NotificationListener } from './notifications';
 import { desktopPaths } from './paths';
 import { SecretStore, secretEnvironment } from './secrets';
 import { SettingsStore, choosePorts, type DesktopSettings } from './settings';
@@ -81,6 +81,14 @@ async function main(): Promise<void> {
     }
   };
 
+  // The alert badge (MP-8.2): a dot on the taskbar button on Windows, a count on the Dock on macOS.
+  const alertDot = nativeImage.createFromBitmap(alertDotBitmap(16), { width: 16, height: 16 });
+  const badge = new AlertBadge((count) => {
+    if (process.platform === 'darwin') app.dock?.setBadge(count ? String(count) : '');
+    else windows.get('main')?.setOverlayIcon(count ? alertDot : null, count ? `${count} new alert${count === 1 ? '' : 's'}` : '');
+  });
+  app.on('browser-window-focus', () => badge.seen());
+
   const listener = new NotificationListener(secrets.notifySecret, {
     signedInWorkspace,
     show: (title, body, url) => {
@@ -97,6 +105,7 @@ async function main(): Promise<void> {
       });
       notification.show();
       tray?.setToolTip(`MarketPulse — ${title}`);
+      badge.alert(BrowserWindow.getFocusedWindow() !== null);
     },
   });
   try {

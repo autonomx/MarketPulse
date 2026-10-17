@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { request } from 'node:http';
 import { classify } from '../src/main/navigation';
-import { NotificationListener, type DesktopDelivery } from '../src/main/notifications';
+import { AlertBadge, alertDotBitmap, NotificationListener, type DesktopDelivery } from '../src/main/notifications';
 import { isMarketHours } from '../src/main/marketHours';
 
 const ORIGIN = 'http://127.0.0.1:47800';
@@ -84,6 +84,24 @@ test.describe('desktop notification listener (roadmap §4.9)', () => {
     expect(shown).toEqual(['3 alerts fired while you were away.']);
     listener.close();
   });
+});
+
+test('the alert badge counts alerts that arrive while MarketPulse is not in front, and clears when it is', () => {
+  const shown: number[] = [];
+  const badge = new AlertBadge((count) => shown.push(count));
+
+  badge.alert(true);
+  badge.alert(false);
+  badge.alert(false);
+  badge.seen();
+  badge.seen();
+  badge.alert(false);
+
+  expect(shown).toEqual([1, 2, 0, 1]);
+  const dot = alertDotBitmap(16);
+  expect(dot.length).toBe(16 * 16 * 4);
+  expect([...dot.subarray((8 * 16 + 8) * 4, (8 * 16 + 8) * 4 + 4)]).toEqual([0x45, 0x36, 0xf2, 255]);
+  expect(dot[3]).toBe(0); // a transparent corner
 });
 
 test('market hours cover 04:00 to 20:00 New York time on weekdays', () => {
