@@ -32,6 +32,8 @@ win:
   # Signing comes from the environment (scripts/dist.mjs, MP-9.2); without it the build is unsigned.
   signAndEditExecutable: true
 nsis:
+  # No spaces: GitHub renames uploaded files that have them, which would break latest.yml's link.
+  artifactName: ${productName}-Setup-${version}.${ext}
   oneClick: false
   perMachine: false
   allowElevation: false
