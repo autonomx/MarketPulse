@@ -77,6 +77,18 @@ PRUNE_PYTHON = (
     # Third-party packages' own test suites.
     "**/site-packages/*/tests", "**/site-packages/*/*/tests", "**/site-packages/*/*/*/tests",
 )
+# Packages only Omnix's other features use (embeddings, speech, documents, images, smart plugs). Trading never
+# imports them: a trading-only boot loads none, and all 2148 tests in sync/trading-tests.txt pass with them made
+# unimportable. numpy stays (gateway-level code reaches it).
+TRADING_UNUSED = (
+    "onnxruntime", "onnxruntime-*.dist-info", "tokenizers", "tokenizers-*.dist-info",
+    "huggingface_hub", "huggingface_hub-*.dist-info", "hf_xet", "hf_xet-*.dist-info",
+    "soundfile.py", "_soundfile.py", "_soundfile_data", "soundfile-*.dist-info", "pypdf", "pypdf-*.dist-info",
+    "docx", "python_docx-*.dist-info", "kasa", "python_kasa-*.dist-info", "PIL", "pillow.libs", "pillow-*.dist-info",
+    "pandas", "pandas.libs", "pandas-*.dist-info", "lxml", "lxml-*.dist-info", "fsspec", "fsspec-*.dist-info",
+)
+PRUNE_PYTHON += tuple(f"{site}/{name}" for site in ("Lib/site-packages", "lib/python3.11/site-packages")
+                      for name in TRADING_UNUSED)
 PRUNE_POSTGRES = (
     # pgAdmin's StackBuilder and its wxWidgets, embedded-SQL tooling, benchmarks and test helpers.
     "bin/stackbuilder*", "bin/wx*", "bin/ecpg*", "bin/libecpg*", "bin/libpgtypes*", "bin/pgbench*", "bin/pg_test_*",
