@@ -226,7 +226,19 @@ class Supervisor:
         with (self.pgdata / "postgresql.conf").open("a", encoding="utf-8") as conf:
             conf.write(POSTGRES_SETTINGS.format(port=self.config.pg_port))
 
+    def postgres_running(self) -> bool:
+        """Whether this data folder's cluster is already up (e.g. left by a supervisor that was killed on macOS)."""
+        if not (self.pgdata / "postmaster.pid").exists():
+            return False
+        status = subprocess.run([self._bin("pg_ctl"), "-D", str(self.pgdata), "status"], env=self.env,
+                                stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                                check=False, creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
+        return status.returncode == 0
+
     def start_postgres(self) -> None:
+        if self.postgres_running():
+            self._step("postgres", "Reconnecting to the database")
+            return
         self._step("postgres", "Starting the database")
         log = self.logs / "postgres.log"
         command = [self._bin("pg_ctl"), "-D", str(self.pgdata), "-l", str(log), "-w", "-t", "120",

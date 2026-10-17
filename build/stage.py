@@ -1,19 +1,24 @@
-"""Stage the runtime the desktop app ships (roadmap Phase 5).
+"""Stage the runtime the desktop app ships (roadmap Phases 5 and 11).
 
-    python build/stage.py all          # everything below, into build/stage/
-    python build/stage.py python       # CPython 3.11 + requirements/gateway.lock.txt + ibapi, with python311._pth
+    python build/stage.py all [--platform windows-x64|macos-arm64|macos-x64]
+    python build/stage.py python       # CPython 3.11 + requirements/gateway.lock.txt + ibapi, isolated import roots
     python build/stage.py postgres     # PostgreSQL 17 bin, lib, share (no pgAdmin, docs, headers, symbols)
     python build/stage.py app          # the backend source (src/app, src/marketpulse, the gateway scripts)
     python build/stage.py web          # the built web app (run `npm --prefix web run build` first)
     python build/stage.py check        # import check in the staged interpreter
 
-build/stage/ becomes the installed app's resources folder:
+The platform defaults to the machine's. Python's dependencies are installed by the staged interpreter itself, so a
+platform's runtime is staged on that platform (macOS on the owner's Mac).
 
-    python/    CPython; python311._pth lists ../app/src and ../app/scripts, so PYTHON* variables are ignored
+build/stage/ becomes the installed app's resources folder (``runtime``):
+
+    python/    CPython; Windows: python311._pth lists ../app/src and ../app/scripts (PYTHON* variables ignored);
+               macOS: site-packages/marketpulse.pth adds the same roots
     postgres/  PostgreSQL binaries
     app/       src/app, src/marketpulse, scripts/run_omnix_gateway.py, scripts/gateway_cluster.py
     web/dist/  the MarketPulse web build
     licenses/  third-party licence texts
+    build-info.json  the MarketPulse and Omnix commits and pinned versions
 
 Every downloaded archive is checked against build/pins.json before it is used; nothing is fetched unpinned.
 """
@@ -22,7 +27,10 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
+import platform
 import shutil
+import stat
 import subprocess
 import sys
 import tarfile
@@ -35,7 +43,7 @@ BUILD = ROOT / "build"
 CACHE = BUILD / "cache"
 STAGE = BUILD / "stage"
 PINS = json.loads((BUILD / "pins.json").read_text(encoding="utf-8"))
-PTH = """python311.zip
+WINDOWS_PTH = """python311.zip
 .
 DLLs
 Lib
@@ -44,6 +52,8 @@ Lib/site-packages
 ../app/scripts
 import site
 """
+# Relative to python/lib/python3.11/site-packages.
+MACOS_PTH = "../../../../app/src\n../../../../app/scripts\n"
 POSTGRES_KEEP = ("bin", "lib", "share", "server_license.txt", "commandlinetools_3rd_party_licenses.txt")
 APP_SOURCES = ("src/app", "src/marketpulse")
 APP_SCRIPTS = ("scripts/run_omnix_gateway.py", "scripts/gateway_cluster.py")
@@ -51,6 +61,14 @@ APP_SCRIPTS = ("scripts/run_omnix_gateway.py", "scripts/gateway_cluster.py")
 
 class StageError(RuntimeError):
     pass
+
+
+def host_platform() -> str:
+    if sys.platform == "win32":
+        return "windows-x64"
+    if sys.platform == "darwin":
+        return "macos-arm64" if platform.machine() == "arm64" else "macos-x64"
+    raise StageError(f"no runtime is defined for {sys.platform}")
 
 
 def sha256_file(path: Path) -> str:
@@ -69,14 +87,17 @@ def tree_sha256(root: Path) -> str:
     return digest.hexdigest()
 
 
-def fetch(pin: dict, folder: str) -> Path:
-    """The pinned archive from the cache, downloading it once; refused if its SHA-256 differs."""
+def fetch(family: str, target_platform: str) -> Path:
+    """The pinned archive for a platform from the cache, downloading it once; refused if its SHA-256 differs."""
+    pin = PINS[family]["platforms"][target_platform]
+    url = PINS[family]["url"].format(asset=pin["asset"])
+    folder = family if target_platform == "windows-x64" else f"{family}-macos"
     target = CACHE / folder / pin["asset"]
     if not target.is_file():
         target.parent.mkdir(parents=True, exist_ok=True)
-        print(f"downloading {pin['url']}")
+        print(f"downloading {url}")
         partial = target.with_suffix(target.suffix + ".part")
-        with urllib.request.urlopen(pin["url"], timeout=600) as response, partial.open("wb") as stream:
+        with urllib.request.urlopen(url, timeout=600) as response, partial.open("wb") as stream:
             shutil.copyfileobj(response, stream)
         partial.replace(target)
     actual = sha256_file(target)
@@ -91,41 +112,61 @@ def _reset(path: Path) -> None:
     path.mkdir(parents=True)
 
 
+def _inside(base: Path, target: Path) -> bool:
+    return target.resolve().is_relative_to(base.resolve())
+
+
 def _safe_extract_tar(archive: Path, destination: Path, strip: str) -> None:
+    """Extracts members under ``strip/``; symlinks only when they stay inside the destination."""
     with tarfile.open(archive) as tar:
         for member in tar.getmembers():
-            name = member.name
-            if not name.startswith(strip + "/"):
+            if not member.name.startswith(strip + "/"):
                 continue
-            relative = name[len(strip) + 1:]
-            target = (destination / relative).resolve()
-            if not target.is_relative_to(destination.resolve()) or member.issym() or member.islnk():
-                raise StageError(f"unsafe archive member {name}")
+            relative = member.name[len(strip) + 1:]
+            target = destination / relative
+            if not _inside(destination, target) or member.islnk():
+                raise StageError(f"unsafe archive member {member.name}")
             if member.isdir():
                 target.mkdir(parents=True, exist_ok=True)
+            elif member.issym():
+                if not _inside(destination, target.parent / member.linkname):
+                    raise StageError(f"symlink leaves the stage: {member.name} -> {member.linkname}")
+                target.parent.mkdir(parents=True, exist_ok=True)
+                os.symlink(member.linkname, target)
             elif member.isfile():
                 target.parent.mkdir(parents=True, exist_ok=True)
                 with tar.extractfile(member) as source, target.open("wb") as out:  # type: ignore[union-attr]
                     shutil.copyfileobj(source, out)
+                if member.mode & 0o111:
+                    target.chmod(target.stat().st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
 
 
-def stage_python() -> None:
-    pin = PINS["python"]
-    archive = fetch(pin, "python")
+def python_paths(target_platform: str) -> tuple[Path, Path, Path]:
+    """(interpreter, site-packages, import-roots file) of the staged Python."""
     python_dir = STAGE / "python"
-    _reset(python_dir)
-    _safe_extract_tar(archive, python_dir, "python")
-    interpreter = python_dir / "python.exe"
-    if not interpreter.is_file():
-        raise StageError("python.exe missing after extraction")
+    if target_platform == "windows-x64":
+        return python_dir / "python.exe", python_dir / "Lib" / "site-packages", python_dir / "python311._pth"
+    site = python_dir / "lib" / "python3.11" / "site-packages"
+    return python_dir / "bin" / "python3", site, site / "marketpulse.pth"
+
+
+def stage_python(target_platform: str) -> None:
+    if target_platform != host_platform():
+        raise StageError(f"stage the {target_platform} Python on that platform (its interpreter installs the lock)")
+    archive = fetch("python", target_platform)
+    _reset(STAGE / "python")
+    _safe_extract_tar(archive, STAGE / "python", "python")
+    interpreter, site_packages, roots = python_paths(target_platform)
+    if not interpreter.exists():
+        raise StageError(f"{interpreter.name} missing after extraction")
     lock = ROOT / "requirements" / "gateway.lock.txt"
     print(f"installing {lock.relative_to(ROOT)} into the staged interpreter")
     subprocess.run([str(interpreter), "-m", "pip", "install", "--require-hashes", "--no-deps", "--no-warn-script-location",
                     "--disable-pip-version-check", "--no-cache-dir", "-r", str(lock)], check=True)
-    stage_ibapi(python_dir / "Lib" / "site-packages")
-    # Written last: with a ._pth file the interpreter is isolated and pip's own imports change.
-    (python_dir / "python311._pth").write_text(PTH, encoding="utf-8", newline="\n")
-    print(f"python staged: {pin['version']}")
+    stage_ibapi(site_packages)
+    # Written last: on Windows a ._pth file isolates the interpreter, which changes pip's own imports.
+    roots.write_text(WINDOWS_PTH if target_platform == "windows-x64" else MACOS_PTH, encoding="utf-8", newline="\n")
+    print(f"python staged: {PINS['python']['version']} ({target_platform})")
 
 
 def stage_ibapi(site_packages: Path) -> None:
@@ -151,13 +192,12 @@ def stage_ibapi(site_packages: Path) -> None:
     # GPL: the client's complete source ships alongside (it is pure Python, so the installed files are the source).
     (licenses / "SOURCE.txt").write_text(
         "The Interactive Brokers Python API client (ibapi) is bundled under GPL-3.0-or-later.\n"
-        f"Version {pin['version']}; its complete source is the python/Lib/site-packages/ibapi folder of this install.\n",
+        f"Version {pin['version']}; its complete source is the ibapi folder of the bundled Python's site-packages.\n",
         encoding="utf-8")
 
 
-def stage_postgres() -> None:
-    pin = PINS["postgres"]
-    archive = fetch(pin, "postgres")
+def stage_postgres(target_platform: str) -> None:
+    archive = fetch("postgres", target_platform)
     postgres_dir = STAGE / "postgres"
     _reset(postgres_dir)
     with zipfile.ZipFile(archive) as zipped:
@@ -168,24 +208,38 @@ def stage_postgres() -> None:
             relative = name[len("pgsql/"):]
             if not relative or relative.split("/", 1)[0] not in POSTGRES_KEEP:
                 continue
-            target = (postgres_dir / relative).resolve()
-            if not target.is_relative_to(postgres_dir.resolve()):
+            target = postgres_dir / relative
+            if not _inside(postgres_dir, target):
                 raise StageError(f"unsafe archive member {name}")
             if name.endswith("/"):
                 target.mkdir(parents=True, exist_ok=True)
                 continue
             target.parent.mkdir(parents=True, exist_ok=True)
+            mode = member.external_attr >> 16
+            if stat.S_ISLNK(mode):
+                # macOS archives store dylib version links as symlinks.
+                link = zipped.read(member).decode("utf-8")
+                if not _inside(postgres_dir, target.parent / link):
+                    raise StageError(f"symlink leaves the stage: {name} -> {link}")
+                if sys.platform != "win32":
+                    os.symlink(link, target)
+                elif (target.parent / link).exists():
+                    # A Windows test extraction of the macOS archive: a copy stands in for the link.
+                    shutil.copyfile(target.parent / link, target)
+                continue
             with zipped.open(member) as source, target.open("wb") as out:
                 shutil.copyfileobj(source, out)
+            if mode & 0o111:
+                target.chmod(target.stat().st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
     licenses = STAGE / "licenses" / "postgresql"
     licenses.mkdir(parents=True, exist_ok=True)
     for name in ("server_license.txt", "commandlinetools_3rd_party_licenses.txt"):
         if (postgres_dir / name).is_file():
             shutil.copy2(postgres_dir / name, licenses / name)
-    print(f"postgres staged: {pin['version']}")
+    print(f"postgres staged: {PINS['postgres']['version']} ({target_platform})")
 
 
-def stage_app() -> None:
+def stage_app(_target_platform: str) -> None:
     app_dir = STAGE / "app"
     _reset(app_dir)
     ignore = shutil.ignore_patterns("__pycache__", "*.pyc", "tests", "test_*.py")
@@ -208,7 +262,7 @@ def stage_app() -> None:
     print("app staged")
 
 
-def stage_web() -> None:
+def stage_web(_target_platform: str) -> None:
     dist = ROOT / "web" / "dist"
     if not (dist / "index.html").is_file():
         raise StageError("web/dist is missing: run `npm --prefix web run build` first")
@@ -219,26 +273,29 @@ def stage_web() -> None:
     print("web staged")
 
 
-def check() -> None:
-    interpreter = STAGE / "python" / "python.exe"
+def check(target_platform: str) -> None:
+    interpreter, _, _ = python_paths(target_platform)
     script = (
         "import sys, app, gateway_cluster, marketpulse, marketpulse.desktop_app, ibapi, psycopg, uvicorn;"
         "from ibapi.client import EClient;"
-        "print('imports ok', sys.version.split()[0], sys.flags.isolated or 'pth')"
+        "print('imports ok', sys.version.split()[0])"
     )
-    subprocess.run([str(interpreter), "-c", script], check=True, cwd=str(STAGE),
-                   env={"SystemRoot": __import__("os").environ.get("SystemRoot", r"C:\Windows"),
-                        "PYTHONPATH": r"C:\nowhere", "MARKETPULSE_WEB_DIST": str(STAGE / "web" / "dist")})
+    env = {"MARKETPULSE_WEB_DIST": str(STAGE / "web" / "dist"), "PYTHONPATH": str(Path("/nowhere"))}
+    if sys.platform == "win32":
+        env["SystemRoot"] = os.environ.get("SystemRoot", r"C:\Windows")
+    subprocess.run([str(interpreter), "-c", script], check=True, cwd=str(STAGE), env=env)
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("part", choices=["all", "python", "postgres", "app", "web", "check"])
-    part = parser.parse_args(argv).part
+    parser.add_argument("--platform", choices=["windows-x64", "macos-arm64", "macos-x64"], default=None)
+    args = parser.parse_args(argv)
     steps = {"python": stage_python, "postgres": stage_postgres, "app": stage_app, "web": stage_web, "check": check}
     try:
-        for name in (["postgres", "python", "app", "web", "check"] if part == "all" else [part]):
-            steps[name]()
+        target_platform = args.platform or host_platform()
+        for name in (["postgres", "python", "app", "web", "check"] if args.part == "all" else [args.part]):
+            steps[name](target_platform)
     except (StageError, subprocess.CalledProcessError) as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 1

@@ -122,6 +122,8 @@ def child_environment(config: LaunchConfig, inherited: Mapping[str, str] | None 
         "OMNIX_PROVIDER_SECRETS_PATH": str(secrets / "provider-api-keys.dpapi"),
         "OMNIX_SECRET_STORE": "dpapi",
         "OMNIX_SECRET_STORE_PATH": str(secrets / "omnix-secrets.dpapi"),
+        # macOS: MarketPulse's own Keychain item for its file key, apart from Omnix's (S-8).
+        "OMNIX_KEYCHAIN_SERVICE": "MarketPulse",
         "OMNIX_LOG_FORMAT": "json",
         # Desktop notifications go to the supervisor's loopback listener (S-6).
         "OMNIX_TRADING_DESKTOP_NOTIFY_URL": f"http://127.0.0.1:{config.notify_port}/notify",
