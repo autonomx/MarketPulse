@@ -1,0 +1,9 @@
+@layer features {
+  .trading-drawing-properties-anchor{position:relative;display:inline-flex}
+  .trading-drawing-properties{position:absolute;z-index:20;top:calc(100% + 4px);right:0;display:grid;gap:6px;min-width:220px;max-height:360px;overflow:auto;padding:10px;border:1px solid color-mix(in srgb, var(--c-blue-710) 30%, transparent);border-radius:6px;background:var(--c-slate-170-2);box-shadow:0 10px 26px color-mix(in srgb, var(--c-neutral-0) 40%, transparent);font-size:10px}
+  .trading-drawing-properties-row{display:grid;grid-template-columns:90px minmax(0,1fr);align-items:center;gap:8px;color:var(--c-slate-790)}
+  .trading-drawing-properties-records{display:grid;gap:4px}
+  .trading-drawing-properties-record{display:flex;align-items:center;gap:4px}
+  .trading-drawing-properties-record input[type=number]{width:64px}
+  .trading-drawing-properties-unreadable{color:var(--c-slate-680);font-style:italic}
+}

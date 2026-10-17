@@ -1,0 +1,167 @@
+@layer features {
+  .rpg-map-surface {
+    display: grid;
+    gap: 0.85rem;
+    min-width: 0;
+  }
+
+  .rpg-map-canvas-frame {
+    aspect-ratio: 16 / 10;
+    background: var(--c-neutral-180);
+    border: 1px solid color-mix(in srgb, var(--c-yellow-870) 28%, transparent);
+    border-radius: 1rem;
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--c-neutral-1000) 4%, transparent), 0 1.4rem 3rem color-mix(in srgb, var(--c-neutral-0) 30%, transparent);
+    min-height: 24rem;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .rpg-map-canvas {
+    display: block;
+    height: 100%;
+    width: 100%;
+  }
+
+  .rpg-map-parchment-tile {
+    fill: var(--c-yellow-730);
+  }
+
+  .rpg-map-parchment-line {
+    fill: none;
+    opacity: 0.08;
+    stroke: var(--c-yellow-380);
+    stroke-width: 4;
+  }
+
+  .rpg-map-object {
+    color: var(--c-neutral-230);
+    transition: opacity 160ms ease;
+  }
+
+  .rpg-map-object rect {
+    fill: var(--c-amber-480);
+    stroke: var(--c-neutral-230);
+    stroke-width: 18;
+  }
+
+  .rpg-map-object path {
+    fill: var(--c-amber-340);
+    stroke: var(--c-neutral-230);
+    stroke-linejoin: round;
+    stroke-width: 18;
+  }
+
+  .rpg-map-object-landmark rect,
+  .rpg-map-object-gate rect {
+    fill: var(--c-slate-450);
+  }
+
+  .rpg-map-object-landmark path,
+  .rpg-map-object-gate path {
+    fill: var(--c-slate-330);
+  }
+
+  .rpg-map-object text {
+    fill: var(--c-neutral-210);
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 118px;
+    font-variant: small-caps;
+    font-weight: 700;
+    paint-order: stroke;
+    pointer-events: none;
+    stroke: color-mix(in srgb, var(--c-yellow-870) 88%, transparent);
+    stroke-width: 20;
+    text-anchor: middle;
+  }
+
+  .rpg-map-object-hidden {
+    opacity: 0.16;
+  }
+
+  .rpg-map-player-marker circle {
+    fill: color-mix(in srgb, var(--c-yellow-840) 20%, transparent);
+    stroke: var(--c-yellow-880);
+    stroke-width: 18;
+  }
+
+  .rpg-map-player-marker path {
+    fill: var(--c-yellow-880);
+    stroke: var(--c-yellow-270);
+    stroke-width: 16;
+  }
+
+  .rpg-map-state-message {
+    align-items: flex-start;
+    background: color-mix(in srgb, var(--c-neutral-1000) 4%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-neutral-1000) 10%, transparent);
+    border-radius: 0.85rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    justify-content: center;
+    min-height: 8rem;
+    padding: 1rem 1.1rem;
+  }
+
+  .rpg-map-state-message span {
+    color: var(--mantine-color-dimmed, var(--c-neutral-730));
+  }
+
+  .rpg-map-state-compact {
+    min-height: auto;
+    padding: 0.7rem 0.85rem;
+  }
+
+  .rpg-map-state-warning {
+    background: color-mix(in srgb, var(--c-amber-620) 12%, transparent);
+    border-color: color-mix(in srgb, var(--c-amber-830) 32%, transparent);
+  }
+
+  .rpg-map-state-error {
+    background: color-mix(in srgb, var(--c-orange-490) 13%, transparent);
+    border-color: color-mix(in srgb, var(--c-red-720) 34%, transparent);
+  }
+
+  .rpg-map-surface-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .rpg-map-surface-meta span {
+    background: color-mix(in srgb, var(--c-neutral-1000) 5%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-neutral-1000) 8%, transparent);
+    border-radius: 999px;
+    color: var(--mantine-color-dimmed, var(--c-neutral-730));
+    font-size: 0.72rem;
+    padding: 0.25rem 0.55rem;
+  }
+
+  .rpg-map-accessible-list {
+    border-top: 1px solid color-mix(in srgb, var(--c-neutral-1000) 8%, transparent);
+    padding-top: 0.75rem;
+  }
+
+  .rpg-map-accessible-list ul {
+    columns: 2;
+    margin: 0.45rem 0 0;
+    padding-left: 1.15rem;
+  }
+
+  .rpg-map-accessible-list li {
+    break-inside: avoid;
+    color: var(--mantine-color-dimmed, var(--c-neutral-730));
+    font-size: 0.78rem;
+    margin-bottom: 0.22rem;
+  }
+
+  @media (max-width: 760px) {
+    .rpg-map-canvas-frame {
+      min-height: 18rem;
+    }
+
+    .rpg-map-accessible-list ul {
+      columns: 1;
+    }
+  }
+}

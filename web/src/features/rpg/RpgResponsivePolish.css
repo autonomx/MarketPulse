@@ -1,0 +1,403 @@
+@layer features {
+  .rpg-live-data-status {
+    margin-bottom: 0.85rem;
+  }
+
+  .rpg-live-data-status-collapsed {
+    gap: 0;
+    padding: 0.72rem 0.85rem;
+  }
+
+  .rpg-live-data-status .rpg-section-heading {
+    align-items: center;
+  }
+
+  .rpg-live-data-summary {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    justify-content: flex-end;
+    min-width: 0;
+  }
+
+  .rpg-live-data-summary > span {
+    color: var(--c-violet-830);
+    font-size: 0.8rem;
+  }
+
+  .rpg-live-data-toggle {
+    min-height: 2.1rem;
+    padding: 0.48rem 0.68rem;
+    white-space: nowrap;
+  }
+
+  .rpg-data-status-grid {
+    display: grid;
+    gap: 0.65rem;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .rpg-data-status-grid[hidden] {
+    display: none;
+  }
+
+  .rpg-data-status-card {
+    background: color-mix(in srgb, var(--c-slate-130) 42%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-violet-660) 12%, transparent);
+    border-radius: 0.7rem;
+    display: grid;
+    gap: 0.45rem;
+    min-width: 0;
+    padding: 0.72rem;
+  }
+
+  .rpg-data-status-card div {
+    align-items: center;
+    display: flex;
+    gap: 0.5rem;
+    justify-content: space-between;
+  }
+
+  .rpg-data-status-card strong {
+    color: var(--c-slate-970-2);
+  }
+
+  .rpg-data-status-card span {
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    padding: 0.22rem 0.48rem;
+  }
+
+  .rpg-data-status-card p {
+    color: var(--c-slate-730);
+    font-size: 0.82rem;
+    line-height: 1.45;
+  }
+
+  .rpg-data-status-loading span,
+  .rpg-data-status-refreshing span {
+    background: color-mix(in srgb, var(--c-blue-630) 16%, transparent);
+    color: var(--c-blue-870);
+  }
+
+  .rpg-data-status-ready span {
+    background: color-mix(in srgb, var(--c-green-720) 14%, transparent);
+    color: var(--c-teal-930);
+  }
+
+  .rpg-data-status-empty span {
+    background: color-mix(in srgb, var(--c-yellow-840) 14%, transparent);
+    color: var(--c-yellow-960);
+  }
+
+  .rpg-data-status-error {
+    border-color: color-mix(in srgb, var(--c-red-720) 36%, transparent);
+  }
+
+  .rpg-data-status-error span {
+    background: color-mix(in srgb, var(--c-red-640) 16%, transparent);
+    color: var(--c-red-890);
+  }
+
+  .rpg-empty-state {
+    border-style: dashed;
+  }
+
+  .rpg-world-grid-card {
+    align-items: stretch;
+    grid-template-columns: repeat(auto-fit, minmax(12.25rem, 1fr));
+  }
+
+  .rpg-world-state,
+  .rpg-encounter-card,
+  .rpg-world-state-row {
+    min-width: 0;
+    overflow-wrap: normal;
+  }
+
+  .rpg-world-state-row {
+    gap: 0.5rem;
+    grid-template-columns: auto minmax(4.7rem, 1fr) minmax(5.4rem, max-content);
+  }
+
+  .rpg-world-state-row > span:nth-child(2),
+  .rpg-world-state-row strong,
+  .rpg-encounter-card strong,
+  .rpg-encounter-card p,
+  .rpg-encounter-card small {
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+
+  .rpg-world-state-row > span:nth-child(2),
+  .rpg-world-state-row strong {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .rpg-world-state-row strong {
+    justify-self: end;
+    max-width: 100%;
+    text-align: right;
+  }
+
+  .rpg-encounter-card {
+    padding: 0.75rem;
+  }
+
+  .rpg-encounter-card p,
+  .rpg-encounter-card small {
+    line-height: 1.35;
+  }
+
+  .rpg-dashboard-grid-left-collapsed {
+    grid-template-columns: minmax(0, 2.15fr) minmax(18rem, 1fr);
+  }
+
+  .rpg-dashboard-grid-right-collapsed {
+    grid-template-columns: minmax(16rem, 0.85fr) minmax(0, 2.15fr);
+  }
+
+  .rpg-dashboard-grid-left-collapsed.rpg-dashboard-grid-right-collapsed {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .rpg-left-rail,
+  .rpg-right-rail {
+    align-content: start;
+  }
+
+  .rpg-left-rail.rpg-rail-expanded,
+  .rpg-right-rail.rpg-rail-expanded {
+    max-height: none;
+    overflow: visible;
+  }
+
+  .rpg-center-stage {
+    align-content: start;
+  }
+
+  .rpg-card,
+  .rpg-event-strip,
+  .rpg-journal-detail,
+  .rpg-loadout-detail,
+  .rpg-combat-deltas {
+    overflow-wrap: anywhere;
+  }
+
+  .rpg-world-grid-card,
+  .rpg-world-grid-card .rpg-card,
+  .rpg-world-state,
+  .rpg-world-state-row,
+  .rpg-encounter-card {
+    overflow-wrap: normal;
+  }
+
+  .rpg-tabs {
+    overflow-x: auto;
+    scrollbar-gutter: stable;
+  }
+
+  .rpg-tabs button {
+    white-space: nowrap;
+  }
+
+  .rpg-journal-list,
+  .rpg-dialogue-stack,
+  .rpg-event-strip ul,
+  .rpg-loadout-layout,
+  .rpg-combat-grid {
+    min-width: 0;
+  }
+
+  .rpg-journal-list {
+    max-height: 24rem;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .rpg-dialogue-stack,
+  .rpg-event-strip ul {
+    overflow-y: auto;
+    padding-right: 0.15rem;
+  }
+
+  .rpg-dialogue-stack {
+    max-height: 38rem;
+  }
+
+  .rpg-event-strip ul {
+    max-height: 30rem;
+  }
+
+  @media (max-width: 48rem) {
+    .rpg-dialogue-stack {
+      min-height: 13rem;
+    }
+  }
+
+  .rpg-loadout-detail,
+  .rpg-combat-deltas {
+    align-content: start;
+  }
+
+  .rpg-inventory-grid,
+  .rpg-hotbar,
+  .rpg-quick-actions,
+  .rpg-combat-actions {
+    min-width: 0;
+  }
+
+  .rpg-item-slot,
+  .rpg-hotbar button,
+  .rpg-quick-actions button,
+  .rpg-combat-action-button,
+  .rpg-mini-button,
+  .rpg-loadout-row-button,
+  .rpg-secondary-button,
+  .rpg-primary-button {
+    touch-action: manipulation;
+  }
+
+  .rpg-list-row strong,
+  .rpg-list-row span,
+  .rpg-party-row strong,
+  .rpg-party-row span,
+  .rpg-quest-row strong,
+  .rpg-quest-row span,
+  .rpg-relationship-row strong,
+  .rpg-report-row strong,
+  .rpg-report-row small,
+  .rpg-job-row strong,
+  .rpg-job-row small {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .rpg-party-member-copy strong,
+  .rpg-party-member-copy span {
+    white-space: nowrap;
+  }
+
+  @media (max-width: 1380px) {
+    .rpg-dashboard-grid-left-collapsed {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .rpg-dashboard-grid-right-collapsed {
+      grid-template-columns: minmax(15rem, 0.85fr) minmax(28rem, 1.8fr);
+    }
+
+    .rpg-dashboard-grid-left-collapsed.rpg-dashboard-grid-right-collapsed {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (max-width: 1180px) {
+    .rpg-workstation {
+      padding: 0.85rem;
+    }
+
+    .rpg-live-data-summary {
+      justify-content: flex-start;
+    }
+
+    .rpg-data-status-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .rpg-dashboard-grid,
+    .rpg-dashboard-grid-left-collapsed,
+    .rpg-dashboard-grid-right-collapsed,
+    .rpg-dashboard-grid-left-collapsed.rpg-dashboard-grid-right-collapsed {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .rpg-right-rail {
+      grid-column: auto;
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (max-width: 760px) {
+    .rpg-workstation {
+      padding: 0.65rem;
+    }
+
+    .rpg-primary-button,
+    .rpg-secondary-button {
+      width: 100%;
+    }
+
+    .rpg-data-status-grid,
+    .rpg-resource-grid,
+    .rpg-combat-overview,
+    .rpg-combat-grid,
+    .rpg-combat-actions,
+    .rpg-hotbar,
+    .rpg-hotbar-command-grid,
+    .rpg-loadout-actions,
+    .rpg-quick-actions {
+      grid-template-columns: 1fr;
+    }
+
+    .rpg-inventory-grid {
+      grid-template-columns: repeat(auto-fill, minmax(3rem, 3rem));
+    }
+
+    .rpg-party-row,
+    .rpg-relationship-row {
+      align-items: start;
+      grid-template-columns: auto minmax(0, 1fr);
+    }
+
+    .rpg-party-row {
+      grid-template-areas:
+        "avatar member"
+        "status status";
+    }
+
+    .rpg-relationship-row .rpg-party-health,
+    .rpg-relationship-row small:last-child {
+      grid-column: 1 / -1;
+    }
+
+    .rpg-world-grid-card {
+      grid-template-columns: 1fr;
+    }
+
+    .rpg-world-state-row {
+      grid-template-columns: auto minmax(0, 1fr);
+    }
+
+    .rpg-world-state-row strong {
+      grid-column: 1 / -1;
+      justify-self: start;
+      text-align: left;
+    }
+
+    .rpg-scene-art,
+    .rpg-map-preview {
+      min-height: 8rem;
+    }
+  }
+}
+
+/* Declarations that must win over every other layer. */
+@layer overrides {
+  @media (prefers-reduced-motion: reduce) {
+  .rpg-workstation *,
+    .rpg-workstation *::before,
+    .rpg-workstation *::after {
+      animation-duration: 0.01ms;
+      animation-iteration-count: 1;
+      scroll-behavior: auto;
+      transition-duration: 0.01ms;
+    }
+  }
+}

@@ -1,0 +1,89 @@
+@layer features {
+  .trading-terminal-header {
+    display: flex;
+    gap: 5px;
+    min-height: 42px;
+    height: 42px;
+    padding: 3px 8px;
+    overflow-x: auto;
+    overflow-y: visible;
+    scrollbar-width: none;
+    white-space: nowrap;
+  }
+
+  .trading-terminal-header::-webkit-scrollbar {
+    display: none;
+  }
+
+  .trading-command-bar {
+    display: contents;
+  }
+
+  .trading-terminal-header > .trading-terminal-brand,
+  .trading-terminal-header > .trading-workspace-switcher,
+  .trading-terminal-header > .trading-layout-switcher,
+  .trading-command-bar > * {
+    flex: 0 0 auto;
+    order: 1;
+  }
+
+  .trading-terminal-header > .trading-terminal-brand {
+    min-width: 178px;
+    order: 0;
+  }
+
+  .trading-header-actions {
+    order: 1;
+    flex: 0 0 auto;
+    margin-left: auto;
+  }
+
+  /*
+   * Scanner / Backtest / Strategies / AI Research are primary terminal
+   * navigation. Paper Trading already has its dedicated lower/right entry point,
+   * so the duplicate fourth shortcut (Trade) stays out of this compact strip.
+   */
+  .trading-tool-shortcuts {
+    position: static;
+    z-index: 1;
+    flex: 0 0 auto;
+    margin-left: auto;
+    padding: 2px 3px;
+    border-left: 1px solid color-mix(in srgb, var(--c-blue-660) 16%, transparent);
+    background: color-mix(in srgb, var(--c-slate-170-2) 98%, transparent);
+    box-shadow: none;
+  }
+
+  .trading-tool-shortcuts > button:nth-child(4) {
+    display: none;
+  }
+
+  @media (max-width: 1000px) {
+    .trading-terminal-header {
+      height: 42px;
+    }
+
+    .trading-tool-shortcuts {
+      position: static;
+      margin-left: 0;
+      box-shadow: none;
+    }
+  }
+}
+
+/* Declarations that must win over every other layer. */
+@layer overrides {
+  .trading-tool-shortcuts {
+    order: 3;
+  }
+
+  .trading-provider-status {
+    order: 2;
+  }
+
+  @media (max-width: 1000px) {
+  .trading-tool-shortcuts {
+      order: 1;
+    }
+  }
+}

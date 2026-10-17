@@ -1,0 +1,3 @@
+# Mirrored files must stay byte-identical to the Omnix git objects they come from (sync/omnix-sync.json
+# records their SHA-256), so git never converts line endings here.
+* -text

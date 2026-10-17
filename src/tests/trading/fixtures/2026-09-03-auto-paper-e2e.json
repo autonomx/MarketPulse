@@ -1,0 +1,48 @@
+{
+  "fixture_version": "sep3-auto-paper-e2e-v1",
+  "session_date": "2026-09-03",
+  "capture_time_utc": "2026-09-03T13:16:18+00:00",
+  "source_url": "https://finviz.com/screener?v=340&s=ta_topgainers",
+  "source_candidate_symbols": ["TLYS", "AEHL", "BIAF", "CHPT", "SNOW"],
+  "selected": {
+    "symbol": "TLYS",
+    "instrument_id": "equity:TLYS",
+    "binding_id": "replay:TLYS",
+    "previous_close": "3.81",
+    "premarket_price": "4.95",
+    "gap_pct": "29.92126",
+    "market_cap": "156440000",
+    "documented_premarket_range": ["4.92", "4.98"],
+    "provisional_session_reference": {
+      "open": "5.55",
+      "high": "6.25",
+      "low": "4.08",
+      "close_level": "4.1338",
+      "volume": "10370000"
+    }
+  },
+  "execution_assumptions": {
+    "premarket_volume": "500000",
+    "premarket_dollar_volume": "2475000",
+    "tod_rvol": "6",
+    "candidate_spread_bps": "30",
+    "execution_bid": "4.94",
+    "execution_ask": "4.95",
+    "execution_last": "4.945",
+    "displayed_size": "100000"
+  },
+  "replay_bars_note": "These 1-minute bars are a deterministic causal replay derived from the already-tested V2 failed-selloff geometry and scaled to TLYS's Sep 3 premarket price. They are not claimed to be TLYS's actual intraday minute bars or proof that a real Sep 3 V2 signal occurred.",
+  "replay_bars": [
+    {"minute": 0, "open": "4.9024", "high": "4.9500", "low": "4.8072", "close": "4.8548", "volume": "150000"},
+    {"minute": 1, "open": "4.8548", "high": "4.8786", "low": "4.5692", "close": "4.6644", "volume": "130000"},
+    {"minute": 2, "open": "4.6644", "high": "4.6882", "low": "4.2837", "close": "4.3788", "volume": "120000"},
+    {"minute": 3, "open": "4.3788", "high": "4.4978", "low": "4.3313", "close": "4.4731", "volume": "100000"},
+    {"minute": 4, "open": "4.4731", "high": "4.5683", "low": "4.4493", "close": "4.5683", "volume": "100000"},
+    {"minute": 5, "open": "4.5683", "high": "4.6873", "low": "4.5445", "close": "4.6635", "volume": "110000"},
+    {"minute": 6, "open": "4.6635", "high": "4.7596", "low": "4.6163", "close": "4.7115", "volume": "120000"},
+    {"minute": 7, "open": "4.7115", "high": "4.7356", "low": "4.5923", "close": "4.6163", "volume": "90000"},
+    {"minute": 8, "open": "4.6163", "high": "4.6644", "low": "4.4731", "close": "4.5211", "volume": "80000"},
+    {"minute": 9, "open": "4.5211", "high": "4.6404", "low": "4.4978", "close": "4.6163", "volume": "90000"},
+    {"minute": 10, "open": "4.6404", "high": "4.9500", "low": "4.6163", "close": "4.9024", "volume": "500000"}
+  ]
+}

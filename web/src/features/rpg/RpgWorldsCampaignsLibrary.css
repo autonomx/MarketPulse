@@ -1,0 +1,263 @@
+@layer features {
+  .rpg-world-library {
+    display: grid;
+    gap: 1rem;
+    min-height: 0;
+    padding: 1rem;
+  }
+
+  .rpg-world-library-header,
+  .rpg-world-library-section-heading,
+  .rpg-world-library-overview,
+  .rpg-world-library-actions,
+  .rpg-world-library-scenario-revision {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .rpg-world-library-header > div {
+    max-width: 70rem;
+  }
+
+  .rpg-world-library-header h2,
+  .rpg-world-library-panel h3 {
+    margin: 0;
+  }
+
+  .rpg-world-library-header p,
+  .rpg-world-library-panel p {
+    margin: 0.35rem 0 0;
+  }
+
+  .rpg-world-library-tabs {
+    display: flex;
+    gap: 0.5rem;
+    border-bottom: 1px solid var(--mantine-color-dark-4, var(--c-slate-430));
+    padding-bottom: 0.5rem;
+  }
+
+  .rpg-world-library-tabs button,
+  .rpg-world-library-actions button,
+  .rpg-world-library-form button,
+  .rpg-world-library-scenario-revision button {
+    border: 1px solid var(--mantine-color-dark-3, var(--c-slate-500));
+    border-radius: 0.55rem;
+    background: var(--mantine-color-dark-7, var(--c-neutral-220));
+    color: inherit;
+    cursor: pointer;
+    padding: 0.55rem 0.8rem;
+  }
+
+  .rpg-world-library-tabs button[aria-pressed='true'],
+  .rpg-world-library-actions button:not(:disabled):hover,
+  .rpg-world-library-form button:not(:disabled):hover,
+  .rpg-world-library-scenario-revision button:not(:disabled):hover {
+    border-color: var(--mantine-primary-color-filled, var(--c-indigo-590));
+  }
+
+  .rpg-world-library button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  .rpg-world-library-layout {
+    display: grid;
+    grid-template-columns: minmax(17rem, 23rem) minmax(0, 1fr);
+    gap: 1rem;
+    min-height: 0;
+  }
+
+  .rpg-world-library-sidebar,
+  .rpg-world-library-main {
+    display: grid;
+    align-content: start;
+    gap: 1rem;
+    min-width: 0;
+  }
+
+  .rpg-world-library-panel,
+  .rpg-world-library-card {
+    border: 1px solid var(--mantine-color-dark-4, var(--c-slate-430));
+    border-radius: 0.8rem;
+    background: var(--mantine-color-dark-8, var(--c-neutral-200));
+    padding: 1rem;
+    min-width: 0;
+  }
+
+  .rpg-world-library-world-list,
+  .rpg-world-library-topic-list,
+  .rpg-world-library-release-list,
+  .rpg-world-library-scenario-list {
+    display: grid;
+    gap: 0.65rem;
+    margin-top: 0.75rem;
+  }
+
+  .rpg-world-library-world-list button,
+  .rpg-world-library-topic-list article,
+  .rpg-world-library-release-list article,
+  .rpg-world-library-scenario-list > article {
+    display: grid;
+    gap: 0.25rem;
+    width: 100%;
+    border: 1px solid var(--mantine-color-dark-5, var(--c-neutral-350));
+    border-radius: 0.65rem;
+    background: transparent;
+    color: inherit;
+    padding: 0.7rem;
+    text-align: left;
+  }
+
+  .rpg-world-library-world-list button {
+    cursor: pointer;
+  }
+
+  .rpg-world-library-world-list button.is-selected {
+    border-color: var(--mantine-primary-color-filled, var(--c-indigo-590));
+    box-shadow: inset 0 0 0 1px var(--mantine-primary-color-filled, var(--c-indigo-590));
+  }
+
+  .rpg-world-library-world-list span,
+  .rpg-world-library-world-list small,
+  .rpg-world-library-topic-list span,
+  .rpg-world-library-topic-list small,
+  .rpg-world-library-release-list span,
+  .rpg-world-library-release-list small,
+  .rpg-world-library-scenario-list span,
+  .rpg-world-library-card dd {
+    overflow-wrap: anywhere;
+    opacity: 0.8;
+  }
+
+  .rpg-world-library-form,
+  .rpg-world-library-inline-form {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .rpg-world-library-inline-form {
+    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+    margin-top: 0.75rem;
+  }
+
+  .rpg-world-library-form label,
+  .rpg-world-library-inline-form label {
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .rpg-world-library input,
+  .rpg-world-library select,
+  .rpg-world-library textarea {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid var(--mantine-color-dark-4, var(--c-slate-430));
+    border-radius: 0.5rem;
+    background: var(--mantine-color-dark-7, var(--c-neutral-220));
+    color: inherit;
+    padding: 0.55rem 0.65rem;
+  }
+
+  .rpg-world-library textarea {
+    resize: vertical;
+  }
+
+  .rpg-world-library-two-column,
+  .rpg-world-library-card-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .rpg-world-library-card-grid {
+    grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+  }
+
+  .rpg-world-library-overview dl,
+  .rpg-world-library-card dl {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(5rem, 1fr));
+    gap: 0.75rem;
+    margin: 0;
+  }
+
+  .rpg-world-library-overview dl div,
+  .rpg-world-library-card dl div {
+    display: grid;
+    gap: 0.2rem;
+  }
+
+  .rpg-world-library-overview dt,
+  .rpg-world-library-card dt {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    opacity: 0.65;
+  }
+
+  .rpg-world-library-overview dd,
+  .rpg-world-library-card dd {
+    margin: 0;
+  }
+
+  .rpg-world-library pre {
+    max-height: 22rem;
+    overflow: auto;
+    border-radius: 0.55rem;
+    background: var(--mantine-color-dark-9, var(--c-neutral-180));
+    padding: 0.75rem;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  .rpg-world-library-scenario-revision {
+    border-top: 1px solid var(--mantine-color-dark-5, var(--c-neutral-350));
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+  }
+
+  .rpg-world-library-feedback,
+  .rpg-world-library-error,
+  .rpg-world-library-empty {
+    border-radius: 0.55rem;
+    padding: 0.7rem 0.85rem;
+    margin: 0;
+  }
+
+  .rpg-world-library-feedback {
+    border: 1px solid var(--mantine-color-green-7, var(--c-green-560));
+  }
+
+  .rpg-world-library-error {
+    border: 1px solid var(--mantine-color-red-7, var(--c-orange-580));
+  }
+
+  .rpg-world-library-empty {
+    border: 1px dashed var(--mantine-color-dark-4, var(--c-slate-430));
+  }
+
+  @media (max-width: 74rem) {
+    .rpg-world-library-layout,
+    .rpg-world-library-two-column {
+      grid-template-columns: 1fr;
+    }
+
+    .rpg-world-library-sidebar {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 48rem) {
+    .rpg-world-library-header,
+    .rpg-world-library-overview,
+    .rpg-world-library-sidebar {
+      grid-template-columns: 1fr;
+      display: grid;
+    }
+
+    .rpg-world-library-card-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+}

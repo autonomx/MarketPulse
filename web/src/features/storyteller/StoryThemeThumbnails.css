@@ -1,0 +1,78 @@
+@layer features {
+  /* Default generated-style Storyteller thumbnails.
+     PR 541 keeps this UI-only: stories without explicit cover art receive
+     polished theme art so the Library and project header never look empty. */
+  .storyteller-cover,
+  .storyteller-thumb {
+    background-position: center;
+    background-size: cover;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .storyteller-cover::after,
+  .storyteller-thumb::after {
+    background:
+      radial-gradient(circle at 24% 24%, color-mix(in srgb, var(--c-neutral-1000) 86%, transparent), transparent 0.36rem),
+      linear-gradient(180deg, transparent, color-mix(in srgb, var(--c-slate-130) 42%, transparent));
+    content: '';
+    inset: 0;
+    position: absolute;
+  }
+
+  .storyteller-cover,
+  .storyteller-recent-list button:nth-of-type(6n + 1) .storyteller-thumb,
+  .storyteller-library-section button:nth-of-type(6n + 1) .storyteller-thumb {
+    background-image:
+      radial-gradient(circle at 70% 24%, color-mix(in srgb, var(--c-blue-930) 95%, transparent) 0 0.7rem, transparent 0.78rem),
+      radial-gradient(circle at 58% 58%, color-mix(in srgb, var(--c-yellow-840) 75%, transparent) 0 0.44rem, transparent 0.52rem),
+      linear-gradient(135deg, transparent 44%, color-mix(in srgb, var(--c-yellow-880) 68%, transparent) 45% 50%, transparent 51%),
+      linear-gradient(160deg, var(--c-blue-130) 0%, var(--c-indigo-280-2) 44%, var(--c-violet-490) 72%, var(--c-indigo-210) 100%);
+  }
+
+  .storyteller-recent-list button:nth-of-type(6n + 2) .storyteller-thumb,
+  .storyteller-library-section button:nth-of-type(6n + 2) .storyteller-thumb {
+    background-image:
+      radial-gradient(circle at 76% 20%, color-mix(in srgb, var(--c-violet-810) 90%, transparent) 0 1.1rem, transparent 1.18rem),
+      linear-gradient(90deg, transparent 52%, color-mix(in srgb, var(--c-sky-800) 76%, transparent) 53% 56%, transparent 57%),
+      linear-gradient(160deg, var(--c-indigo-210) 0%, var(--c-indigo-360) 48%, var(--c-pink-660) 100%);
+  }
+
+  .storyteller-recent-list button:nth-of-type(6n + 3) .storyteller-thumb,
+  .storyteller-library-section button:nth-of-type(6n + 3) .storyteller-thumb {
+    background-image:
+      radial-gradient(circle at 72% 28%, color-mix(in srgb, var(--c-yellow-840) 92%, transparent) 0 0.42rem, transparent 0.5rem),
+      radial-gradient(circle at 35% 65%, color-mix(in srgb, var(--c-neutral-1000) 85%, transparent) 0 0.3rem, transparent 0.38rem),
+      linear-gradient(135deg, var(--c-blue-130) 0%, var(--c-indigo-260) 48%, var(--c-amber-410) 100%);
+  }
+
+  .storyteller-recent-list button:nth-of-type(6n + 4) .storyteller-thumb,
+  .storyteller-library-section button:nth-of-type(6n + 4) .storyteller-thumb {
+    background-image:
+      radial-gradient(circle at 62% 18%, color-mix(in srgb, var(--c-blue-930) 95%, transparent) 0 0.72rem, transparent 0.8rem),
+      linear-gradient(145deg, transparent 45%, color-mix(in srgb, var(--c-violet-540) 68%, transparent) 46% 50%, transparent 51%),
+      linear-gradient(160deg, var(--c-blue-130) 0%, var(--c-indigo-210) 44%, var(--c-indigo-360) 100%);
+  }
+
+  .storyteller-recent-list button:nth-of-type(6n + 5) .storyteller-thumb,
+  .storyteller-library-section button:nth-of-type(6n + 5) .storyteller-thumb {
+    background-image:
+      radial-gradient(circle at 28% 22%, color-mix(in srgb, var(--c-yellow-840) 90%, transparent) 0 0.42rem, transparent 0.5rem),
+      radial-gradient(circle at 72% 72%, color-mix(in srgb, var(--c-pink-730) 82%, transparent) 0 0.55rem, transparent 0.64rem),
+      linear-gradient(135deg, var(--c-violet-230) 0%, var(--c-amber-410) 54%, var(--c-purple-830) 100%);
+  }
+
+  .storyteller-recent-list button:nth-of-type(6n + 6) .storyteller-thumb,
+  .storyteller-library-section button:nth-of-type(6n + 6) .storyteller-thumb {
+    background-image:
+      linear-gradient(120deg, color-mix(in srgb, var(--c-violet-540) 88%, transparent) 0 30%, transparent 31%),
+      linear-gradient(240deg, color-mix(in srgb, var(--c-sky-800) 82%, transparent) 0 30%, transparent 31%),
+      radial-gradient(circle at 50% 45%, color-mix(in srgb, var(--c-yellow-840) 85%, transparent) 0 0.7rem, transparent 0.8rem),
+      linear-gradient(160deg, var(--c-blue-130) 0%, var(--c-indigo-360) 55%, var(--c-indigo-210) 100%);
+  }
+
+  .storyteller-thumb.muted {
+    filter: saturate(0.82) contrast(0.96);
+    opacity: 0.92;
+  }
+}

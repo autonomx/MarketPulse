@@ -1,0 +1,328 @@
+@layer features {
+  .trading-news-panel {
+    min-width: 0;
+  }
+
+  .trading-news-panel > header {
+    align-items: center;
+  }
+
+  .trading-news-status[data-status='running'] {
+    background: color-mix(in srgb, var(--c-blue-630) 12%, transparent);
+    color: var(--c-blue-630);
+  }
+
+  .trading-news-status[data-status='ready'] {
+    background: color-mix(in srgb, var(--c-teal-740) 12%, transparent);
+    color: var(--c-teal-600);
+  }
+
+  .trading-news-status[data-status='error'] {
+    background: color-mix(in srgb, var(--c-red-640) 12%, transparent);
+    color: var(--c-red-560);
+  }
+
+  .trading-news-status[data-status='empty'] {
+    background: color-mix(in srgb, var(--c-yellow-770) 14%, transparent);
+    color: var(--c-amber-620);
+  }
+
+  .trading-news-hermes-intro {
+    grid-template-columns: 34px minmax(0, 1fr);
+  }
+
+  .trading-news-hermes-intro > span {
+    background: color-mix(in srgb, var(--c-blue-630) 14%, transparent);
+    color: var(--c-blue-630);
+  }
+
+  .trading-news-research-button {
+    width: 100%;
+    min-height: 42px;
+    font-weight: 600;
+  }
+
+  .trading-news-notice {
+    margin: 0;
+    color: var(--c-slate-600);
+    font-size: 9px;
+    line-height: 1.4;
+  }
+
+  .trading-news-research-summary {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 5px;
+  }
+
+  .trading-news-research-summary > div {
+    display: grid;
+    gap: 3px;
+    min-width: 0;
+    padding: 7px;
+    border: 1px solid color-mix(in srgb, var(--c-blue-660) 12%, transparent);
+    background: color-mix(in srgb, var(--c-slate-150-2) 20%, transparent);
+  }
+
+  .trading-news-research-summary small,
+  .trading-news-evidence small {
+    color: var(--c-slate-600);
+    font-size: 8px;
+  }
+
+  .trading-news-research-summary strong {
+    overflow: hidden;
+    color: var(--c-slate-910);
+    font-size: 10px;
+    text-overflow: ellipsis;
+    text-transform: capitalize;
+    white-space: nowrap;
+  }
+
+  .trading-news-ai-brief {
+    display: grid;
+    gap: 8px;
+    min-width: 0;
+    padding: 9px;
+    border: 1px solid color-mix(in srgb, var(--c-blue-710-2) 22%, transparent);
+    background: linear-gradient(145deg, color-mix(in srgb, var(--c-blue-630) 9%, transparent), color-mix(in srgb, var(--c-slate-150-2) 24%, transparent));
+  }
+
+  .trading-news-ai-brief > header {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .trading-news-ai-brief > header > div {
+    display: grid;
+    gap: 3px;
+    min-width: 0;
+  }
+
+  .trading-news-ai-brief small,
+  .trading-news-brief-meta {
+    color: var(--c-slate-600);
+    font-size: 8px;
+  }
+
+  .trading-news-ai-brief > header strong {
+    color: var(--c-slate-930);
+    font-size: 11px;
+    line-height: 1.3;
+  }
+
+  .trading-news-ai-brief > header > span {
+    flex: 0 0 auto;
+    padding: 3px 5px;
+    border: 1px solid color-mix(in srgb, var(--c-blue-710-2) 20%, transparent);
+    border-radius: 999px;
+    color: var(--c-sky-830);
+    font-size: 8px;
+    text-transform: capitalize;
+  }
+
+  .trading-news-ai-brief > p {
+    margin: 0;
+    color: var(--c-slate-850);
+    font-size: 10px;
+    line-height: 1.5;
+  }
+
+  .trading-news-brief-items {
+    display: grid;
+    gap: 4px;
+  }
+
+  .trading-news-brief-items > strong {
+    color: var(--c-blue-870);
+    font-size: 9px;
+  }
+
+  .trading-news-brief-items ul {
+    display: grid;
+    gap: 4px;
+    margin: 0;
+    padding-left: 14px;
+  }
+
+  .trading-news-brief-items li {
+    color: var(--c-slate-820);
+    font-size: 9px;
+    line-height: 1.4;
+  }
+
+  .trading-news-brief-citations {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 3px;
+    margin-left: 4px;
+  }
+
+  .trading-news-brief-citations a,
+  .trading-news-brief-citations small {
+    color: var(--c-sky-830);
+    font-size: 8px;
+    text-decoration: underline;
+  }
+
+  .trading-news-brief-warning {
+    margin: 0;
+    color: var(--c-yellow-720);
+    font-size: 9px;
+    line-height: 1.4;
+  }
+
+  .trading-news-evidence {
+    display: grid;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .trading-news-evidence > header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .trading-news-evidence > header strong {
+    color: var(--c-slate-910);
+    font-size: 10px;
+  }
+
+  .trading-news-evidence > article {
+    display: grid;
+    gap: 3px;
+    min-width: 0;
+    padding: 6px 7px;
+    border: 1px solid color-mix(in srgb, var(--c-blue-660) 10%, transparent);
+    background: color-mix(in srgb, var(--c-slate-150-2) 20%, transparent);
+  }
+
+  .trading-news-evidence > article a,
+  .trading-news-evidence > article strong {
+    overflow: hidden;
+    color: var(--c-blue-870);
+    font-size: 9px;
+    font-weight: 600;
+    line-height: 1.3;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .trading-news-evidence > article a:hover {
+    color: var(--c-neutral-1000);
+  }
+
+  .trading-news-evidence > p {
+    margin: 0;
+    color: var(--c-slate-600);
+    font-size: 9px;
+  }
+
+  .trading-news-disclaimer {
+    color: var(--c-blue-560);
+    font-size: 8px;
+    line-height: 1.4;
+  }
+}
+
+/* Declarations that must win over every other layer. */
+@layer overrides {
+  :root[data-omnix-appearance='light'] .trading-news-status[data-status='running'] {
+    background: var(--c-slate-970-2);
+    color: var(--c-blue-510);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-news-status[data-status='ready'] {
+    background: var(--c-slate-970);
+    color: var(--c-teal-600);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-news-status[data-status='error'] {
+    background: var(--c-slate-960);
+    color: var(--c-red-560);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-news-status[data-status='empty'] {
+    background: var(--c-slate-980);
+    color: var(--c-yellow-530);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-news-hermes-intro {
+    border-color: var(--trading-light-line-soft);
+    background: var(--trading-light-surface-muted);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-news-hermes-intro > span {
+    background: var(--c-slate-950);
+    color: var(--c-blue-630);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-news-hermes-intro strong {
+    color: var(--trading-light-text);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-news-research-summary > div,
+  :root[data-omnix-appearance='light'] .trading-news-evidence > article {
+    border-color: var(--trading-light-line-soft);
+    background: var(--trading-light-surface-muted);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-news-ai-brief {
+    border-color: var(--c-blue-870);
+    background: var(--c-slate-970-2);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-news-ai-brief > header strong,
+  :root[data-omnix-appearance='light'] .trading-news-brief-items > strong {
+    color: var(--trading-light-text);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-news-ai-brief > p,
+  :root[data-omnix-appearance='light'] .trading-news-brief-items li {
+    color: var(--c-blue-440);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-news-ai-brief small,
+  :root[data-omnix-appearance='light'] .trading-news-brief-meta {
+    color: var(--trading-light-muted);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-news-ai-brief > header > span {
+    border-color: var(--c-blue-870);
+    color: var(--c-blue-460-2);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-news-brief-citations a,
+  :root[data-omnix-appearance='light'] .trading-news-brief-citations small {
+    color: var(--c-blue-460-2);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-news-research-summary small,
+  :root[data-omnix-appearance='light'] .trading-news-evidence small,
+  :root[data-omnix-appearance='light'] .trading-news-notice,
+  :root[data-omnix-appearance='light'] .trading-news-disclaimer {
+    color: var(--trading-light-muted);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-news-research-summary strong,
+  :root[data-omnix-appearance='light'] .trading-news-evidence > header strong {
+    color: var(--trading-light-text);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-news-evidence > article a,
+  :root[data-omnix-appearance='light'] .trading-news-evidence > article strong {
+    color: var(--c-blue-460-2);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-news-evidence > article a:hover {
+    color: var(--c-blue-510);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-news-evidence > p {
+    color: var(--trading-light-muted);
+  }
+}

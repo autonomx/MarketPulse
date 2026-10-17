@@ -1,0 +1,19 @@
+//@version=5
+indicator("Hull Suite (idiom)", overlay=true)
+src = input(close, title="Source")
+modeSwitch = input.string("Hma", title="Hull Variation", options=["Hma", "Thma", "Ehma"])
+length = input(55, title="Length")
+switchColor = input(true, "Color Hull according to trend?")
+HMA(_src, _length) => ta.wma(2 * ta.wma(_src, int(_length / 2)) - ta.wma(_src, _length), math.round(math.sqrt(_length)))
+EHMA(_src, _length) => ta.ema(2 * ta.ema(_src, int(_length / 2)) - ta.ema(_src, _length), math.round(math.sqrt(_length)))
+THMA(_src, _length) => ta.wma(ta.wma(_src, int(_length / 3)) * 3 - ta.wma(_src, int(_length / 2)) - ta.wma(_src, _length), _length)
+Mode(modeSwitch, src, len) =>
+    modeSwitch == "Hma" ? HMA(src, len) : modeSwitch == "Ehma" ? EHMA(src, len) : modeSwitch == "Thma" ? THMA(src, int(len / 2)) : na
+_hull = Mode(modeSwitch, src, int(length))
+MHULL = _hull
+SHULL = _hull[2]
+hullColor = switchColor ? (_hull > _hull[2] ? #00ff00 : #ff0000) : #ff9800
+Fi1 = plot(MHULL, title="MHULL", color=hullColor, linewidth=1)
+Fi2 = plot(SHULL, title="SHULL", color=hullColor, linewidth=1)
+fill(Fi1, Fi2, title="Band Filler", color=color.new(hullColor, 40))
+plot(ta.hma(src, 55), "Built-in HMA", color=color.gray)

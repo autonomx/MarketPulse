@@ -1,0 +1,605 @@
+@layer features {
+  .trading-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .trading-header-actions > span {
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--c-blue-660) 10%, transparent);
+    padding: 6px 9px;
+    color: var(--c-blue-710);
+    font-size: 11px;
+  }
+
+  .trading-header-actions .workspace-saved {
+    background: color-mix(in srgb, var(--c-teal-740) 12%, transparent);
+    color: var(--c-teal-860);
+  }
+
+  .trading-header-actions .workspace-conflict,
+  .trading-header-actions .workspace-error {
+    background: color-mix(in srgb, var(--c-red-720) 12%, transparent);
+    color: var(--c-red-810);
+  }
+
+  .trading-header-actions .workspace-draft,
+  .trading-header-actions .workspace-saving {
+    background: color-mix(in srgb, var(--c-yellow-880) 10%, transparent);
+    color: var(--c-yellow-910-3);
+  }
+
+  .trading-watchlist {
+    /* The component sets --trading-watchlist-grid from the chosen columns. */
+    --trading-watchlist-wide-column: 72px;
+    --trading-watchlist-narrow-column: 55px;
+
+    display: grid;
+    gap: 0;
+    margin-top: 0;
+    min-width: 0;
+  }
+
+  .trading-watchlist-controls {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 34px 34px;
+    gap: 5px;
+    margin-bottom: 10px;
+  }
+
+  .trading-watchlist .trading-watchlist-controls select,
+  .trading-watchlist .trading-watchlist-controls > button {
+    height: 31px;
+  }
+
+  .trading-watchlist .trading-watchlist-controls select {
+    min-width: 0;
+    padding: 5px 8px;
+    font-size: 10px;
+  }
+
+  .trading-watchlist .trading-watchlist-controls > button {
+    padding: 4px 0;
+    color: var(--c-slate-790);
+    font-size: 16px;
+  }
+
+  .trading-watchlist-controls > button:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+  }
+
+  .trading-watchlist-options {
+    position: relative;
+  }
+
+  .trading-watchlist .trading-watchlist-options > button {
+    width: 34px;
+    height: 31px;
+    padding: 0 0 5px;
+    color: var(--c-slate-790);
+    font-size: 18px;
+    line-height: 1;
+  }
+
+  .trading-watchlist-options-menu {
+    position: absolute;
+    z-index: 8;
+    top: calc(100% + 4px);
+    right: 0;
+    display: grid;
+    min-width: 148px;
+    gap: 2px;
+    padding: 5px;
+    border: 1px solid color-mix(in srgb, var(--c-blue-660) 25%, transparent);
+    border-radius: 5px;
+    background: color-mix(in srgb, var(--c-slate-170-2) 98%, transparent);
+    box-shadow: 0 10px 24px color-mix(in srgb, var(--c-neutral-0) 42%, transparent);
+  }
+
+  .trading-watchlist .trading-watchlist-options-menu button {
+    padding: 6px 7px;
+    text-align: left;
+    font-size: 9px;
+  }
+
+  .trading-watchlist-options-group {
+    display: grid;
+    gap: 2px;
+    margin-top: 3px;
+    padding-top: 5px;
+    border-top: 1px solid color-mix(in srgb, var(--c-blue-660) 18%, transparent);
+  }
+
+  .trading-watchlist-options-group > span {
+    padding: 0 7px 2px;
+    color: var(--c-slate-630);
+    font-size: 8px;
+    text-transform: uppercase;
+  }
+
+  .trading-watchlist .trading-watchlist-options-group button[role='menuitemcheckbox']::before {
+    display: inline-block;
+    width: 12px;
+    content: '';
+  }
+
+  .trading-watchlist .trading-watchlist-options-group button[aria-checked='true']::before {
+    content: '✓';
+  }
+
+  .trading-watchlist-options-group small {
+    color: var(--c-slate-630);
+    font-size: 8px;
+  }
+
+  /* Adding an indicator column (TVP-5.2): indicator, period and line on one row, then Add. */
+  .trading-watchlist-indicator-column-form {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 40px minmax(0, 1fr);
+    gap: 3px;
+    padding: 2px 7px 4px;
+  }
+
+  .trading-watchlist-indicator-column-form select,
+  .trading-watchlist-indicator-column-form input {
+    min-width: 0;
+    padding: 3px 4px;
+    font-size: 9px;
+  }
+
+  .trading-watchlist-indicator-column-form button {
+    grid-column: 1 / -1;
+    text-align: center;
+  }
+
+  .trading-watchlist-columns,
+  .trading-watchlist li {
+    display: grid;
+    grid-template-columns: var(--trading-watchlist-grid, minmax(0, 1fr) var(--trading-watchlist-wide-column) var(--trading-watchlist-narrow-column));
+    align-items: center;
+  }
+
+  .trading-watchlist-columns {
+    padding: 0 8px 6px;
+    border-bottom: 1px solid color-mix(in srgb, var(--c-blue-660) 14%, transparent);
+    color: var(--c-slate-630);
+    font-size: 8px;
+    text-transform: none;
+  }
+
+  /* The header row and list rows are one ARIA tree grid; the wrapper only groups them. */
+  .trading-watchlist-table {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    min-width: 0;
+    min-height: 0;
+  }
+
+  /* Roving focus: a row or one of its cells holds the keyboard focus. */
+  .trading-watchlist li:focus-visible,
+  .trading-watchlist li [role='gridcell']:focus-visible {
+    outline: 1px solid color-mix(in srgb, var(--c-blue-660) 70%, transparent);
+    outline-offset: -1px;
+  }
+
+  /* Names the row action cells for assistive technology; the actions show on hover or focus. */
+  .trading-watchlist-actions-header {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .trading-watchlist-header-cell {
+    display: flex;
+    justify-content: flex-end;
+    min-width: 0;
+  }
+
+  .trading-watchlist-header-cell.symbol {
+    justify-content: flex-start;
+  }
+
+  .trading-watchlist-columns .trading-watchlist-sort {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    border: 0;
+    border-radius: 3px;
+    background: transparent;
+    padding: 0;
+    color: inherit;
+    font: inherit;
+    text-align: right;
+    cursor: pointer;
+  }
+
+  .trading-watchlist-header-cell.symbol .trading-watchlist-sort {
+    text-align: left;
+  }
+
+  .trading-watchlist-columns .trading-watchlist-sort:hover,
+  .trading-watchlist-header-cell:not([aria-sort='none']) .trading-watchlist-sort {
+    color: var(--c-blue-770);
+  }
+
+  .trading-watchlist ul {
+    display: grid;
+    /* Rows keep their own height when the list is taller than them (a short list). */
+    align-content: start;
+    max-height: calc(100vh - 205px);
+    overflow: auto;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    scrollbar-color: color-mix(in srgb, var(--c-blue-660) 50%, transparent) transparent;
+  }
+
+  .trading-watchlist li {
+    position: relative;
+    min-height: 38px;
+    border-bottom: 1px solid color-mix(in srgb, var(--c-blue-660) 10%, transparent);
+  }
+
+  .trading-watchlist li.active {
+    background: color-mix(in srgb, var(--c-blue-630) 8%, transparent);
+  }
+
+  .trading-watchlist li.selected {
+    background: color-mix(in srgb, var(--c-blue-630) 18%, transparent);
+    box-shadow: inset 2px 0 0 var(--c-blue-660);
+  }
+
+  .trading-watchlist-notice {
+    margin: 6px 0 0;
+    padding: 0 8px;
+    color: var(--c-slate-630);
+    font-size: 9px;
+    overflow-wrap: anywhere;
+  }
+
+  .trading-watchlist-symbol-cell,
+  .trading-watchlist-section-cell {
+    min-width: 0;
+  }
+
+  .trading-watchlist .trading-watchlist-symbol-cell > button,
+  .trading-watchlist .trading-watchlist-section-cell > button {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    width: 100%;
+    gap: 8px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    padding: 7px 5px 7px 8px;
+    text-align: left;
+  }
+
+  .trading-watchlist .trading-watchlist-symbol-cell > button:hover,
+  .trading-watchlist .trading-watchlist-section-cell > button:hover {
+    background: color-mix(in srgb, var(--c-blue-630) 10%, transparent);
+  }
+
+  .trading-watchlist-asset-icon {
+    display: grid;
+    flex: 0 0 auto;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    border: 1px solid color-mix(in srgb, var(--c-blue-660) 35%, transparent);
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--c-blue-660) 15%, transparent);
+    color: var(--c-slate-930);
+    font-size: 10px;
+    font-weight: 700;
+  }
+
+  .trading-watchlist-asset-icon svg {
+    width: 14px;
+    height: 14px;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.8;
+  }
+
+  .trading-watchlist-asset-icon.apple {
+    border-color: color-mix(in srgb, var(--c-slate-890) 50%, transparent);
+    background: var(--c-slate-280);
+    color: var(--c-neutral-960);
+  }
+
+  .trading-watchlist-asset-icon.apple svg {
+    fill: currentColor;
+    stroke: none;
+  }
+
+  .trading-watchlist-asset-icon.nvidia {
+    border-color: color-mix(in srgb, var(--c-green-790) 45%, transparent);
+    background: color-mix(in srgb, var(--c-green-790) 16%, transparent);
+    color: var(--c-green-790);
+  }
+
+  .trading-watchlist-asset-icon.tesla {
+    border-color: color-mix(in srgb, var(--c-red-640) 50%, transparent);
+    background: color-mix(in srgb, var(--c-red-640) 16%, transparent);
+    color: var(--c-red-720);
+  }
+
+  .trading-watchlist-asset-icon.spy {
+    border-color: color-mix(in srgb, var(--c-blue-710-2) 50%, transparent);
+    background: color-mix(in srgb, var(--c-blue-710-2) 16%, transparent);
+    color: var(--c-blue-770);
+  }
+
+  .trading-watchlist-asset-icon.bitcoin {
+    border-color: color-mix(in srgb, var(--c-amber-770) 55%, transparent);
+    background: color-mix(in srgb, var(--c-amber-770) 18%, transparent);
+    color: var(--c-amber-770);
+  }
+
+  .trading-watchlist-asset-icon.ethereum {
+    border-color: color-mix(in srgb, var(--c-violet-660) 50%, transparent);
+    background: color-mix(in srgb, var(--c-violet-660) 16%, transparent);
+    color: var(--c-indigo-750);
+  }
+
+  .trading-watchlist-asset-icon.solana {
+    border-color: color-mix(in srgb, var(--c-cyan-810) 50%, transparent);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--c-cyan-810) 20%, transparent), color-mix(in srgb, var(--c-violet-630) 20%, transparent));
+    color: var(--c-teal-860);
+  }
+
+  .trading-watchlist-asset-icon.hyperliquid {
+    border-color: color-mix(in srgb, var(--c-sky-800) 50%, transparent);
+    background: color-mix(in srgb, var(--c-sky-800) 16%, transparent);
+    color: var(--c-sky-830);
+  }
+
+  .trading-watchlist-asset-icon.generic {
+    background: color-mix(in srgb, var(--c-blue-660) 15%, transparent);
+  }
+
+  .trading-watchlist-symbol-cell > button strong,
+  .trading-watchlist-section-cell > button strong {
+    min-width: 0;
+    overflow: hidden;
+    color: var(--c-slate-870);
+    font-size: 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .trading-watchlist-price,
+  .trading-watchlist-change {
+    padding: 0 5px;
+    color: var(--c-slate-820);
+    font-size: 10px;
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .trading-watchlist-change.neutral {
+    color: var(--c-slate-820);
+  }
+
+  .trading-watchlist-row-actions {
+    position: absolute;
+    z-index: 2;
+    right: 4px;
+    top: 50%;
+    display: flex;
+    gap: 2px;
+    padding: 2px;
+    border: 1px solid color-mix(in srgb, var(--c-blue-660) 20%, transparent);
+    border-radius: 4px;
+    background: color-mix(in srgb, var(--c-slate-170-2) 96%, transparent);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-50%);
+    transition: opacity 0.12s ease;
+  }
+
+  .trading-watchlist li:hover .trading-watchlist-row-actions,
+  .trading-watchlist li:focus-within .trading-watchlist-row-actions {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .trading-watchlist .trading-watchlist-row-actions button {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    min-width: 28px;
+    height: 22px;
+  }
+
+  .trading-watchlist .trading-watchlist-row-actions button:disabled {
+    cursor: not-allowed;
+    opacity: 0.35;
+  }
+
+  .trading-watchlist .trading-watchlist-row-actions.is-sorted button[aria-label^='Move '] {
+    display: none;
+  }
+
+  .trading-watchlist li.trading-watchlist-section {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 28px;
+    background: color-mix(in srgb, var(--c-blue-660) 6%, transparent);
+  }
+
+  .trading-watchlist .trading-watchlist-section-cell > button {
+    gap: 6px;
+    padding: 5px 8px;
+    color: var(--c-slate-630);
+  }
+
+  .trading-watchlist-section-toggle strong {
+    min-width: 0;
+    overflow: hidden;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .trading-watchlist-section-toggle small {
+    color: var(--c-slate-630);
+    font-size: 8px;
+  }
+
+  .trading-watchlist-section-chevron {
+    width: 8px;
+    font-size: 9px;
+  }
+
+  /* Colour flags: one custom property per colour feeds the row marker and the menu swatch. */
+  .trading-watchlist-flag.red,
+  .trading-watchlist-flag-swatch.red {
+    --trading-watchlist-flag-color: var(--c-red-720);
+  }
+
+  .trading-watchlist-flag.orange,
+  .trading-watchlist-flag-swatch.orange {
+    --trading-watchlist-flag-color: var(--c-orange-580);
+  }
+
+  .trading-watchlist-flag.yellow,
+  .trading-watchlist-flag-swatch.yellow {
+    --trading-watchlist-flag-color: var(--c-yellow-880);
+  }
+
+  .trading-watchlist-flag.green,
+  .trading-watchlist-flag-swatch.green {
+    --trading-watchlist-flag-color: var(--c-green-790);
+  }
+
+  .trading-watchlist-flag.cyan,
+  .trading-watchlist-flag-swatch.cyan {
+    --trading-watchlist-flag-color: var(--c-cyan-810);
+  }
+
+  .trading-watchlist-flag.blue,
+  .trading-watchlist-flag-swatch.blue {
+    --trading-watchlist-flag-color: var(--c-blue-660);
+  }
+
+  .trading-watchlist-flag.purple,
+  .trading-watchlist-flag-swatch.purple {
+    --trading-watchlist-flag-color: var(--c-violet-660);
+  }
+
+  .trading-watchlist-flag {
+    position: absolute;
+    top: 5px;
+    bottom: 5px;
+    left: 0;
+    width: 3px;
+    border-radius: 0 2px 2px 0;
+    background: var(--trading-watchlist-flag-color);
+  }
+
+  .trading-watchlist-flag-swatch {
+    display: block;
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    background: var(--trading-watchlist-flag-color);
+  }
+
+  .trading-watchlist-flag-menu {
+    position: absolute;
+    z-index: 9;
+    top: calc(100% - 4px);
+    right: 4px;
+    display: grid;
+    grid-template-columns: repeat(7, 22px);
+    gap: 3px;
+    padding: 5px;
+    border: 1px solid color-mix(in srgb, var(--c-blue-660) 25%, transparent);
+    border-radius: 5px;
+    background: color-mix(in srgb, var(--c-slate-170-2) 98%, transparent);
+    box-shadow: 0 10px 24px color-mix(in srgb, var(--c-neutral-0) 42%, transparent);
+  }
+
+  .trading-watchlist .trading-watchlist-flag-menu button {
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    padding: 0;
+  }
+
+  .trading-watchlist .trading-watchlist-flag-menu button[aria-checked='true'] {
+    outline: 1px solid var(--c-blue-770);
+    outline-offset: 1px;
+  }
+
+  .trading-watchlist .trading-watchlist-flag-menu .trading-watchlist-flag-clear {
+    grid-column: 1 / -1;
+    width: auto;
+    font-size: 9px;
+  }
+
+  .trading-watchlist-flag-menu .trading-watchlist-flag-clear:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+  }
+
+  .trading-watchlist-status {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .trading-side-panel > [role='tabpanel'].trading-side-panel-watchlist {
+    overflow: hidden;
+  }
+
+  .trading-side-panel-watchlist > .trading-watchlist {
+    height: 100%;
+    min-height: 0;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+  }
+
+  .trading-side-panel-watchlist .trading-watchlist ul {
+    min-height: 0;
+    max-height: none;
+  }
+
+  @media (max-width: 600px) {
+    .trading-watchlist {
+      --trading-watchlist-wide-column: 64px;
+      --trading-watchlist-narrow-column: 50px;
+    }
+  }
+}
+
+/* Declarations that must win over every other layer. */
+@layer overrides {
+  .trading-watchlist-change.positive {
+    color: var(--c-green-790-2);
+  }
+
+  .trading-watchlist-change.negative {
+    color: var(--c-red-720);
+  }
+
+  .trading-watchlist .trading-watchlist-row-actions button {
+    padding: 0;
+    font-size: 12px;
+    line-height: 1;
+  }
+}

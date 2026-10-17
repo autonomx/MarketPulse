@@ -1,0 +1,58 @@
+@layer features {
+  .trading-pine-panel{display:flex;flex-direction:column;min-height:0;height:100%;background:var(--c-slate-970-2);color:var(--c-neutral-220)}
+  .trading-pine-header{display:flex;flex:0 0 44px;align-items:center;justify-content:space-between;gap:8px;padding:0 12px;border-bottom:1px solid var(--c-neutral-910)}
+  .trading-pine-heading{display:flex;align-items:center;gap:8px;font-size:14px}
+  .trading-pine-glyph{display:grid;place-items:center;width:25px;height:25px;border:1px solid currentColor;border-radius:4px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:14px}
+  .trading-script-status{border-radius:999px;background:color-mix(in srgb, var(--c-blue-660) 14%, transparent);padding:4px 8px;font-size:10px}
+  .trading-script-status.is-dirty{background:var(--c-yellow-980);color:var(--c-amber-620)}
+  .trading-script-status.has-problems{background:color-mix(in srgb, var(--c-red-640) 18%, transparent);color:var(--c-red-640)}
+  .trading-script-toolbar,.trading-script-saveas{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px 10px;border-bottom:1px solid var(--c-neutral-910)}
+  .trading-script-toolbar input[aria-label='Script name']{flex:1 1 140px;min-width:0}
+  .trading-script-toolbar select{max-width:160px}
+  .trading-script-toolbar :is(input,select,button),.trading-script-saveas :is(input,button),.trading-script-bottom button,.trading-script-history button,.trading-script-diff-toolbar select,.trading-script-profiler button{font-size:11px}
+  .trading-pine-notice{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:8px 10px 0;border:1px solid var(--c-yellow-920);border-radius:4px;background:var(--c-yellow-980);padding:8px 9px;color:var(--c-yellow-530);font-size:10px}
+  .trading-pine-notice>span:first-child{display:grid;place-items:center;width:16px;height:16px;border-radius:50%;background:var(--c-amber-770);color:var(--c-neutral-1000);font-weight:800}
+  .trading-script-code{flex:1 1 55%;min-height:120px;overflow:hidden;background:var(--c-neutral-1000)}
+  .trading-script-code .cm-editor{height:100%}
+  .omnix-script-hover{padding:4px 8px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:11px}
+  .trading-script-bottom{display:flex;flex:0 1 38%;flex-direction:column;min-height:90px;border-top:1px solid var(--c-neutral-910)}
+  .trading-script-bottom>nav{display:flex;gap:2px;padding:4px 8px;border-bottom:1px solid var(--c-neutral-910)}
+  .trading-script-bottom>nav [role='tab'][aria-selected='true']{font-weight:700;box-shadow:inset 0 -2px 0 currentColor}
+  .trading-script-clear{margin-left:auto}
+  .trading-script-tabpanel{flex:1;min-height:0;overflow:auto}
+  .trading-script-console{padding:6px 10px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:11px}
+  .trading-script-console p{display:flex;gap:8px;margin:0 0 3px;white-space:pre-wrap}
+  .trading-script-console time,.trading-script-console span{flex:none;color:var(--c-slate-630)}
+  .trading-script-console .is-warning{color:var(--c-amber-770)}
+  .trading-script-console .is-error{color:var(--c-red-640)}
+  .trading-script-empty{margin:8px 10px;color:var(--c-slate-630);font-size:11px}
+  .trading-script-profiler{display:grid;gap:6px;padding:8px 10px;font-size:11px}
+  .trading-script-profiler button{justify-self:start}
+  .trading-script-profiler table{border-collapse:collapse}
+  .trading-script-profiler :is(th,td){padding:2px 10px 2px 0;text-align:left}
+  .trading-script-history{display:grid;grid-template-columns:minmax(120px,38%) minmax(0,1fr);min-height:100%}
+  .trading-script-versions{margin:0;padding:4px;overflow:auto;list-style:none;border-right:1px solid var(--c-neutral-910)}
+  .trading-script-versions button{display:grid;width:100%;gap:2px;border:0;background:transparent;padding:5px 6px;text-align:left;color:inherit}
+  .trading-script-versions button[aria-pressed='true']{background:color-mix(in srgb, var(--c-blue-660) 18%, transparent)}
+  .trading-script-versions span{color:var(--c-slate-630);font-size:10px}
+  .trading-script-diff-panel{display:flex;flex-direction:column;min-width:0}
+  .trading-script-diff-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:5px 8px;font-size:11px}
+  .trading-script-diff-toolbar label{display:flex;align-items:center;gap:4px}
+  .trading-script-diff{flex:1;overflow:auto;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:11px;line-height:1.5}
+  .trading-script-diff-line{display:grid;grid-template-columns:16px minmax(0,1fr)}
+  .trading-script-diff-line code{white-space:pre-wrap;overflow-wrap:anywhere}
+  .trading-script-diff-line.is-added{background:color-mix(in srgb, var(--c-teal-600) 18%, transparent)}
+  .trading-script-diff-line.is-removed{background:color-mix(in srgb, var(--c-red-640) 18%, transparent)}
+  :root[data-omnix-appearance='dark'] .trading-pine-panel,:root:not([data-omnix-appearance]) .trading-pine-panel{background:var(--c-slate-170-2);color:var(--c-slate-910)}
+  :root[data-omnix-appearance='dark'] :is(.trading-pine-header,.trading-script-toolbar,.trading-script-saveas,.trading-script-bottom,.trading-script-bottom>nav,.trading-script-versions),:root:not([data-omnix-appearance]) :is(.trading-pine-header,.trading-script-toolbar,.trading-script-saveas,.trading-script-bottom,.trading-script-bottom>nav,.trading-script-versions){border-color:color-mix(in srgb, var(--c-blue-660) 14%, transparent)}
+  :root[data-omnix-appearance='dark'] .trading-script-code,:root:not([data-omnix-appearance]) .trading-script-code{background:var(--c-indigo-190)}
+}
+
+/* Declarations that must win over every other layer. */
+@layer overrides {
+  .trading-script-toolbar :is(input,select,button),.trading-script-saveas :is(input,button){border:1px solid var(--c-slate-890);border-radius:5px;background:var(--c-neutral-1000);padding:5px 8px;color:var(--c-slate-280)}
+
+  .trading-script-toolbar .trading-script-primary{border-color:var(--c-blue-660);background:var(--c-blue-660);color:var(--c-neutral-1000)}
+
+  :root[data-omnix-appearance='dark'] :is(.trading-script-toolbar,.trading-script-saveas) :is(input,select,button:not(.trading-script-primary)),:root:not([data-omnix-appearance]) :is(.trading-script-toolbar,.trading-script-saveas) :is(input,select,button:not(.trading-script-primary)){border-color:color-mix(in srgb, var(--c-blue-660) 25%, transparent);background:var(--c-blue-230);color:var(--c-slate-910)}
+}

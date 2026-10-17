@@ -1,0 +1,374 @@
+@layer features {
+  .assistant-context-controls {
+    align-items: center;
+    display: flex;
+    flex: 0 1 auto;
+    gap: 0.4rem;
+    min-width: 0;
+  }
+
+  .assistant-chat-main .assistant-composer > .assistant-context-controls {
+    bottom: 1rem;
+    left: 1.35rem;
+    max-width: calc(100% - 24rem);
+    position: absolute;
+    z-index: 2;
+  }
+
+  .assistant-context-tools {
+    align-items: center;
+    display: inline-flex;
+    gap: 0.55rem;
+    position: relative;
+  }
+
+  .assistant-context-add-button {
+    align-items: center;
+    background: color-mix(in srgb, var(--c-indigo-210) 90%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-blue-710) 24%, transparent);
+    border-radius: 999px;
+    box-shadow: 0 0.35rem 0.9rem color-mix(in srgb, var(--c-neutral-0) 16%, transparent);
+    color: var(--c-neutral-1000);
+    cursor: pointer;
+    display: inline-flex;
+    font-size: 1.65rem;
+    font-weight: 420;
+    height: 3.15rem;
+    justify-content: center;
+    line-height: 1;
+    padding: 0;
+    transition: background 140ms ease, border-color 140ms ease, transform 140ms ease;
+    width: 3.15rem;
+  }
+
+  .assistant-context-add-button:hover,
+  .assistant-context-add-button:focus-visible,
+  .assistant-context-add-button[aria-expanded='true'] {
+    background: linear-gradient(135deg, color-mix(in srgb, var(--c-indigo-500) 96%, transparent), color-mix(in srgb, var(--c-sky-800) 90%, transparent));
+    border-color: color-mix(in srgb, var(--c-violet-810) 56%, transparent);
+    outline: none;
+    transform: translateY(-1px);
+  }
+
+  .assistant-context-tool-summary {
+    color: color-mix(in srgb, var(--c-slate-930) 78%, transparent);
+    font-size: 0.78rem;
+    font-weight: 760;
+    max-width: 18rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .assistant-context-tool-menu {
+    background: color-mix(in srgb, var(--c-indigo-190) 98%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-violet-660) 36%, transparent);
+    border-radius: 0.9rem;
+    box-shadow: 0 1.25rem 2.8rem color-mix(in srgb, var(--c-neutral-0) 42%, transparent);
+    display: grid;
+    gap: 0.2rem;
+    left: 0;
+    min-width: min(22rem, calc(100vw - 2.7rem));
+    padding: 0.5rem;
+    position: absolute;
+    bottom: calc(100% + 0.65rem);
+    z-index: 8;
+  }
+
+  .assistant-context-tool-menu-heading {
+    color: color-mix(in srgb, var(--c-slate-930) 58%, transparent);
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 0.65rem 0.45rem;
+    text-transform: uppercase;
+  }
+
+  .assistant-context-tool-item {
+    align-items: center;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 0.65rem;
+    color: var(--c-neutral-1000);
+    cursor: pointer;
+    display: flex;
+    gap: 0.8rem;
+    justify-content: space-between;
+    min-height: 3.4rem;
+    padding: 0.5rem 0.65rem;
+    text-align: left;
+    width: 100%;
+  }
+
+  .assistant-context-tool-item:hover,
+  .assistant-context-tool-item:focus-visible,
+  .assistant-context-tool-item.active {
+    background: linear-gradient(135deg, color-mix(in srgb, var(--c-sky-800) 13%, transparent), color-mix(in srgb, var(--c-indigo-600) 20%, transparent));
+    border-color: color-mix(in srgb, var(--c-violet-660) 32%, transparent);
+    outline: none;
+  }
+
+  .assistant-context-tool-item.unavailable {
+    cursor: not-allowed;
+    opacity: 0.48;
+  }
+
+  .assistant-context-tool-copy {
+    display: grid;
+    gap: 0.18rem;
+    min-width: 0;
+  }
+
+  .assistant-context-tool-file-control {
+    display: contents;
+  }
+
+  .assistant-context-tool-icon {
+    align-items: center;
+    display: inline-flex;
+    flex: 0 0 1.35rem;
+    font-size: 1.15rem;
+    justify-content: center;
+    line-height: 1;
+  }
+
+  .assistant-context-tool-copy strong {
+    color: var(--c-neutral-1000);
+    font-size: 0.86rem;
+    font-weight: 820;
+  }
+
+  .assistant-context-tool-copy small {
+    color: color-mix(in srgb, var(--c-slate-870) 68%, transparent);
+    font-size: 0.72rem;
+    line-height: 1.25;
+  }
+
+  .assistant-context-tool-copy small[data-omnix-local-folder-detail] {
+    max-width: 18rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .assistant-context-tool-check {
+    color: var(--c-sky-870);
+    flex: 0 0 auto;
+    font-size: 1rem;
+    opacity: 0;
+  }
+
+  .assistant-context-tool-item.active .assistant-context-tool-check {
+    opacity: 1;
+  }
+
+  .assistant-context-tool-menu-divider {
+    background: color-mix(in srgb, var(--c-blue-710) 16%, transparent);
+    height: 1px;
+    margin: 0.35rem 0;
+  }
+
+  .assistant-context-tool-menu .assistant-context-page-budget-menu {
+    align-items: center;
+    background: transparent;
+    border: 0;
+    border-radius: 0.65rem;
+    display: flex;
+    justify-content: space-between;
+    min-height: 2.6rem;
+    padding: 0.35rem 0.65rem;
+    width: 100%;
+  }
+
+  .assistant-context-tool-menu .assistant-context-page-budget-menu > span {
+    color: color-mix(in srgb, var(--c-slate-870) 68%, transparent);
+    font-size: 0.72rem;
+    font-weight: 760;
+  }
+
+  .assistant-context-tool-menu .assistant-context-page-budget-menu input {
+    min-height: 1.9rem;
+  }
+
+  .assistant-chat-main .assistant-context-desktop-inline {
+    display: none;
+  }
+
+  .assistant-context-mode {
+    align-items: center;
+    background: color-mix(in srgb, var(--c-indigo-210) 90%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-blue-710) 22%, transparent);
+    border-radius: 999px;
+    color: var(--c-neutral-1000);
+    display: inline-flex;
+    flex: 0 0 auto;
+    gap: 0.45rem;
+    min-height: 3.15rem;
+    min-width: 10.5rem;
+    padding: 0.42rem 0.58rem 0.42rem 0.85rem;
+  }
+
+  .assistant-context-mode span {
+    color: color-mix(in srgb, var(--c-slate-930) 72%, transparent);
+    font-size: 0.72rem;
+    font-weight: 760;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .assistant-context-mode select {
+    appearance: none;
+    background:
+      linear-gradient(45deg, transparent 50%, var(--c-indigo-920) 50%) right 0.42rem center / 0.42rem 0.42rem no-repeat,
+      color-mix(in srgb, var(--c-indigo-190) 34%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-indigo-920) 16%, transparent);
+    border-radius: 999px;
+    color: var(--c-neutral-1000);
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.82rem;
+    font-weight: 820;
+    line-height: 1;
+    min-height: 2rem;
+    min-width: 7.2rem;
+    outline: none;
+    padding: 0 1.4rem 0 0.62rem;
+    width: auto;
+  }
+
+  .assistant-context-mode select:focus-visible {
+    border-color: color-mix(in srgb, var(--c-blue-710-2) 75%, transparent);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--c-blue-710-2) 22%, transparent);
+  }
+
+  .assistant-context-mode option {
+    background: var(--c-indigo-210);
+    color: var(--c-neutral-1000);
+  }
+
+  .assistant-context-page-budget {
+    align-items: center;
+    background: color-mix(in srgb, var(--c-indigo-210) 90%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-blue-710) 22%, transparent);
+    border-radius: 999px;
+    color: var(--c-neutral-1000);
+    display: inline-flex;
+    flex: 0 0 auto;
+    gap: 0.42rem;
+    min-height: 3.15rem;
+    padding: 0.42rem 0.58rem 0.42rem 0.75rem;
+  }
+
+  .assistant-context-page-budget > span {
+    color: color-mix(in srgb, var(--c-slate-930) 72%, transparent);
+    font-size: 0.72rem;
+    font-weight: 760;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .assistant-context-page-budget input {
+    width: 3.25rem;
+    min-height: 2rem;
+    border: 1px solid color-mix(in srgb, var(--c-indigo-920) 16%, transparent);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--c-indigo-190) 34%, transparent);
+    color: var(--c-neutral-1000);
+    font: inherit;
+    font-size: 0.82rem;
+    font-weight: 820;
+    outline: none;
+    padding: 0 0.35rem 0 0.55rem;
+  }
+
+  .assistant-context-page-budget input:focus-visible {
+    border-color: color-mix(in srgb, var(--c-blue-710-2) 75%, transparent);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--c-blue-710-2) 22%, transparent);
+  }
+
+  .assistant-context-manual.active,
+  .assistant-context-desktop.active {
+    border-color: color-mix(in srgb, var(--c-blue-710-2) 75%, transparent);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--c-blue-710-2) 30%, transparent);
+  }
+
+  .assistant-context-desktop-inline {
+    align-items: center;
+    background: color-mix(in srgb, var(--c-indigo-210) 90%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-blue-710) 22%, transparent);
+    border-radius: 999px;
+    color: var(--c-neutral-1000);
+    cursor: pointer;
+    display: inline-flex;
+    flex: 0 0 auto;
+    flex-direction: column;
+    font: inherit;
+    gap: 0.05rem;
+    justify-content: center;
+    min-height: 3.15rem;
+    min-width: 5.75rem;
+    padding: 0.45rem 0.75rem;
+  }
+
+  .assistant-context-desktop-inline span {
+    color: color-mix(in srgb, var(--c-slate-930) 78%, transparent);
+    font-size: 0.72rem;
+    font-weight: 760;
+    line-height: 1;
+  }
+
+  .assistant-context-desktop-inline strong {
+    color: var(--c-neutral-1000);
+    font-size: 0.84rem;
+    line-height: 1.1;
+    max-width: 4.6rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 820px) {
+    .assistant-chat-main .assistant-composer > .assistant-context-controls {
+      bottom: 4.35rem;
+      left: 1.35rem;
+      max-width: calc(100% - 2.7rem);
+      right: 1.35rem;
+    }
+
+    .assistant-context-controls {
+      flex: 1 1 100%;
+      order: -2;
+    }
+
+    .assistant-context-tool-menu {
+      min-width: min(22rem, calc(100vw - 2.7rem));
+    }
+
+    .assistant-context-mode {
+      min-width: 0;
+      width: 100%;
+    }
+
+    .assistant-context-page-budget {
+      min-width: 0;
+    }
+
+    .assistant-context-mode select {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+  }
+}
+
+/* Declarations that must win over every other layer. */
+@layer overrides {
+  .assistant-context-tool-menu[hidden],
+  .assistant-context-mode[hidden],
+  .assistant-context-page-budget[hidden] {
+    display: none;
+  }
+
+  .assistant-context-manual[hidden] {
+    display: none;
+  }
+}

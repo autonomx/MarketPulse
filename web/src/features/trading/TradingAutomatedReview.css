@@ -1,0 +1,185 @@
+@layer features {
+  .trading-automated-review {
+    display: grid;
+    gap: 10px;
+    padding: 12px;
+    border: 1px solid var(--c-blue-310);
+    border-left: 3px solid var(--c-blue-490);
+    border-radius: 8px;
+    background: var(--c-indigo-210);
+  }
+
+  .trading-automated-review[data-priority='attention'] {
+    border-left-color: var(--c-yellow-770);
+  }
+
+  .trading-automated-review[data-priority='high'] {
+    border-left-color: var(--c-red-720);
+  }
+
+  .trading-automated-review > header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .trading-automated-review > header > div {
+    display: grid;
+    gap: 2px;
+  }
+
+  .trading-automated-review > header strong {
+    color: var(--c-slate-950);
+    font-size: 13px;
+  }
+
+  .trading-automated-review > header small {
+    color: var(--c-slate-600);
+    font-size: 10px;
+  }
+
+  .trading-automated-review > header > span {
+    padding: 3px 7px;
+    border: 1px solid var(--c-blue-390);
+    border-radius: 999px;
+    color: var(--c-slate-740);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+  }
+
+  .trading-automated-review[data-priority='attention'] > header > span {
+    border-color: color-mix(in srgb, var(--c-yellow-770) 45%, transparent);
+    color: var(--c-yellow-870);
+  }
+
+  .trading-automated-review[data-priority='high'] > header > span {
+    border-color: color-mix(in srgb, var(--c-red-720) 45%, transparent);
+    color: var(--c-red-770);
+  }
+
+  .automated-review-boundary {
+    display: grid;
+    gap: 3px;
+    padding: 9px 10px;
+    border: 1px solid var(--c-blue-350);
+    border-radius: 6px;
+    background: var(--c-blue-230);
+  }
+
+  .automated-review-boundary strong {
+    color: var(--c-slate-820);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .automated-review-boundary span {
+    color: var(--c-slate-680);
+    font-size: 11px;
+    line-height: 1.45;
+  }
+
+  .automated-review-findings {
+    display: grid;
+    gap: 6px;
+  }
+
+  .automated-review-findings > div {
+    display: grid;
+    grid-template-columns: 18px 1fr;
+    gap: 7px;
+    padding: 8px 9px;
+    border: 1px solid var(--c-blue-310);
+    border-radius: 6px;
+    background: var(--c-indigo-190);
+  }
+
+  .automated-review-findings > div > span {
+    color: var(--c-slate-660);
+    font-weight: 800;
+    text-align: center;
+  }
+
+  .automated-review-findings > div[data-severity='attention'] > span {
+    color: var(--c-yellow-770);
+  }
+
+  .automated-review-findings > div[data-severity='high'] > span {
+    color: var(--c-red-720);
+  }
+
+  .automated-review-findings > div > div {
+    display: grid;
+    gap: 2px;
+  }
+
+  .automated-review-findings strong,
+  .automated-review-prompts > strong {
+    color: var(--c-slate-820);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.035em;
+  }
+
+  .automated-review-findings p {
+    margin: 0;
+    color: var(--c-slate-680);
+    font-size: 11px;
+    line-height: 1.4;
+  }
+
+  .automated-review-prompts {
+    display: grid;
+    gap: 5px;
+  }
+
+  .automated-review-prompts ul {
+    display: grid;
+    gap: 5px;
+    margin: 0;
+    padding-left: 18px;
+    color: var(--c-blue-710);
+    font-size: 11px;
+    line-height: 1.4;
+  }
+
+  :root[data-omnix-appearance='light'] .trading-automated-review {
+    border-color: var(--c-slate-910);
+    border-left-color: var(--c-slate-630);
+    background: var(--c-neutral-1000);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-automated-review[data-priority='attention'] {
+    border-left-color: var(--c-amber-620);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-automated-review[data-priority='high'] {
+    border-left-color: var(--c-red-560);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-automated-review > header strong,
+  :root[data-omnix-appearance='light'] .automated-review-boundary strong,
+  :root[data-omnix-appearance='light'] .automated-review-findings strong,
+  :root[data-omnix-appearance='light'] .automated-review-prompts > strong {
+    color: var(--c-blue-310);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-automated-review > header small,
+  :root[data-omnix-appearance='light'] .automated-review-boundary span,
+  :root[data-omnix-appearance='light'] .automated-review-findings p,
+  :root[data-omnix-appearance='light'] .automated-review-prompts ul {
+    color: var(--c-blue-560);
+  }
+
+  :root[data-omnix-appearance='light'] .automated-review-boundary {
+    border-color: var(--c-slate-930);
+    background: var(--c-slate-970-2);
+  }
+
+  :root[data-omnix-appearance='light'] .automated-review-findings > div {
+    border-color: var(--c-slate-930);
+    background: var(--c-neutral-1000);
+  }
+}

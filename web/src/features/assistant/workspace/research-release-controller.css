@@ -1,0 +1,80 @@
+@layer features {
+  .assistant-research-release-controls {
+    align-items: center;
+    display: inline-flex;
+    flex: 0 1 auto;
+    gap: 0.45rem;
+    min-width: 0;
+  }
+
+  .assistant-research-fallback {
+    align-items: center;
+    background: color-mix(in srgb, var(--c-indigo-210) 86%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-blue-710) 20%, transparent);
+    border-radius: 999px;
+    color: color-mix(in srgb, var(--c-slate-930) 84%, transparent);
+    display: inline-flex;
+    flex: 0 0 auto;
+    font-size: 0.72rem;
+    font-weight: 760;
+    gap: 0.4rem;
+    min-height: 2rem;
+    padding: 0 0.65rem;
+    white-space: nowrap;
+  }
+
+  .assistant-research-fallback input {
+    accent-color: var(--c-indigo-600);
+    height: 0.9rem;
+    margin: 0;
+    width: 0.9rem;
+  }
+
+  .assistant-research-release-status {
+    color: color-mix(in srgb, var(--c-slate-870) 76%, transparent);
+    display: block;
+    flex: 1 1 12rem;
+    font-size: 0.68rem;
+    line-height: 1.25;
+    max-width: 15rem;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 1100px) {
+    .assistant-research-release-status {
+      display: none;
+    }
+  }
+
+  @media (max-width: 820px) {
+    .assistant-research-release-controls {
+      flex: 1 1 100%;
+      order: -1;
+      width: 100%;
+    }
+
+    .assistant-research-release-status {
+      display: block;
+      max-width: none;
+    }
+  }
+
+
+  /* Omnix light appearance: research release controls */
+}
+
+/* Declarations that must win over every other layer. */
+@layer overrides {
+  :root[data-omnix-appearance='light'] .assistant-research-fallback {
+    background: color-mix(in srgb, var(--c-slate-970-2) 74%, transparent);
+    border-color: color-mix(in srgb, var(--c-blue-560) 20%, transparent);
+    color: var(--omnix-text, var(--c-blue-310));
+  }
+
+  :root[data-omnix-appearance='light'] .assistant-research-release-status {
+    color: var(--omnix-muted, var(--c-blue-560));
+  }
+}

@@ -1,0 +1,17 @@
+//@version=5
+indicator(title="ATR Trailing Stop (idiom)", overlay=true)
+nATRPeriod = input(5, "ATR period")
+nATRMultip = input(3.5, "ATR multiplier")
+xATR = ta.atr(nATRPeriod)
+nLoss = nATRMultip * xATR
+var float xATRTrailingStop = na
+xATRTrailingStop := close > nz(xATRTrailingStop[1], 0) and close[1] > nz(xATRTrailingStop[1], 0) ? math.max(nz(xATRTrailingStop[1]), close - nLoss) : close < nz(xATRTrailingStop[1], 0) and close[1] < nz(xATRTrailingStop[1], 0) ? math.min(nz(xATRTrailingStop[1]), close + nLoss) : close > nz(xATRTrailingStop[1], 0) ? close - nLoss : close + nLoss
+var int pos = 0
+pos := close[1] < nz(xATRTrailingStop[1], 0) and close > nz(xATRTrailingStop[1], 0) ? 1 : close[1] > nz(xATRTrailingStop[1], 0) and close < nz(xATRTrailingStop[1], 0) ? -1 : nz(pos[1], 0)
+xcolor = pos == -1 ? color.red : pos == 1 ? color.green : color.blue
+plot(xATRTrailingStop, color=xcolor, title="Trailing Stop")
+buy = ta.crossover(close, xATRTrailingStop)
+sell = ta.crossunder(close, xATRTrailingStop)
+plotshape(buy, title="Buy", text="Buy", style=shape.labelup, location=location.belowbar, color=color.green, textcolor=color.white, size=size.tiny)
+plotshape(sell, title="Sell", text="Sell", style=shape.labeldown, location=location.abovebar, color=color.red, textcolor=color.white, size=size.tiny)
+barcolor(pos == -1 ? color.red : pos == 1 ? color.green : na)

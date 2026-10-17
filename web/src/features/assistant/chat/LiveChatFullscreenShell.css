@@ -1,0 +1,607 @@
+@layer features {
+  .live-chat-fullscreen-shell {
+    --immersive-bg: var(--c-slate-150-2);
+    --immersive-panel: color-mix(in srgb, var(--c-indigo-200) 92%, transparent);
+    --immersive-panel-soft: color-mix(in srgb, var(--c-violet-230) 72%, transparent);
+    --immersive-border: color-mix(in srgb, var(--c-violet-710) 20%, transparent);
+    --immersive-text: var(--c-slate-970-2);
+    --immersive-muted: var(--c-slate-730);
+    --immersive-accent: var(--c-pink-600);
+    background:
+      radial-gradient(circle at 12% 10%, color-mix(in srgb, var(--c-violet-470) 24%, transparent), transparent 32rem),
+      radial-gradient(circle at 82% 92%, color-mix(in srgb, var(--c-blue-460-2) 16%, transparent), transparent 30rem),
+      var(--immersive-bg);
+    color: var(--immersive-text);
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    inset: 0;
+    min-height: 100dvh;
+    overflow: hidden;
+    padding: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) max(1rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
+    position: fixed;
+    z-index: 10000;
+  }
+
+  .live-chat-fullscreen-shell:focus {
+    outline: none;
+  }
+
+  .live-chat-fullscreen-topbar {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    min-height: 3.2rem;
+    padding: 0.1rem 0.15rem 0.85rem;
+  }
+
+  .live-chat-fullscreen-brand,
+  .live-chat-fullscreen-topbar-actions,
+  .live-chat-fullscreen-topbar-actions > span {
+    align-items: center;
+    display: flex;
+  }
+
+  .live-chat-fullscreen-brand {
+    gap: 0.7rem;
+  }
+
+  .live-chat-fullscreen-brand > span {
+    align-items: center;
+    background: color-mix(in srgb, var(--c-violet-570) 15%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-violet-660) 28%, transparent);
+    border-radius: 50%;
+    display: flex;
+    height: 2.25rem;
+    justify-content: center;
+    width: 2.25rem;
+  }
+
+  .live-chat-fullscreen-brand div {
+    display: grid;
+    gap: 0.05rem;
+  }
+
+  .live-chat-fullscreen-brand strong {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.15rem;
+    letter-spacing: 0.03em;
+  }
+
+  .live-chat-fullscreen-brand small,
+  .live-chat-fullscreen-topbar-actions > span,
+  .live-chat-fullscreen-rail > header > span,
+  .live-chat-fullscreen-rail footer,
+  .live-chat-fullscreen-call-card small {
+    color: var(--immersive-muted);
+    font-size: 0.72rem;
+  }
+
+  .live-chat-fullscreen-topbar-actions {
+    gap: 0.75rem;
+  }
+
+  .live-chat-fullscreen-topbar-actions > span {
+    background: color-mix(in srgb, var(--c-indigo-220) 78%, transparent);
+    border: 1px solid var(--immersive-border);
+    border-radius: 999px;
+    gap: 0.45rem;
+    padding: 0.45rem 0.7rem;
+  }
+
+  .live-chat-fullscreen-topbar-actions > span i,
+  .live-chat-stage-caption i {
+    background: var(--c-slate-630);
+    border-radius: 50%;
+    box-shadow: 0 0 0.55rem currentColor;
+    height: 0.42rem;
+    width: 0.42rem;
+  }
+
+  .live-chat-fullscreen-topbar-actions > span.connected i,
+  .live-chat-fullscreen-shell.mode-speaking .live-chat-stage-caption i,
+  .live-chat-fullscreen-shell.mode-listening .live-chat-stage-caption i {
+    background: var(--c-pink-760);
+  }
+
+  .live-chat-fullscreen-topbar-actions button,
+  .live-chat-fullscreen-rail footer button {
+    background: transparent;
+    border: 1px solid var(--immersive-border);
+    border-radius: 999px;
+    color: inherit;
+    cursor: pointer;
+    font-weight: 700;
+    padding: 0.5rem 0.8rem;
+  }
+
+  .live-chat-fullscreen-layout {
+    display: grid;
+    gap: 0.9rem;
+    grid-template-columns: minmax(0, 1.7fr) minmax(22rem, 0.95fr);
+    min-height: 0;
+  }
+
+  .live-chat-character-stage,
+  .live-chat-fullscreen-rail {
+    border: 1px solid var(--immersive-border);
+    border-radius: 1.25rem;
+    box-shadow: 0 1.25rem 3rem color-mix(in srgb, var(--c-neutral-0) 28%, transparent);
+    min-height: 0;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .live-chat-character-stage {
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--c-indigo-170) 8%, transparent), color-mix(in srgb, var(--c-slate-150-2) 72%, transparent)),
+      radial-gradient(circle at 50% 22%, color-mix(in srgb, var(--c-violet-650) 34%, transparent), transparent 35%),
+      linear-gradient(145deg, var(--c-indigo-220), var(--c-indigo-170));
+    background-position: center;
+    background-size: cover;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto auto auto;
+    isolation: isolate;
+    padding: 1.1rem 1.1rem 0.85rem;
+  }
+
+  .live-chat-character-stage::before {
+    background: linear-gradient(110deg, transparent 0 18%, color-mix(in srgb, var(--c-violet-810) 6%, transparent) 18.2% 18.5%, transparent 18.7% 100%);
+    content: '';
+    inset: 0;
+    pointer-events: none;
+    position: absolute;
+    z-index: -1;
+  }
+
+  .live-chat-stage-stars {
+    background-image:
+      radial-gradient(circle, color-mix(in srgb, var(--c-neutral-1000) 80%, transparent) 0 1px, transparent 1.2px),
+      radial-gradient(circle, color-mix(in srgb, var(--c-violet-830) 56%, transparent) 0 0.8px, transparent 1px);
+    background-position: 0 0, 2.3rem 1.6rem;
+    background-size: 5.7rem 5.7rem, 7.4rem 7.4rem;
+    inset: 0;
+    mask-image: linear-gradient(to bottom, var(--c-neutral-0), transparent 78%);
+    opacity: 0.46;
+    pointer-events: none;
+    position: absolute;
+    z-index: -1;
+  }
+
+  .live-chat-character-stage > header,
+  .live-chat-character-stage > footer {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    z-index: 2;
+  }
+
+  .live-chat-character-stage h2,
+  .live-chat-fullscreen-rail h1 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-weight: 500;
+    margin: 0.15rem 0 0;
+  }
+
+  .live-chat-character-stage h2 {
+    font-size: clamp(1.25rem, 2vw, 2rem);
+  }
+
+  .live-chat-character-stage .eyebrow,
+  .live-chat-fullscreen-rail .eyebrow {
+    color: var(--c-violet-830);
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.13em;
+    margin: 0;
+    text-transform: uppercase;
+  }
+
+  .live-chat-character-stage > header > span {
+    background: color-mix(in srgb, var(--c-indigo-170) 58%, transparent);
+    border: 1px solid var(--immersive-border);
+    border-radius: 999px;
+    color: var(--c-slate-890);
+    font-size: 0.72rem;
+    padding: 0.45rem 0.7rem;
+  }
+
+  .live-chat-stage-avatar {
+    align-items: end;
+    display: flex;
+    justify-content: center;
+    min-height: 0;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .live-chat-stage-avatar > .assistant-live-character-avatar {
+    align-self: stretch;
+    aspect-ratio: auto;
+    border-color: color-mix(in srgb, var(--c-violet-810) 24%, transparent);
+    box-shadow: none;
+    height: 100%;
+    min-height: 0;
+    width: min(100%, 42rem);
+  }
+
+  .live-chat-character-stage > .assistant-live2d-zoom-control {
+    justify-self: center;
+    margin: 0.55rem 0 0.1rem;
+  }
+
+  .live-chat-stage-avatar img {
+    filter: drop-shadow(0 1.2rem 1.4rem color-mix(in srgb, var(--c-neutral-0) 32%, transparent));
+    height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+    object-position: center bottom;
+    transform-origin: center bottom;
+  }
+
+  .live-chat-fullscreen-shell.mode-speaking .live-chat-stage-avatar img {
+    animation: live-chat-stage-breathe 2.8s ease-in-out infinite;
+  }
+
+  .live-chat-stage-fallback {
+    align-items: center;
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    min-height: 18rem;
+    position: relative;
+    width: 100%;
+  }
+
+  .live-chat-stage-fallback span {
+    align-items: center;
+    background: radial-gradient(circle at 35% 30%, var(--c-violet-650), var(--c-indigo-340-2) 68%);
+    border: 1px solid color-mix(in srgb, var(--c-violet-830) 34%, transparent);
+    border-radius: 50%;
+    box-shadow: 0 0 5rem color-mix(in srgb, var(--c-violet-570) 28%, transparent);
+    display: flex;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(5rem, 12vw, 10rem);
+    height: min(43vh, 26rem);
+    justify-content: center;
+    width: min(43vh, 26rem);
+  }
+
+  .live-chat-stage-fallback i {
+    border: 1px solid color-mix(in srgb, var(--c-violet-810) 18%, transparent);
+    border-radius: 50%;
+    height: min(51vh, 31rem);
+    position: absolute;
+    width: min(51vh, 31rem);
+  }
+
+  .live-chat-stage-caption {
+    align-items: center;
+    background: color-mix(in srgb, var(--c-indigo-200) 72%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-violet-810) 20%, transparent);
+    border-radius: 999px;
+    display: flex;
+    gap: 0.55rem;
+    justify-self: center;
+    margin-bottom: 0.75rem;
+    padding: 0.55rem 0.8rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .live-chat-stage-caption span {
+    font-size: 0.78rem;
+    font-weight: 700;
+  }
+
+  .live-chat-character-stage > footer {
+    border-top: 1px solid color-mix(in srgb, var(--c-violet-810) 12%, transparent);
+    color: var(--immersive-muted);
+    font-size: 0.69rem;
+    padding-top: 0.7rem;
+  }
+
+  .live-chat-fullscreen-rail {
+    background: var(--immersive-panel);
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto auto auto;
+    padding: 1.05rem;
+  }
+
+  .live-chat-fullscreen-rail > header {
+    align-items: flex-start;
+    border-bottom: 1px solid color-mix(in srgb, var(--c-violet-810) 12%, transparent);
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 0.85rem;
+  }
+
+  .live-chat-fullscreen-rail h1 {
+    font-size: clamp(1.35rem, 2vw, 2rem);
+  }
+
+  .live-chat-fullscreen-transcript {
+    display: grid;
+    gap: 0.65rem;
+    overflow-y: auto;
+    padding: 0.9rem 0.2rem 0.9rem 0;
+    scrollbar-color: color-mix(in srgb, var(--c-indigo-750) 35%, transparent) transparent;
+  }
+
+  .live-chat-fullscreen-transcript article {
+    background: color-mix(in srgb, var(--c-indigo-260-2) 62%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-violet-810) 10%, transparent);
+    border-radius: 0.75rem;
+    display: grid;
+    gap: 0.35rem;
+    max-width: 90%;
+    padding: 0.7rem 0.8rem;
+  }
+
+  .live-chat-fullscreen-transcript article.user {
+    background: color-mix(in srgb, var(--c-indigo-340) 56%, transparent);
+    justify-self: end;
+  }
+
+  .live-chat-fullscreen-transcript article.partial {
+    border-style: dashed;
+    opacity: 0.82;
+  }
+
+  .live-chat-fullscreen-transcript article > header {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .live-chat-fullscreen-transcript article strong,
+  .live-chat-fullscreen-transcript article time,
+  .live-chat-fullscreen-transcript article header span {
+    color: var(--c-indigo-780);
+    font-size: 0.64rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .live-chat-fullscreen-transcript article p {
+    font-size: 0.82rem;
+    line-height: 1.5;
+    margin: 0;
+    white-space: pre-wrap;
+  }
+
+  .live-chat-fullscreen-empty {
+    align-content: center;
+    color: var(--immersive-muted);
+    display: grid;
+    gap: 0.65rem;
+    justify-items: center;
+    min-height: 14rem;
+    text-align: center;
+  }
+
+  .live-chat-fullscreen-empty > span {
+    font-size: 2rem;
+  }
+
+  .live-chat-fullscreen-call-card {
+    background: var(--immersive-panel-soft);
+    border: 1px solid color-mix(in srgb, var(--c-violet-810) 14%, transparent);
+    border-radius: 0.85rem;
+    display: grid;
+    gap: 0.65rem;
+    padding: 0.75rem;
+  }
+
+  .live-chat-fullscreen-call-card > div {
+    display: grid;
+    gap: 0.18rem;
+  }
+
+  .live-chat-fullscreen-call-card > div span {
+    color: var(--immersive-muted);
+    font-size: 0.7rem;
+  }
+
+  .live-chat-fullscreen-call-card > button {
+    align-items: center;
+    background: linear-gradient(100deg, var(--c-pink-600), var(--c-purple-500));
+    border: 0;
+    border-radius: 0.65rem;
+    color: var(--c-neutral-1000);
+    cursor: pointer;
+    display: flex;
+    font-weight: 800;
+    gap: 0.55rem;
+    justify-content: center;
+    min-height: 2.75rem;
+  }
+
+  .live-chat-fullscreen-call-card > button.danger {
+    background: linear-gradient(100deg, var(--c-pink-530), var(--c-purple-480));
+  }
+
+  .live-chat-fullscreen-composer {
+    align-items: end;
+    display: grid;
+    gap: 0.55rem;
+    grid-template-columns: minmax(0, 1fr) auto;
+    margin-top: 0.7rem;
+  }
+
+  .live-chat-fullscreen-composer label {
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  .live-chat-fullscreen-composer label > span {
+    color: var(--immersive-muted);
+    font-size: 0.65rem;
+  }
+
+  .live-chat-fullscreen-composer textarea {
+    background: color-mix(in srgb, var(--c-slate-150-2) 76%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-violet-810) 18%, transparent);
+    border-radius: 0.7rem;
+    color: inherit;
+    font: inherit;
+    min-height: 2.9rem;
+    padding: 0.7rem;
+    resize: none;
+  }
+
+  .live-chat-fullscreen-composer > button {
+    background: color-mix(in srgb, var(--c-violet-650-2) 18%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-violet-810) 22%, transparent);
+    border-radius: 0.7rem;
+    color: inherit;
+    cursor: pointer;
+    height: 2.9rem;
+    width: 2.9rem;
+  }
+
+  .live-chat-fullscreen-composer > button:disabled {
+    cursor: not-allowed;
+    opacity: 0.42;
+  }
+
+  .live-chat-fullscreen-rail footer {
+    align-items: center;
+    display: flex;
+    gap: 0.65rem;
+    justify-content: space-between;
+    padding-top: 0.65rem;
+  }
+
+  .live-chat-fullscreen-rail footer span {
+    max-width: 65%;
+  }
+
+  @keyframes live-chat-stage-breathe {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-0.25rem) scale(1.004); }
+  }
+
+  @media (max-width: 980px) {
+    .live-chat-fullscreen-layout {
+      grid-template-columns: minmax(0, 1.2fr) minmax(19rem, 0.9fr);
+    }
+  }
+
+  @media (max-width: 760px) {
+    .live-chat-fullscreen-shell {
+      overflow-y: auto;
+    }
+
+    .live-chat-fullscreen-topbar,
+    .live-chat-fullscreen-topbar-actions,
+    .live-chat-fullscreen-rail footer {
+      align-items: stretch;
+      flex-direction: column;
+    }
+
+    .live-chat-fullscreen-layout {
+      grid-template-columns: 1fr;
+      grid-template-rows: minmax(18rem, 42dvh) minmax(32rem, auto);
+      overflow: visible;
+    }
+
+    .live-chat-fullscreen-rail {
+      min-height: 32rem;
+    }
+
+    .live-chat-fullscreen-rail footer span {
+      max-width: none;
+    }
+
+    .live-chat-stage-avatar img {
+      max-height: 34dvh;
+    }
+  }
+
+
+  /* Omnix light appearance: fullscreen Live Voice */
+  :root[data-omnix-appearance='light'] .live-chat-fullscreen-shell {
+    --immersive-bg: var(--c-slate-930);
+    --immersive-panel: color-mix(in srgb, var(--c-slate-970-2) 90%, transparent);
+    --immersive-panel-soft: color-mix(in srgb, var(--c-slate-950) 74%, transparent);
+    --immersive-border: color-mix(in srgb, var(--c-blue-560) 22%, transparent);
+    --immersive-text: var(--c-blue-310);
+    --immersive-muted: var(--c-blue-560);
+    --immersive-accent: var(--c-blue-560);
+  }
+  :root[data-omnix-appearance='light'] .live-chat-stage-avatar img {
+    filter: drop-shadow(0 .8rem 1rem color-mix(in srgb, var(--c-blue-440) 14%, transparent));
+  }
+}
+
+/* Declarations that must win over every other layer. */
+@layer overrides {
+  @media (prefers-reduced-motion: reduce) {
+  .live-chat-fullscreen-shell *,
+    .live-chat-fullscreen-shell *::before,
+    .live-chat-fullscreen-shell *::after {
+      animation-duration: 0.01ms;
+      animation-iteration-count: 1;
+      scroll-behavior: auto;
+      transition-duration: 0.01ms;
+    }
+  }
+
+  :root[data-omnix-appearance='light'] .live-chat-fullscreen-shell {
+    background:
+      radial-gradient(circle at 12% 10%, color-mix(in srgb, var(--c-neutral-1000) 82%, transparent), transparent 32rem),
+      radial-gradient(circle at 82% 92%, color-mix(in srgb, var(--c-slate-740) 28%, transparent), transparent 30rem),
+      var(--immersive-bg);
+    color: var(--immersive-text);
+  }
+
+  :root[data-omnix-appearance='light'] .live-chat-fullscreen-brand > span,
+  :root[data-omnix-appearance='light'] .live-chat-fullscreen-topbar-actions > span,
+  :root[data-omnix-appearance='light'] .live-chat-character-stage > header > span,
+  :root[data-omnix-appearance='light'] .live-chat-stage-caption {
+    background: color-mix(in srgb, var(--c-slate-970-2) 72%, transparent);
+    border-color: var(--immersive-border);
+    color: var(--immersive-text);
+  }
+
+  :root[data-omnix-appearance='light'] .live-chat-character-stage {
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--c-neutral-1000) 20%, transparent), color-mix(in srgb, var(--c-slate-850) 30%, transparent)),
+      radial-gradient(circle at 50% 22%, color-mix(in srgb, var(--c-blue-710) 24%, transparent), transparent 35%),
+      linear-gradient(145deg, var(--c-neutral-960), var(--c-slate-870));
+  }
+
+  :root[data-omnix-appearance='light'] .live-chat-character-stage .eyebrow,
+  :root[data-omnix-appearance='light'] .live-chat-fullscreen-rail .eyebrow {
+    color: var(--c-blue-560);
+  }
+
+  :root[data-omnix-appearance='light'] .live-chat-fullscreen-rail {
+    background: var(--immersive-panel);
+    border-color: var(--immersive-border);
+    box-shadow: inset 0 1px 0 color-mix(in srgb, var(--c-neutral-1000) 80%, transparent), 0 .8rem 1.8rem color-mix(in srgb, var(--c-blue-390) 10%, transparent);
+  }
+
+  :root[data-omnix-appearance='light'] .live-chat-fullscreen-transcript article {
+    background: color-mix(in srgb, var(--c-neutral-1000) 58%, transparent);
+    border-color: color-mix(in srgb, var(--c-blue-560) 15%, transparent);
+    color: var(--immersive-text);
+  }
+
+  :root[data-omnix-appearance='light'] .live-chat-fullscreen-transcript article.user {
+    background: color-mix(in srgb, var(--c-slate-850) 54%, transparent);
+  }
+
+  :root[data-omnix-appearance='light'] .live-chat-fullscreen-transcript article :where(strong,time,header span) {
+    color: var(--c-blue-560);
+  }
+
+  :root[data-omnix-appearance='light'] .live-chat-fullscreen-call-card,
+  :root[data-omnix-appearance='light'] .live-chat-fullscreen-composer textarea,
+  :root[data-omnix-appearance='light'] .live-chat-fullscreen-composer > button {
+    background: color-mix(in srgb, var(--c-slate-970-2) 70%, transparent);
+    border-color: var(--immersive-border);
+    color: var(--immersive-text);
+  }
+}

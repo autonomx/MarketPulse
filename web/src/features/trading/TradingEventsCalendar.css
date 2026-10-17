@@ -1,0 +1,17 @@
+@layer features {
+  .trading-events-calendar{display:flex;flex-direction:column;gap:8px;padding:8px 10px;font-size:12px;min-height:0;height:100%;overflow:auto}
+  .trading-events-calendar header{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+  .trading-events-calendar header label{display:flex;gap:4px;align-items:center}
+  .trading-events-calendar header span{margin-left:auto;color:var(--c-slate-630);font-size:11px}
+  .trading-events-calendar-day h3{margin:6px 0 2px;font-size:12px}
+  .trading-events-calendar-day table{width:100%;border-collapse:collapse}
+  .trading-events-calendar-day td{padding:3px 6px;border-bottom:1px solid var(--c-neutral-910);white-space:nowrap}
+  .trading-events-calendar-day td:nth-child(3){width:100%;white-space:normal}
+  .trading-events-calendar-day td button{padding:2px 6px;font-weight:600}
+  .trading-events-calendar-kind{display:inline-grid;place-items:center;width:16px;height:16px;border-radius:50%;color:var(--c-neutral-1000);font-size:9px;font-weight:700}
+  .trading-events-calendar-kind.is-earnings{background:var(--c-amber-700)}
+  .trading-events-calendar-kind.is-dividend{background:var(--c-green-560)}
+  .trading-events-calendar-kind.is-split{background:var(--c-violet-570)}
+  .trading-events-calendar-kind.is-estimated{border:1px dashed var(--c-amber-700);background:transparent;color:var(--c-amber-700)}
+  .trading-events-calendar footer{color:var(--c-slate-630);font-size:10px}
+}

@@ -1,0 +1,10 @@
+//@version=5
+indicator("Order blocks (user-defined type)", overlay=true, max_boxes_count=50)
+type OrderBlock
+    float top
+    float bottom
+    int left
+var blocks = array.new<OrderBlock>()
+if close > open and close[1] < open[1] and close > high[1]
+    array.push(blocks, OrderBlock.new(high[1], low[1], bar_index - 1))
+plot(close)

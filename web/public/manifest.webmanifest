@@ -1,0 +1,16 @@
+{
+  "id": "/trading",
+  "name": "Omnix Trading",
+  "short_name": "Omnix Trading",
+  "description": "Charts, alerts and paper trading in their own window.",
+  "start_url": "/trading",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#131722",
+  "theme_color": "#131722",
+  "icons": [
+    { "src": "/icons/omnix-trading-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/omnix-trading-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/omnix-trading-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

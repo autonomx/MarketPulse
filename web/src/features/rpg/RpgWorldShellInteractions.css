@@ -1,0 +1,168 @@
+@layer features {
+  .rpg-world-main-shell {
+    position: relative;
+  }
+
+  .rpg-world-notification-button {
+    position: relative;
+  }
+
+  .rpg-world-notification-button b {
+    position: absolute;
+    top: -0.2rem;
+    right: -0.25rem;
+    display: grid;
+    min-width: 1.1rem;
+    height: 1.1rem;
+    place-items: center;
+    border: 2px solid var(--c-slate-150-2);
+    border-radius: 999px;
+    background: var(--c-orange-580);
+    color: var(--c-neutral-1000);
+    font-size: 0.62rem;
+    line-height: 1;
+  }
+
+  .rpg-world-command-popover {
+    position: absolute;
+    z-index: 40;
+    top: 68px;
+    right: 1.25rem;
+    display: grid;
+    width: min(440px, calc(100vw - 2rem));
+    max-height: min(600px, calc(100vh - 100px));
+    overflow: auto;
+    gap: 0.75rem;
+    padding: 1rem;
+    border: 1px solid color-mix(in srgb, var(--c-violet-810) 28%, transparent);
+    border-radius: 18px;
+    background: color-mix(in srgb, var(--c-slate-150-2) 96%, transparent);
+    box-shadow: 0 24px 80px color-mix(in srgb, var(--c-neutral-0) 45%, transparent);
+    backdrop-filter: blur(18px);
+  }
+
+  .rpg-world-command-popover label {
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .rpg-world-command-popover label > span,
+  .rpg-world-command-popover header strong {
+    color: var(--c-yellow-920-2);
+    font-size: 0.72rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .rpg-world-command-popover input {
+    box-sizing: border-box;
+    width: 100%;
+    border: 1px solid color-mix(in srgb, var(--c-violet-710) 28%, transparent);
+    border-radius: 11px;
+    outline: none;
+    background: color-mix(in srgb, var(--c-blue-130) 82%, transparent);
+    color: var(--c-neutral-1000);
+    padding: 0.78rem 0.85rem;
+  }
+
+  .rpg-world-command-popover input:focus {
+    border-color: color-mix(in srgb, var(--c-yellow-880) 65%, transparent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--c-yellow-880) 10%, transparent);
+  }
+
+  .rpg-world-command-popover > div,
+  .rpg-world-command-popover.is-notifications {
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .rpg-world-command-popover button {
+    display: grid;
+    grid-template-columns: 2rem minmax(0, 1fr);
+    gap: 0.1rem 0.65rem;
+    align-items: center;
+    width: 100%;
+    padding: 0.7rem;
+    border: 1px solid transparent;
+    border-radius: 11px;
+    background: color-mix(in srgb, var(--c-indigo-210) 48%, transparent);
+    color: var(--c-neutral-1000);
+    text-align: left;
+  }
+
+  .rpg-world-command-popover button:hover,
+  .rpg-world-command-popover button:focus-visible {
+    border-color: color-mix(in srgb, var(--c-violet-710) 32%, transparent);
+    background: color-mix(in srgb, var(--c-violet-380) 35%, transparent);
+  }
+
+  .rpg-world-command-popover button > span {
+    grid-row: 1 / span 2;
+    color: var(--c-yellow-920-2);
+    font-size: 1.05rem;
+    text-align: center;
+  }
+
+  .rpg-world-command-popover button strong {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .rpg-world-command-popover button small {
+    color: color-mix(in srgb, var(--c-slate-870) 72%, transparent);
+    font-size: 0.72rem;
+  }
+
+  .rpg-world-command-popover header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 0.7rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--c-violet-710) 16%, transparent);
+  }
+
+  .rpg-world-command-popover header span {
+    color: var(--c-violet-810);
+    font-size: 0.74rem;
+    font-weight: 800;
+  }
+
+  .rpg-world-command-popover header .rpg-world-popover-close {
+    display: grid;
+    grid-template-columns: none;
+    width: 1.85rem;
+    min-width: 1.85rem;
+    height: 1.85rem;
+    min-height: 1.85rem;
+    margin-left: 0.2rem;
+    padding: 0;
+    place-items: center;
+    border-color: color-mix(in srgb, var(--c-violet-710) 20%, transparent);
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--c-indigo-210) 64%, transparent);
+    color: var(--c-neutral-1000);
+    font-size: 1.25rem;
+    line-height: 1;
+    text-align: center;
+  }
+
+  .rpg-world-command-popover > p {
+    margin: 0;
+    color: color-mix(in srgb, var(--c-slate-870) 76%, transparent);
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 760px) {
+    .rpg-world-command-popover {
+      position: fixed;
+      top: 72px;
+      right: 0.75rem;
+      left: 0.75rem;
+      width: auto;
+    }
+  }
+}

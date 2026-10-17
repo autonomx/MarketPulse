@@ -1,0 +1,129 @@
+@layer features {
+  .image-reference-fieldset {
+    border: 1px solid color-mix(in srgb, var(--c-sky-610) 18%, transparent);
+    border-radius: 0.72rem;
+    display: grid;
+    gap: 0.55rem;
+    margin: 0;
+    min-width: 0;
+    padding: 0.72rem;
+  }
+
+  .image-reference-fieldset legend {
+    align-items: center;
+    color: var(--c-slate-870);
+    display: inline-flex;
+    font-size: 0.76rem;
+    gap: 0.32rem;
+    padding: 0 0.24rem;
+  }
+
+  .image-reference-fieldset legend i {
+    color: var(--c-slate-600);
+    font-size: 0.67rem;
+    font-style: normal;
+  }
+
+  .image-reference-dropzone {
+    align-items: center;
+    background: color-mix(in srgb, var(--c-slate-150-2) 58%, transparent);
+    border: 1px dashed color-mix(in srgb, var(--c-sky-610) 38%, transparent);
+    border-radius: 0.62rem;
+    display: flex;
+    gap: 0.75rem;
+    justify-content: space-between;
+    min-height: 5.4rem;
+    padding: 0.72rem;
+  }
+
+  .image-reference-dropzone.active {
+    background: color-mix(in srgb, var(--c-violet-230) 62%, transparent);
+    border-color: color-mix(in srgb, var(--c-indigo-600) 86%, transparent);
+    box-shadow: 0 0 0 0.12rem color-mix(in srgb, var(--c-indigo-600) 16%, transparent);
+  }
+
+  .image-reference-dropzone strong {
+    color: var(--c-slate-940);
+    display: block;
+    font-size: 0.86rem;
+    margin-bottom: 0.2rem;
+  }
+
+  .image-reference-dropzone p,
+  .image-reference-count {
+    color: var(--c-slate-680);
+    margin: 0;
+  }
+
+  .image-reference-dropzone .mantine-Button-root {
+    flex: 0 0 auto;
+  }
+
+  .image-reference-grid {
+    display: grid;
+    gap: 0.55rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .image-reference-card {
+    background: color-mix(in srgb, var(--c-slate-150-2) 82%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-sky-610) 22%, transparent);
+    border-radius: 0.58rem;
+    display: grid;
+    grid-template-columns: 4.8rem minmax(0, 1fr);
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .image-reference-card img {
+    aspect-ratio: 1;
+    height: 100%;
+    object-fit: cover;
+    width: 100%;
+  }
+
+  .image-reference-card div {
+    align-content: center;
+    display: grid;
+    gap: 0.42rem;
+    min-width: 0;
+    padding: 0.5rem;
+  }
+
+  .image-reference-card span {
+    color: var(--c-slate-870);
+    font-size: 0.78rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .image-reference-card button {
+    background: transparent;
+    border: 0;
+    color: var(--c-red-810);
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.72rem;
+    justify-self: start;
+    padding: 0;
+  }
+
+  .image-reference-card button:hover,
+  .image-reference-card button:focus-visible {
+    color: var(--c-red-890);
+    outline: none;
+    text-decoration: underline;
+  }
+
+  @media (max-width: 640px) {
+    .image-reference-dropzone {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .image-reference-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+}

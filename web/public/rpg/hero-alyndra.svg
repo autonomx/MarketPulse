@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" role="img" aria-labelledby="title desc">
+  <title id="title">Alyndra hero portrait</title>
+  <desc id="desc">Stylized fantasy ranger portrait for the Omnix RPG workspace.</desc>
+  <defs>
+    <radialGradient id="bgGlow" cx="35%" cy="20%" r="75%">
+      <stop offset="0" stop-color="#8b5cf6"/>
+      <stop offset="0.45" stop-color="#23336d"/>
+      <stop offset="1" stop-color="#070712"/>
+    </radialGradient>
+    <linearGradient id="cloak" x1="77" x2="251" y1="115" y2="293" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#111827"/>
+      <stop offset="0.55" stop-color="#18233a"/>
+      <stop offset="1" stop-color="#050611"/>
+    </linearGradient>
+    <linearGradient id="hair" x1="101" x2="219" y1="45" y2="216" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#eef2ff"/>
+      <stop offset="0.22" stop-color="#a7b4d6"/>
+      <stop offset="0.62" stop-color="#293047"/>
+      <stop offset="1" stop-color="#080911"/>
+    </linearGradient>
+    <linearGradient id="face" x1="142" x2="194" y1="82" y2="166" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f2d9ce"/>
+      <stop offset="1" stop-color="#b9897e"/>
+    </linearGradient>
+    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#02030a" flood-opacity="0.7"/>
+    </filter>
+  </defs>
+  <rect width="320" height="320" fill="url(#bgGlow)"/>
+  <circle cx="262" cy="54" r="64" fill="#22d3ee" opacity="0.12"/>
+  <circle cx="78" cy="92" r="36" fill="#c084fc" opacity="0.16"/>
+  <path d="M36 252c47-44 80-65 124-65 53 0 91 24 124 65v68H36z" fill="url(#cloak)" filter="url(#softShadow)"/>
+  <path d="M87 268c14-43 30-79 74-79 40 0 60 33 72 79z" fill="#0b1020" opacity="0.85"/>
+  <path d="M95 119c0-51 29-84 76-84 48 0 79 35 79 91 0 54-29 98-46 120-12-28-22-47-35-54-11 10-26 31-38 55-25-39-36-79-36-128Z" fill="url(#hair)"/>
+  <path d="M130 108c4-38 23-59 43-59 25 0 45 27 48 66 3 35-7 76-45 80-33 4-50-37-46-87Z" fill="url(#face)"/>
+  <path d="M131 115c11-32 38-40 79-28 5 20 3 37-4 54-7-22-14-34-22-38-13 6-31 11-53 12Z" fill="#141827" opacity="0.6"/>
+  <path d="M121 88c-22 24-30 62-19 110 15 15 27 28 32 49-35-29-61-71-62-121-1-44 21-75 55-90-13 14-19 31-6 52Z" fill="#070812" opacity="0.72"/>
+  <path d="M213 42c33 18 51 52 47 94-3 39-23 75-48 105 11-38 25-70 21-111-4-42-13-66-20-88Z" fill="#070812" opacity="0.7"/>
+  <path d="M143 148c11 11 33 11 48 1-4 17-13 27-25 27-12 0-20-10-23-28Z" fill="#8f5f5d" opacity="0.38"/>
+  <path d="M143 130c8-7 17-7 26-1M184 129c8-6 16-5 23 2" stroke="#1c2130" stroke-width="4" stroke-linecap="round"/>
+  <path d="M165 137c-2 10-4 20-8 30 6 4 13 4 19 0" stroke="#815c58" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M87 278c22-35 47-58 75-70 31 12 55 35 71 70" stroke="#64748b" stroke-width="10" stroke-linecap="round" opacity="0.42"/>
+  <path d="M91 284h139" stroke="#8b5cf6" stroke-width="4" opacity="0.55"/>
+  <path d="M68 270c25 14 60 22 99 22s73-8 99-22" stroke="#22d3ee" stroke-width="3" opacity="0.28"/>
+</svg>

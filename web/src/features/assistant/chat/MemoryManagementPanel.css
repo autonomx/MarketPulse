@@ -1,0 +1,302 @@
+@layer features {
+  .memory-management-panel {
+    --memory-surface: color-mix(in srgb, var(--c-indigo-190) 72%, transparent);
+    --memory-surface-strong: color-mix(in srgb, var(--c-indigo-210) 90%, transparent);
+    --memory-accent: var(--c-violet-660);
+    --memory-accent-soft: color-mix(in srgb, var(--c-violet-660) 16%, transparent);
+    gap: 1.25rem;
+    padding: 1.4rem;
+  }
+
+  .memory-page-header {
+    align-items: end;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: space-between;
+  }
+
+  .memory-page-header h2,
+  .memory-section-header h3,
+  .memory-card-heading h3,
+  .memory-record-card h4 {
+    color: var(--omnix-text);
+    margin: 0;
+  }
+
+  .memory-page-header h2 {
+    font-size: 1.45rem;
+    line-height: 1.15;
+  }
+
+  .memory-page-header p,
+  .memory-section-header p,
+  .memory-card-heading p {
+    color: var(--omnix-muted);
+    margin: 0.25rem 0 0;
+  }
+
+  .memory-page-stats {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .memory-page-stats span,
+  .memory-metric-row span {
+    background: var(--memory-accent-soft);
+    border: 1px solid color-mix(in srgb, var(--c-violet-660) 30%, transparent);
+    border-radius: 999px;
+    color: var(--c-violet-920);
+    display: inline-flex;
+    font-size: 0.78rem;
+    gap: 0.35rem;
+    padding: 0.4rem 0.65rem;
+    white-space: nowrap;
+  }
+
+  .memory-page-stats strong,
+  .memory-metric-row strong {
+    color: var(--omnix-text);
+  }
+
+  .memory-status {
+    background: color-mix(in srgb, var(--c-sky-750) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-sky-750) 28%, transparent);
+    border-radius: 0.65rem;
+    color: var(--c-slate-950);
+    margin: 0;
+    padding: 0.75rem 0.9rem;
+  }
+
+  .memory-overview-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .memory-management-panel .memory-card,
+  .memory-management-panel .memory-record-card {
+    background: var(--memory-surface);
+    border: 1px solid var(--omnix-border);
+    border-radius: 0.85rem;
+    display: grid;
+    gap: 0.9rem;
+    min-width: 0;
+    padding: 1rem;
+  }
+
+  .memory-management-panel .memory-card-primary {
+    background:
+      linear-gradient(145deg, color-mix(in srgb, var(--c-indigo-600) 12%, transparent), transparent 58%),
+      var(--memory-surface-strong);
+  }
+
+  .memory-settings-card {
+    grid-column: 1 / -1;
+  }
+
+  .memory-card-heading {
+    align-items: start;
+    display: grid;
+    gap: 0.7rem;
+    grid-template-columns: 1.8rem minmax(0, 1fr);
+  }
+
+  .memory-card-heading > span {
+    align-items: center;
+    background: var(--memory-accent-soft);
+    border: 1px solid color-mix(in srgb, var(--c-violet-660) 32%, transparent);
+    border-radius: 0.55rem;
+    color: var(--c-violet-920);
+    display: inline-flex;
+    font-weight: 800;
+    height: 1.8rem;
+    justify-content: center;
+    width: 1.8rem;
+  }
+
+  .memory-metric-row,
+  .memory-card-actions,
+  .memory-record-actions {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+  }
+
+  .memory-field-row,
+  .memory-filter-bar {
+    display: grid;
+    gap: 0.7rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .memory-filter-bar {
+    grid-template-columns: minmax(12rem, 1.5fr) repeat(2, minmax(9rem, 0.75fr));
+  }
+
+  .memory-management-panel label {
+    color: var(--omnix-muted);
+    display: grid;
+    font-size: 0.82rem;
+    font-weight: 700;
+    gap: 0.4rem;
+    min-width: 0;
+  }
+
+  .memory-management-panel input,
+  .memory-management-panel select,
+  .memory-management-panel textarea {
+    background: color-mix(in srgb, var(--c-slate-150-2) 90%, transparent);
+    border: 1px solid var(--omnix-border);
+    border-radius: 0.55rem;
+    color: var(--omnix-text);
+    font: inherit;
+    min-width: 0;
+    padding: 0.65rem 0.75rem;
+  }
+
+  .memory-management-panel input,
+  .memory-management-panel select {
+    min-height: 2.55rem;
+  }
+
+  .memory-management-panel textarea {
+    line-height: 1.45;
+    resize: vertical;
+  }
+
+  .memory-management-panel input:focus-visible,
+  .memory-management-panel select:focus-visible,
+  .memory-management-panel textarea:focus-visible,
+  .memory-management-panel button:focus-visible {
+    outline: 2px solid var(--memory-accent);
+    outline-offset: 2px;
+  }
+
+  .memory-settings-grid {
+    display: grid;
+    gap: 0.55rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .memory-management-panel .memory-toggle-row {
+    align-items: center;
+    background: color-mix(in srgb, var(--c-slate-150-2) 48%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-neutral-1000) 6%, transparent);
+    border-radius: 0.55rem;
+    color: var(--omnix-text);
+    display: grid;
+    gap: 0.55rem;
+    grid-template-columns: auto minmax(0, 1fr);
+    padding: 0.6rem 0.7rem;
+  }
+
+  .memory-toggle-row input {
+    min-height: auto;
+    width: auto;
+  }
+
+  .memory-section {
+    background:
+      radial-gradient(circle at 12% 0%, var(--omnix-theme-soft), transparent 20rem),
+      var(--omnix-panel-solid);
+    border: 1px solid var(--omnix-border);
+    border-radius: 0.8rem;
+    color: var(--omnix-text);
+    display: grid;
+    gap: 0.85rem;
+    padding: 1rem;
+  }
+
+  .memory-section-header {
+    align-items: end;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .memory-record-grid {
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+  }
+
+  .memory-record-card header {
+    align-items: center;
+    display: flex;
+    gap: 0.75rem;
+    justify-content: space-between;
+  }
+
+  .memory-record-card header strong {
+    background: var(--memory-accent-soft);
+    border: 1px solid color-mix(in srgb, var(--c-violet-660) 30%, transparent);
+    border-radius: 999px;
+    color: var(--c-violet-920);
+    font-size: 0.72rem;
+    padding: 0.3rem 0.55rem;
+    text-transform: capitalize;
+    white-space: nowrap;
+  }
+
+  .memory-record-card p {
+    color: var(--omnix-text);
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .memory-record-card small {
+    color: var(--omnix-muted);
+  }
+
+  .memory-record-actions button,
+  .memory-card-actions button,
+  .memory-card-primary button {
+    min-height: 2.25rem;
+    padding: 0 0.75rem;
+  }
+
+  .memory-record-actions select {
+    min-height: 2.25rem;
+    padding-block: 0.35rem;
+  }
+
+  .memory-management-panel button:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+
+  .memory-empty-state {
+    background: color-mix(in srgb, var(--c-indigo-190) 45%, transparent);
+    border: 1px dashed var(--omnix-border);
+    border-radius: 0.7rem;
+    color: var(--omnix-muted);
+    margin: 0;
+    padding: 1rem;
+  }
+
+  @media (max-width: 1050px) {
+    .memory-overview-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .memory-management-panel {
+      padding: 1rem;
+    }
+
+    .memory-field-row,
+    .memory-filter-bar,
+    .memory-settings-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .memory-page-header {
+      align-items: start;
+      flex-direction: column;
+    }
+  }
+}

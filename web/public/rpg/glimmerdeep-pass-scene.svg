@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 560" role="img" aria-labelledby="title desc">
+  <title id="title">Glimmerdeep Pass scene</title>
+  <desc id="desc">Snowy mountain pass with an ancient stone archway for the Omnix RPG scene card.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" x2="0" y1="0" y2="560">
+      <stop stop-color="#111a34"/>
+      <stop offset="0.45" stop-color="#17223d"/>
+      <stop offset="1" stop-color="#070812"/>
+    </linearGradient>
+    <linearGradient id="snow" x1="0" x2="0" y1="230" y2="560">
+      <stop stop-color="#d8e3f6"/>
+      <stop offset="0.5" stop-color="#7f91ad"/>
+      <stop offset="1" stop-color="#182034"/>
+    </linearGradient>
+    <linearGradient id="stone" x1="340" x2="560" y1="185" y2="430">
+      <stop stop-color="#9aa7bb"/>
+      <stop offset="0.5" stop-color="#5c6679"/>
+      <stop offset="1" stop-color="#252d40"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="70%" cy="24%" r="45%">
+      <stop stop-color="#8b5cf6" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#8b5cf6" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="fog" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="9"/>
+    </filter>
+  </defs>
+  <rect width="900" height="560" fill="url(#sky)"/>
+  <rect width="900" height="560" fill="url(#glow)"/>
+  <circle cx="695" cy="93" r="34" fill="#f7e7b4" opacity="0.72"/>
+  <path d="M0 260 116 108l58 91 74-132 138 207Z" fill="#2c3858"/>
+  <path d="M138 248 306 58l93 170 69-92 148 180Z" fill="#3c4a68"/>
+  <path d="M458 276 664 66l114 202 55-73 112 145Z" fill="#293753"/>
+  <path d="M116 108 174 199l-48-25-37 50zm190-50 44 80-51-37-53 85zm358 8 54 96-67-37-56 80z" fill="#dbe7fb" opacity="0.8"/>
+  <path d="M0 356c116-43 205-63 317-59 135 5 244 69 360 64 83-3 147-31 223-39v238H0z" fill="url(#snow)"/>
+  <path d="M0 414c106-24 220-30 321-13 108 18 180 66 291 61 111-5 195-46 288-46v144H0z" fill="#0f172a" opacity="0.55"/>
+  <path d="M360 412c31-94 54-156 103-156 47 0 68 66 89 156h-43c-12-60-25-92-48-92-24 0-40 34-58 92z" fill="url(#stone)"/>
+  <path d="M377 397c22-81 43-121 84-121 42 0 59 48 74 121h-37c-8-41-18-64-38-64-21 0-34 24-49 64z" fill="#09101f"/>
+  <path d="M342 245h236v50H342z" fill="url(#stone)"/>
+  <path d="M355 230h211l12 35H342z" fill="#6f7b91"/>
+  <path d="M336 251h38v186h-38zm210 0h40v186h-40z" fill="#30394d"/>
+  <path d="M336 251h38v34h-38zm210 0h40v34h-40z" fill="#77849a" opacity="0.65"/>
+  <path d="M210 373c58-28 113-42 170-41 42 1 68 12 96 30-73-6-125 6-171 31-50 27-91 42-154 51 10-23 29-49 59-71Z" fill="#cbd7ea" opacity="0.35"/>
+  <path d="M406 396c-89 26-146 73-194 164h376c-42-80-100-133-182-164Z" fill="#dce8fa" opacity="0.62"/>
+  <path d="M291 478c56-33 107-44 165-38 41 4 73 19 112 38" stroke="#39455e" stroke-width="5" opacity="0.42" fill="none"/>
+  <path d="M275 358c16 11 41 10 55-2" stroke="#253047" stroke-width="5" fill="none" opacity="0.46"/>
+  <path d="M622 342c35 18 79 18 118-2" stroke="#253047" stroke-width="5" fill="none" opacity="0.46"/>
+  <path d="M595 276h45v90l-22-14-23 14z" fill="#7f1d1d"/>
+  <path d="M610 275v120" stroke="#1f2937" stroke-width="6"/>
+  <g opacity="0.48" filter="url(#fog)">
+    <path d="M26 340c158-48 229-21 342 6 113 27 209-49 401-4" stroke="#e0e7ff" stroke-width="25" fill="none"/>
+    <path d="M82 279c126-33 233 4 344 16 109 12 184-41 364-21" stroke="#b9c8e8" stroke-width="18" fill="none"/>
+  </g>
+  <g fill="#edf4ff" opacity="0.82">
+    <circle cx="166" cy="148" r="2"/><circle cx="718" cy="201" r="2"/><circle cx="648" cy="122" r="1.5"/><circle cx="526" cy="71" r="1.6"/><circle cx="276" cy="96" r="1.6"/><circle cx="812" cy="160" r="1.8"/>
+  </g>
+</svg>

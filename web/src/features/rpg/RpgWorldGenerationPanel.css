@@ -1,0 +1,206 @@
+@layer features {
+  .rpg-generation-panel {
+    display: grid;
+    gap: 0.9rem;
+    padding: 0.95rem;
+    border-top: 1px solid color-mix(in srgb, var(--c-yellow-770) 13%, transparent);
+    background: linear-gradient(180deg, color-mix(in srgb, var(--c-indigo-170) 50%, transparent), color-mix(in srgb, var(--c-slate-150-2) 28%, transparent));
+  }
+
+  .is-operational-dashboard .rpg-generation-panel .rpg-authoring-page-heading {
+    align-items: center;
+    margin: 0;
+    padding: 0 0 0.85rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--c-yellow-770) 14%, transparent);
+  }
+
+  .is-operational-dashboard .rpg-generation-panel .rpg-authoring-page-heading h2 {
+    color: var(--c-slate-980);
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+
+  .is-operational-dashboard .rpg-generation-panel .rpg-authoring-page-heading > span {
+    color: var(--c-amber-830);
+    font-size: 0.72rem;
+  }
+
+  .rpg-generation-settings {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.85rem;
+    padding: 0.9rem;
+    border: 1px solid color-mix(in srgb, var(--c-yellow-770) 18%, transparent);
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--c-indigo-170) 70%, transparent);
+  }
+
+  .rpg-generation-settings label,
+  .rpg-generation-advanced-grid label {
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .rpg-generation-settings input:not([type='checkbox']),
+  .rpg-generation-settings select,
+  .rpg-generation-advanced-grid input,
+  .rpg-generation-advanced-grid textarea,
+  .rpg-generation-topic-grid textarea {
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 38px;
+    border: 1px solid color-mix(in srgb, var(--c-yellow-770) 20%, transparent);
+    border-radius: 5px;
+    background: color-mix(in srgb, var(--c-slate-150-2) 88%, transparent);
+    color: var(--c-neutral-1000);
+    padding: 0.55rem 0.7rem;
+  }
+
+  .rpg-generation-settings input:not([type='checkbox']):focus,
+  .rpg-generation-settings select:focus,
+  .rpg-generation-advanced-grid input:focus,
+  .rpg-generation-advanced-grid textarea:focus,
+  .rpg-generation-topic-grid textarea:focus {
+    border-color: var(--c-yellow-770);
+    outline: 2px solid color-mix(in srgb, var(--c-yellow-770) 16%, transparent);
+    outline-offset: 1px;
+  }
+
+  .rpg-generation-advanced-grid textarea {
+    resize: vertical;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.8rem;
+  }
+
+  .rpg-generation-settings .rpg-authoring-checkbox {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-self: start;
+    gap: 0.55rem;
+    color: color-mix(in srgb, var(--c-slate-930) 74%, transparent);
+    font-size: 0.72rem;
+  }
+
+  .rpg-generation-settings .rpg-authoring-checkbox input[type='checkbox'] {
+    width: 1rem;
+    min-width: 1rem;
+    height: 1rem;
+    min-height: 1rem;
+    margin: 0;
+    accent-color: var(--c-yellow-770);
+  }
+
+  .rpg-generation-advanced {
+    padding: 0.8rem 0.9rem;
+    border: 1px solid color-mix(in srgb, var(--c-yellow-770) 16%, transparent);
+    border-radius: 5px;
+    background: color-mix(in srgb, var(--c-indigo-170) 56%, transparent);
+  }
+
+  .rpg-generation-advanced > summary {
+    cursor: pointer;
+    color: var(--c-violet-810);
+    font-weight: 800;
+  }
+
+  .rpg-generation-advanced-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    padding-top: 0.9rem;
+  }
+
+  .rpg-generation-advanced-grid label > span,
+  .rpg-generation-settings label > span {
+    color: color-mix(in srgb, var(--c-slate-870) 68%, transparent);
+    font-size: 0.68rem;
+    font-weight: 800;
+  }
+
+  .rpg-generation-advanced-grid .rpg-generation-manifest {
+    grid-column: 1 / -1;
+  }
+
+  .rpg-generation-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+  }
+
+  .rpg-generation-actions button {
+    min-height: 38px;
+    padding: 0.55rem 0.85rem;
+    border: 1px solid color-mix(in srgb, var(--c-yellow-770) 20%, transparent);
+    border-radius: 5px;
+    background: color-mix(in srgb, var(--c-indigo-170) 82%, transparent);
+    color: color-mix(in srgb, var(--c-neutral-960) 90%, transparent);
+    font-size: 0.72rem;
+  }
+
+  .rpg-generation-actions button:first-child {
+    border-color: var(--c-yellow-770);
+    background: linear-gradient(180deg, var(--c-yellow-870), var(--c-yellow-770));
+    color: var(--c-yellow-220);
+    font-weight: 800;
+  }
+
+  .rpg-generation-actions button:not(:disabled):hover,
+  .rpg-generation-actions button:not(:disabled):focus-visible {
+    border-color: var(--c-yellow-870);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--c-yellow-770) 18%, transparent);
+    outline: 0;
+  }
+
+  .rpg-generation-actions button:disabled {
+    opacity: 0.42;
+  }
+
+  .rpg-generation-panel .rpg-authoring-feedback {
+    border: 1px solid color-mix(in srgb, var(--c-green-790-2) 20%, transparent);
+    border-radius: 5px;
+    background: color-mix(in srgb, var(--c-sky-280) 68%, transparent);
+    color: var(--c-teal-900);
+  }
+
+  .rpg-generation-topic-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  .rpg-generation-topic-grid article {
+    display: grid;
+    gap: 0.65rem;
+    padding: 0.8rem;
+    border: 1px solid color-mix(in srgb, var(--c-yellow-770) 14%, transparent);
+    border-radius: 5px;
+    background: color-mix(in srgb, var(--c-indigo-170) 68%, transparent);
+  }
+
+  .rpg-generation-topic-choice {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+  }
+
+  .rpg-generation-topic-choice span {
+    display: grid;
+    gap: 0.2rem;
+  }
+
+  .rpg-generation-topic-choice small {
+    color: var(--omnix-muted, var(--c-slate-730));
+  }
+
+  @media (max-width: 800px) {
+    .rpg-generation-settings,
+    .rpg-generation-advanced-grid,
+    .rpg-generation-topic-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .rpg-generation-advanced-grid .rpg-generation-manifest {
+      grid-column: auto;
+    }
+  }
+}

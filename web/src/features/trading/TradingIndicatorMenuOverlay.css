@@ -1,0 +1,68 @@
+@layer features {
+  .trading-indicator-manager{position:relative;display:block;flex:0 0 auto}
+  .trading-indicator-manager>button{display:flex;align-items:center;gap:5px;height:29px;padding:0 7px;border:1px solid color-mix(in srgb, var(--c-blue-660) 18%, transparent);border-radius:5px;background:var(--c-indigo-190);color:var(--c-slate-820);font-size:10px;cursor:pointer;white-space:nowrap}
+  .trading-indicator-manager>button:hover,.trading-indicator-manager>button[aria-expanded=true]{border-color:color-mix(in srgb, var(--c-blue-630) 70%, transparent);background:var(--c-blue-230);color:var(--c-slate-930)}
+  .trading-indicator-manager.has-active>button{color:var(--c-blue-770)}
+  .trading-indicator-manager>button:focus-visible,.trading-indicator-picker button:focus-visible,.trading-indicator-picker input:focus-visible{outline:2px solid var(--c-blue-630);outline-offset:1px}
+  .trading-indicator-picker-backdrop{position:fixed;z-index:2000;inset:0;display:grid;place-items:center;padding:24px;background:color-mix(in srgb, var(--c-slate-130) 70%, transparent);backdrop-filter:blur(5px)}
+  .trading-indicator-picker{display:grid;width:min(1040px,calc(100vw - 48px));height:min(760px,calc(100vh - 48px));grid-template-rows:auto auto minmax(0,1fr);overflow:hidden;border:1px solid color-mix(in srgb, var(--c-blue-710) 25%, transparent);border-radius:12px;background:var(--c-neutral-1000);color:var(--c-neutral-220);box-shadow:0 24px 70px color-mix(in srgb, var(--c-neutral-0) 50%, transparent)}
+  .trading-indicator-picker-header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 24px 14px;background:var(--c-neutral-1000)}
+  .trading-indicator-picker-header h2{margin:0;font-size:24px;line-height:1.2;letter-spacing:-.02em}
+  .trading-indicator-picker-close{display:grid;place-items:center;width:32px;height:32px;border:0;border-radius:6px;background:transparent;color:var(--c-slate-260-2);font-size:29px;font-weight:300;line-height:1;cursor:pointer}
+  .trading-indicator-picker-close:hover{background:var(--c-neutral-960)}
+  .trading-indicator-picker-search{display:flex;align-items:center;gap:12px;margin:12px 24px 18px;padding:0 14px;border:1px solid var(--c-neutral-910);border-radius:10px;background:var(--c-neutral-1000);color:var(--c-slate-580)}
+  .trading-indicator-picker-search:focus-within{border-color:var(--c-blue-630);box-shadow:0 0 0 2px color-mix(in srgb, var(--c-blue-630) 12%, transparent)}
+  .trading-indicator-picker-search input{width:100%;height:46px;border:0;outline:0;background:transparent;color:var(--c-slate-240);font-size:17px}
+  .trading-indicator-picker-search input::placeholder{color:var(--c-slate-600)}
+  .trading-indicator-search-icon{position:relative;width:18px;height:18px;border:2px solid var(--c-slate-550);border-radius:50%}
+  .trading-indicator-search-icon::after{position:absolute;right:-6px;bottom:-4px;width:8px;height:2px;transform:rotate(45deg);border-radius:2px;background:var(--c-slate-550);content:""}
+  .trading-indicator-picker-body{display:grid;min-height:0;grid-template-columns:250px minmax(0,1fr);border-top:1px solid var(--c-slate-930)}
+  .trading-indicator-picker-sidebar{overflow:auto;padding:8px 10px 20px 16px;background:var(--c-neutral-1000)}
+  .trading-indicator-picker-sidebar-group{display:grid;gap:2px;margin:12px 0 22px}
+  .trading-indicator-picker-sidebar-heading{padding:0 14px 6px;color:var(--c-slate-600);font-size:11px;letter-spacing:.08em}
+  .trading-indicator-picker-sidebar button{display:flex;align-items:center;gap:13px;width:100%;min-height:43px;border:0;border-radius:9px;background:transparent;padding:0 13px;color:var(--c-slate-310);font-size:15px;text-align:left;cursor:pointer}
+  .trading-indicator-picker-sidebar button:hover{background:var(--c-neutral-960)}
+  .trading-indicator-picker-sidebar button.active{background:var(--c-slate-930);color:var(--c-slate-240);font-weight:700}
+  .trading-indicator-picker-sidebar-icon{display:grid;place-items:center;width:20px;color:var(--c-slate-240);font-size:21px;line-height:1}
+  .trading-indicator-picker-results{min-width:0;overflow:auto;padding:20px 26px 28px;background:var(--c-neutral-1000)}
+  .trading-indicator-picker-tabs{display:flex;gap:6px;margin-bottom:18px}
+  .trading-indicator-picker-tabs button{border:0;border-radius:999px;background:var(--c-neutral-960);padding:8px 15px;color:var(--c-slate-240);font-size:15px;cursor:pointer}
+  .trading-indicator-picker-tabs button:hover{background:var(--c-slate-930)}
+  .trading-indicator-picker-tabs button.active{background:var(--c-neutral-320);color:var(--c-neutral-1000)}
+  .trading-indicator-picker-columns{display:grid;grid-template-columns:minmax(280px,1fr) 155px 120px;padding:0 10px 8px 32px;color:var(--c-slate-580);font-size:11px;letter-spacing:.06em}
+  .trading-indicator-picker-list{display:grid;gap:2px}
+  .trading-indicator-picker-row{display:flex;align-items:center;min-height:40px;border-radius:7px}
+  .trading-indicator-picker-row:hover{background:var(--c-slate-970-2)}
+  .trading-indicator-picker-row.active{background:var(--c-neutral-1000)}
+  .trading-indicator-picker-star{display:grid;place-items:center;width:28px;height:32px;border:0;background:transparent;color:var(--c-slate-240);font-size:19px;cursor:pointer}
+  .trading-indicator-picker-star[aria-pressed=false]{color:var(--c-slate-740)}
+  .trading-indicator-picker-item{display:grid;width:100%;grid-template-columns:minmax(280px,1fr) 155px 120px;align-items:center;border:0;background:transparent;padding:6px 10px 6px 0;color:var(--c-slate-240);font-size:15px;text-align:left;cursor:pointer}
+  .trading-indicator-picker-item:hover .trading-indicator-picker-name{color:var(--c-blue-540)}
+  .trading-indicator-picker-name{display:flex;align-items:center;gap:7px;min-width:0;overflow:hidden;font-weight:500;text-overflow:ellipsis;white-space:nowrap}
+  .trading-indicator-picker-name small{flex:0 0 auto;border-radius:3px;background:var(--c-slate-930-2);padding:2px 4px;color:var(--c-teal-520);font-size:8px;font-weight:700;letter-spacing:.05em}
+  .trading-indicator-picker-author{overflow:hidden;color:var(--c-blue-540);text-overflow:ellipsis;white-space:nowrap}
+  .trading-indicator-picker-boosts{color:var(--c-slate-260-2);white-space:nowrap}
+  .trading-indicator-picker-empty{display:grid;gap:6px;padding:40px 12px;color:var(--c-slate-550);font-size:14px}
+  .trading-indicator-picker-empty strong{color:var(--c-slate-280);font-size:17px}
+  @media(max-width:720px){.trading-indicator-picker-backdrop{padding:0}.trading-indicator-picker{width:100vw;height:100vh;border:0;border-radius:0}.trading-indicator-picker-header{padding:18px 16px 12px}.trading-indicator-picker-header h2{font-size:19px}.trading-indicator-picker-search{margin:10px 16px 14px}.trading-indicator-picker-body{grid-template-columns:145px minmax(0,1fr)}.trading-indicator-picker-sidebar{padding-left:6px;padding-right:6px}.trading-indicator-picker-sidebar button{gap:7px;padding:0 8px;font-size:12px}.trading-indicator-picker-sidebar-heading{padding-left:8px;padding-right:8px;font-size:9px}.trading-indicator-picker-results{padding:16px 10px}.trading-indicator-picker-columns{grid-template-columns:minmax(130px,1fr) 80px 0;padding-left:28px}.trading-indicator-picker-item{grid-template-columns:minmax(130px,1fr) 80px 0;font-size:12px}.trading-indicator-picker-boosts{display:none}}
+  :root[data-omnix-appearance=dark] .trading-indicator-picker-backdrop{background:color-mix(in srgb, var(--c-slate-130) 76%, transparent)}
+  /* Dark appearance: the picker's base palette is light (TradingView's look); the trading terminal's dark surfaces here. */
+  :root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-indicator-picker{border-color:color-mix(in srgb, var(--c-blue-660) 22%, transparent);background:var(--c-slate-170-2);color:var(--c-slate-910)}
+  :root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-indicator-picker-header,:root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-indicator-picker-sidebar,:root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-indicator-picker-results,:root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-indicator-picker-row.active{background:var(--c-slate-170-2)}
+  :root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-indicator-picker-close{color:var(--c-slate-680)}
+  :root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-indicator-picker-close:hover,:root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-indicator-picker-sidebar button:hover{background:var(--c-blue-230)}
+  :root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-indicator-picker-search{border-color:color-mix(in srgb, var(--c-blue-660) 14%, transparent);background:var(--c-slate-190);color:var(--c-slate-680)}
+  :root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-indicator-picker-search input{background:transparent;color:var(--c-slate-910)}
+  :root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-indicator-picker-search input::placeholder,:root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-indicator-picker-sidebar-heading,:root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-indicator-picker-columns,:root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-indicator-picker-empty{color:var(--c-slate-600)}
+  :root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-indicator-picker-body{border-top-color:color-mix(in srgb, var(--c-blue-660) 14%, transparent)}
+  :root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-indicator-picker-sidebar button,:root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-indicator-picker-boosts{color:var(--c-slate-870)}
+  :root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-indicator-picker-sidebar button.active{background:color-mix(in srgb, var(--c-blue-630) 16%, transparent);color:var(--c-blue-770)}
+  :root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-indicator-picker-sidebar-icon,:root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-indicator-picker-star,:root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-indicator-picker-item,:root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-indicator-picker-empty strong{color:var(--c-slate-910)}
+  :root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-indicator-picker-star[aria-pressed=false]{color:var(--c-slate-600)}
+  :root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-indicator-picker-tabs button{background:var(--c-indigo-190);color:var(--c-slate-910)}
+  :root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-indicator-picker-tabs button:hover{background:var(--c-blue-230)}
+  :root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-indicator-picker-tabs button.active{background:var(--c-blue-630);color:var(--c-neutral-960)}
+  :root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-indicator-picker-row:hover{background:color-mix(in srgb, var(--c-blue-630) 8%, transparent)}
+  :root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-indicator-picker-item:hover .trading-indicator-picker-name,:root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-indicator-picker-author{color:var(--c-blue-770)}
+  :root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-indicator-picker-name small{background:color-mix(in srgb, var(--c-teal-740) 14%, transparent);color:var(--c-teal-740)}
+}

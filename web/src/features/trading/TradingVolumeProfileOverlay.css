@@ -1,0 +1,3 @@
+@layer features {
+  .trading-volume-profile-overlay{position:absolute;z-index:3;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}.trading-volume-profile-overlay rect{fill:var(--c-blue-630);fill-opacity:.28;pointer-events:none}.trading-volume-profile-overlay rect.is-value-area{fill:var(--c-blue-630);fill-opacity:.52}.trading-volume-profile-overlay rect.is-poc{fill:var(--c-amber-770);fill-opacity:.9}
+}

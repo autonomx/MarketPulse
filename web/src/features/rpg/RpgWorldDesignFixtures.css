@@ -1,0 +1,41 @@
+@layer features {
+  .rpg-world-design-fixture-collection {
+    display: grid;
+    gap: 1rem;
+    min-height: 720px;
+    padding: 1.5rem;
+    background:
+      radial-gradient(circle at 80% 0%, color-mix(in srgb, var(--c-violet-490) 18%, transparent), transparent 32%),
+      var(--c-slate-150-2);
+  }
+
+  .rpg-world-design-fixture-collection > header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 0.2rem 1rem;
+  }
+
+  .rpg-world-design-fixture-collection > header .eyebrow,
+  .rpg-world-design-fixture-collection > header h2 {
+    margin: 0;
+  }
+
+  .rpg-world-design-fixture-collection > header .eyebrow {
+    grid-column: 1;
+  }
+
+  .rpg-world-design-fixture-collection > header h2 {
+    grid-column: 1;
+    color: var(--c-slate-980);
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 2rem;
+  }
+
+  .rpg-world-design-fixture-collection > header > span {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    color: var(--c-violet-810);
+    font-weight: 800;
+  }
+}

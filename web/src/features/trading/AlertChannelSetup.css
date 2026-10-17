@@ -1,0 +1,4 @@
+@layer features {
+  /* Email and push setup in the alert dialog (TVP-0.5b/c). */
+  .trading-alert-channel-setup{display:flex;flex-basis:100%;flex-wrap:wrap;align-items:center;gap:6px;margin-top:4px;font-size:11px}.trading-alert-channel-setup p{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0}.trading-alert-channel-setup input{min-width:0;flex:1 1 140px}.trading-alert-channel-setup small{flex-basis:100%;opacity:.8}
+}

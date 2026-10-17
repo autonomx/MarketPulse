@@ -1,0 +1,12 @@
+@layer features {
+  .trading-price-scale-plus{position:absolute;z-index:11;transform:translateY(-50%);pointer-events:auto}
+  .trading-price-scale-plus-button{display:grid;place-items:center;width:18px;height:18px;border:1px solid var(--c-blue-630);border-radius:3px;background:var(--c-indigo-190);padding:0;color:var(--c-neutral-960);font-size:14px;line-height:1;cursor:pointer}
+  .trading-price-scale-plus-button:hover,.trading-price-scale-plus-button[aria-expanded='true']{background:var(--c-blue-630);color:var(--c-neutral-1000)}
+  .trading-price-scale-plus-menu{position:absolute;top:22px;right:0;display:grid;min-width:170px;overflow:hidden;border:1px solid color-mix(in srgb, var(--c-blue-630) 40%, transparent);border-radius:5px;background:var(--c-indigo-190);box-shadow:0 8px 24px color-mix(in srgb, var(--c-neutral-0) 40%, transparent)}
+  .trading-price-scale-plus-menu button{border:0;background:transparent;padding:7px 12px;color:var(--c-neutral-960);font-size:12px;text-align:left;cursor:pointer}
+  .trading-price-scale-plus-menu button:hover,.trading-price-scale-plus-menu button:focus-visible{background:color-mix(in srgb, var(--c-blue-630) 22%, transparent);outline:0}
+  .trading-price-scale-plus-menu button.is-buy{color:var(--c-blue-630)}
+  .trading-price-scale-plus-menu button.is-sell{color:var(--c-red-560)}
+  :root[data-omnix-appearance='light'] .trading-price-scale-plus-button,:root[data-omnix-appearance='light'] .trading-price-scale-plus-menu{background:var(--c-neutral-1000);color:var(--c-slate-260-2)}
+  :root[data-omnix-appearance='light'] .trading-price-scale-plus-menu button.is-alert{color:var(--c-slate-260-2)}
+}

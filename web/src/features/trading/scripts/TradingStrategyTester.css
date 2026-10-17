@@ -1,0 +1,30 @@
+@layer features {
+  .trading-strategy-tester{display:flex;flex-direction:column;min-height:0;height:100%;gap:6px;font-size:12px}
+  .trading-strategy-empty{display:grid;place-content:center;gap:6px;padding:24px;text-align:center;color:var(--c-slate-630)}
+  .trading-strategy-header{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:6px 10px}
+  .trading-strategy-range{color:var(--c-slate-630);font-size:11px}
+  .trading-strategy-header button:first-of-type{margin-left:auto}
+  .trading-strategy-tabs{display:flex;gap:2px;padding:0 10px;border-bottom:1px solid var(--c-neutral-910)}
+  .trading-strategy-tabs [role='tab'][aria-selected='true']{font-weight:700;box-shadow:inset 0 -2px 0 currentColor}
+  .trading-strategy-panel{flex:1;min-height:0;overflow:auto;padding:8px 10px}
+  .trading-strategy-headline{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin:0 0 10px}
+  .trading-strategy-headline div{display:grid;gap:2px}
+  .trading-strategy-headline dt{color:var(--c-slate-630);font-size:10px}
+  .trading-strategy-headline dd{margin:0;font-size:14px;font-weight:600}
+  .trading-strategy-headline small{font-weight:400;color:var(--c-slate-630)}
+  .trading-strategy-chart{display:block;width:100%;height:140px;margin-bottom:6px}
+  .trading-strategy-chart.is-drawdown{height:60px}
+  .trading-strategy-chart path{fill:none;stroke-width:1.5;vector-effect:non-scaling-stroke}
+  .trading-strategy-chart .is-equity{stroke:var(--c-blue-540)}
+  .trading-strategy-chart .is-buy-hold{stroke:var(--c-slate-680);stroke-dasharray:4 3}
+  .trading-strategy-chart.is-drawdown path{fill:color-mix(in srgb, var(--c-red-640) 30%, transparent);stroke:var(--c-red-640)}
+  .trading-strategy-table-scroll{overflow:auto}
+  .trading-strategy-table-scroll table{width:100%;border-collapse:collapse}
+  .trading-strategy-table-scroll :is(th,td){padding:4px 8px;border-bottom:1px solid var(--c-neutral-910);text-align:right;white-space:nowrap}
+  .trading-strategy-table-scroll :is(th[scope='row'],td:first-child){text-align:left}
+  .trading-strategy-table-scroll small{color:var(--c-slate-630)}
+  .trading-strategy-tester .is-up{color:var(--c-teal-600)}
+  .trading-strategy-tester .is-down{color:var(--c-red-640)}
+  .trading-strategy-note{margin:4px 0;color:var(--c-slate-630);font-size:11px}
+  :root[data-omnix-appearance='dark'] :is(.trading-strategy-tabs,.trading-strategy-table-scroll th,.trading-strategy-table-scroll td),:root:not([data-omnix-appearance]) :is(.trading-strategy-tabs,.trading-strategy-table-scroll th,.trading-strategy-table-scroll td){border-color:color-mix(in srgb, var(--c-blue-660) 14%, transparent)}
+}

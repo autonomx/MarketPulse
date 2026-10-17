@@ -1,0 +1,151 @@
+@layer features {
+  .rpg-map-layer-controls {
+    align-items: center;
+    border: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem 0.7rem;
+    justify-content: flex-end;
+    margin: 0;
+    padding: 0;
+  }
+
+  .rpg-map-layer-controls legend {
+    color: var(--mantine-color-dimmed, var(--c-neutral-730));
+    float: left;
+    font-size: 0.72rem;
+    margin-right: 0.25rem;
+    padding: 0.3rem 0;
+  }
+
+  .rpg-map-layer-controls label {
+    align-items: center;
+    background: color-mix(in srgb, var(--c-neutral-1000) 4%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-neutral-1000) 8%, transparent);
+    border-radius: 999px;
+    cursor: pointer;
+    display: inline-flex;
+    font-size: 0.72rem;
+    gap: 0.28rem;
+    padding: 0.28rem 0.5rem;
+  }
+
+  .rpg-map-layer-controls input {
+    accent-color: var(--c-yellow-770);
+    margin: 0;
+  }
+
+  .rpg-map-route {
+    stroke: var(--c-amber-480);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 48;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .rpg-map-route-style-trail {
+    stroke-dasharray: 75 48;
+    stroke-width: 30;
+  }
+
+  .rpg-map-route-style-mountain_road {
+    stroke-width: 38;
+  }
+
+  .rpg-map-route-blocked {
+    stroke: var(--c-orange-450);
+    stroke-dasharray: 90 42;
+  }
+
+  .rpg-map-route-locked {
+    stroke: var(--c-violet-460);
+    stroke-dasharray: 35 28;
+  }
+
+  .rpg-map-route-unknown {
+    opacity: 0.46;
+    stroke-dasharray: 20 48;
+  }
+
+  .rpg-map-route-dangerous {
+    filter: drop-shadow(0 0 18px color-mix(in srgb, var(--c-orange-490) 75%, transparent));
+  }
+
+  .rpg-map-label {
+    fill: var(--c-yellow-270);
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 170px;
+    font-variant: small-caps;
+    font-weight: 800;
+    letter-spacing: 24px;
+    paint-order: stroke;
+    pointer-events: none;
+    stroke: color-mix(in srgb, var(--c-yellow-870) 86%, transparent);
+    stroke-width: 28;
+    text-anchor: middle;
+  }
+
+  .rpg-map-marker {
+    pointer-events: none;
+  }
+
+  .rpg-map-marker circle,
+  .rpg-map-marker path {
+    fill: var(--c-yellow-770);
+    stroke: var(--c-slate-260);
+    stroke-linejoin: round;
+    stroke-width: 18;
+  }
+
+  .rpg-map-marker-player circle {
+    fill: color-mix(in srgb, var(--c-yellow-840) 20%, transparent);
+    stroke: var(--c-yellow-880);
+  }
+
+  .rpg-map-marker-player path {
+    fill: var(--c-yellow-880);
+    stroke: var(--c-yellow-270);
+  }
+
+  .rpg-map-marker-quest path {
+    fill: var(--c-yellow-840);
+  }
+
+  .rpg-map-marker-danger path {
+    fill: var(--c-red-560);
+  }
+
+  .rpg-map-marker-event path {
+    fill: var(--c-violet-570);
+  }
+
+  .rpg-map-marker-npc circle {
+    fill: var(--c-green-650);
+  }
+
+  .rpg-map-marker-resource circle {
+    fill: var(--c-sky-610);
+  }
+
+  .rpg-map-marker text {
+    fill: var(--c-yellow-220);
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 96px;
+    font-weight: 700;
+    paint-order: stroke;
+    stroke: color-mix(in srgb, var(--c-yellow-870) 90%, transparent);
+    stroke-width: 18;
+    text-anchor: middle;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .rpg-map-marker-event {
+      animation: rpg-map-event-pulse 2.2s ease-in-out infinite;
+    }
+  }
+
+  @keyframes rpg-map-event-pulse {
+    0%, 100% { opacity: 0.72; }
+    50% { opacity: 1; }
+  }
+}

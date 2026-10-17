@@ -1,0 +1,62 @@
+@layer features {
+  .trading-title-bar {
+    /* Width the native window controls take: right on Windows, left on macOS. */
+    --trading-title-bar-controls-right: 138px;
+    --trading-title-bar-controls-left: 0px;
+    display: flex;
+    align-items: stretch;
+    height: 38px;
+    min-height: 38px;
+    padding-left: var(--trading-title-bar-controls-left);
+    padding-right: var(--trading-title-bar-controls-right);
+    background-color: var(--trading-title-bar-bg, var(--c-indigo-190));
+    color: var(--trading-title-bar-fg, var(--c-slate-850));
+    border-bottom: 1px solid color-mix(in srgb, var(--c-blue-660) 14%, transparent);
+    -webkit-app-region: drag;
+    app-region: drag;
+    user-select: none;
+  }
+
+  .trading-title-bar[data-desktop-platform='darwin'] {
+    --trading-title-bar-controls-right: 0px;
+    --trading-title-bar-controls-left: 78px;
+  }
+
+  .trading-title-bar-mark {
+    flex: 0 0 auto;
+    width: 38px;
+    background: var(--trading-title-bar-logo, none) center / 22px 22px no-repeat;
+  }
+
+  .trading-title-bar-tabs {
+    display: flex;
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+
+  .trading-title-bar-tabs .trading-session-tabs {
+    min-height: 38px;
+    border-bottom: 0;
+    background: transparent;
+  }
+
+  /* Tabs, buttons and menus stay clickable; only the empty strip drags. */
+  .trading-title-bar-tabs .trading-session-tabs,
+  .trading-title-bar button,
+  .trading-title-bar input,
+  .trading-title-bar select,
+  .trading-title-bar a,
+  .trading-title-bar [role='menu'] {
+    -webkit-app-region: no-drag;
+    app-region: no-drag;
+  }
+
+  .trading-title-bar-tabs .trading-session-tab-hint {
+    display: none;
+  }
+
+  .trading-title-bar-drag {
+    flex: 1 1 auto;
+    min-width: 48px;
+  }
+}

@@ -1,0 +1,15 @@
+@layer features {
+  .trading-yield-curve{display:flex;flex-direction:column;gap:8px;padding:8px 10px;font-size:12px;min-height:0;height:100%;overflow:auto}
+  .trading-yield-curve header{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+  .trading-yield-curve header span{margin-left:auto;color:var(--c-slate-630)}
+  .trading-yield-curve-legend{display:flex;flex-wrap:wrap;gap:12px;margin:0;padding:0;list-style:none;color:var(--c-slate-630);font-size:11px}
+  .trading-yield-curve-legend i{display:inline-block;width:14px;height:3px;margin-right:5px;vertical-align:middle}
+  .trading-yield-curve-chart{width:100%;max-width:760px;height:auto}
+  .trading-yield-curve-chart text{fill:var(--c-slate-630);font-size:10px}
+  .trading-yield-curve-chart .grid{stroke:var(--c-neutral-910);stroke-width:1}
+  .trading-yield-curve table{width:100%;max-width:760px;border-collapse:collapse}
+  .trading-yield-curve th,.trading-yield-curve td{padding:3px 6px;border-bottom:1px solid var(--c-neutral-910);text-align:right}
+  .trading-yield-curve th:first-child,.trading-yield-curve td:first-child{text-align:left}
+  .trading-yield-curve td button{padding:1px 6px}
+  .trading-yield-curve footer{color:var(--c-slate-630);font-size:10px}
+}

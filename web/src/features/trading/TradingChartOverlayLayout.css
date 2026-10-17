@@ -1,0 +1,16 @@
+@layer features {
+  /* The chart header floats over the chart, as in TradingView: the chart takes the panel's full height, the
+     header is transparent (themes paint the panel, not the header) and only its controls take pointer input.
+     Controls pinned to the chart's top sit below the header, whose height the header publishes. */
+  article.trading-chart-panel{grid-template-rows:minmax(0,1fr) 29px}
+  article.trading-chart-panel.replay-active{grid-template-rows:minmax(0,1fr) 48px}
+  .trading-chart-panel>.trading-chart-header{position:absolute;z-index:9;top:0;right:0;left:0;border-bottom:0;background:transparent;pointer-events:none}
+  .trading-chart-panel>.trading-chart-header :is(button,input,select,textarea,a,label,[title],[role=menu],[role=dialog],[role=listbox],.trading-drawing-manager){pointer-events:auto}
+  .trading-chart-panel .trading-overlay-indicator-controls{top:calc(var(--trading-chart-header-height,48px) + 7px)}
+  article.trading-chart-panel:fullscreen .trading-overlay-indicator-controls{top:calc(var(--trading-chart-header-height,48px) + 10px)}
+  /* On the price scale only the header's one-line right-hand controls lie above it. */
+  .trading-chart-panel .trading-y-axis-currency-row{top:38px}
+  .trading-chart-panel .trading-chart-state{top:calc(var(--trading-chart-header-height,48px) + 12px)}
+  .trading-chart-header .trading-drawing-manager{right:118px}
+  .trading-chart-stage:has(.trading-drawing-overlay:not(.tool-cursor)) .trading-indicator-pane-resize-handle{display:none}
+}

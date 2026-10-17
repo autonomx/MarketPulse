@@ -1,0 +1,37 @@
+@layer features {
+  .trading-advanced-view{display:grid;grid-template-columns:minmax(140px,200px) minmax(0,1fr);gap:12px;height:100%;min-height:0;font-size:12px}
+  .trading-advanced-view>aside{display:flex;flex-direction:column;gap:6px;min-height:0;overflow:auto;border-right:1px solid var(--c-neutral-910);padding-right:8px}
+  .trading-advanced-view>aside ul{display:grid;gap:2px;margin:0;padding:0;list-style:none}
+  .trading-advanced-view>aside li{display:flex;gap:4px}
+  .trading-advanced-view>aside li>button:first-child{flex:1;text-align:left}
+  .trading-advanced-view>aside li>button[aria-pressed=true]{border-color:var(--c-blue-630);background:color-mix(in srgb, var(--c-blue-630) 14%, transparent)}
+  .trading-advanced-details{display:flex;flex-direction:column;gap:8px;min-width:0;min-height:0;overflow:auto}
+  .trading-advanced-details>header{display:flex;align-items:baseline;gap:10px}
+  .trading-advanced-details>header h3{margin:0;font-size:16px}
+  .trading-advanced-details>header span{color:var(--c-slate-630);font-size:11px}
+  .trading-advanced-details>nav{display:flex;flex-wrap:wrap;gap:4px}
+  .trading-advanced-details>nav button[aria-selected=true]{border-color:var(--c-blue-630);background:color-mix(in srgb, var(--c-blue-630) 14%, transparent)}
+  .trading-advanced-price{display:flex;align-items:baseline;gap:10px;margin:0}
+  .trading-advanced-price strong{font-size:22px}
+  .trading-advanced-view .is-up{color:var(--c-green-790-2)}
+  .trading-advanced-view .is-down{color:var(--c-red-720)}
+  .trading-advanced-company{margin:2px 0 8px;color:var(--c-slate-630)}
+  .trading-advanced-overview dl{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px;margin:0}
+  .trading-advanced-stat{display:grid;gap:2px;padding:6px 8px;border:1px solid var(--c-neutral-910);border-radius:5px}
+  .trading-advanced-stat dt{color:var(--c-slate-630);font-size:10px}
+  .trading-advanced-stat dd{margin:0;font-weight:600}
+  .trading-advanced-performance{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px;margin:0;padding:0;list-style:none}
+  .trading-advanced-performance li{display:grid;gap:2px;padding:8px;border:1px solid var(--c-neutral-910);border-radius:5px;text-align:center}
+  .trading-advanced-performance span{color:var(--c-slate-630);font-size:10px}
+  .trading-advanced-earnings,.trading-advanced-dividends{display:grid;gap:8px}
+  .trading-advanced-earnings table,.trading-advanced-dividends table{width:100%;border-collapse:collapse}
+  .trading-advanced-earnings td,.trading-advanced-earnings th,.trading-advanced-dividends td,.trading-advanced-dividends th{padding:3px 6px;border-bottom:1px solid var(--c-neutral-910);text-align:left}
+  .trading-advanced-earnings tr.is-estimated{font-style:italic;color:var(--c-slate-630)}
+  .trading-advanced-earnings small{color:var(--c-slate-630);font-size:10px}
+  .trading-advanced-eps{display:flex;align-items:flex-end;gap:8px;height:110px;padding-bottom:16px}
+  .trading-advanced-eps>div{position:relative;display:flex;flex:1;flex-direction:column;justify-content:flex-end;height:100%}
+  .trading-advanced-eps i{display:block;min-height:2px;border-radius:3px 3px 0 0;background:var(--c-blue-630)}
+  .trading-advanced-eps i.is-loss{background:var(--c-red-720)}
+  .trading-advanced-eps small{position:absolute;bottom:-15px;left:0;right:0;color:var(--c-slate-630);font-size:9px;text-align:center}
+  .trading-advanced-dividends ul{display:grid;gap:3px;margin:0;padding-left:16px}
+}

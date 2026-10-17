@@ -1,0 +1,209 @@
+@layer features {
+  .rpg-item-panel {
+    display: grid;
+    gap: 1rem;
+    border: 1px solid color-mix(in srgb, var(--c-blue-710) 22%, transparent);
+    border-radius: 1rem;
+    padding: 1rem;
+    background: color-mix(in srgb, var(--c-indigo-210) 62%, transparent);
+  }
+
+  .rpg-item-panel-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .rpg-item-panel-header h3 {
+    margin: 0.1rem 0 0;
+  }
+
+  .rpg-item-panel-header > span {
+    border: 1px solid color-mix(in srgb, var(--c-blue-710) 24%, transparent);
+    border-radius: 999px;
+    padding: 0.25rem 0.6rem;
+    color: var(--omnix-muted-text, var(--c-blue-710));
+    font-size: 0.78rem;
+  }
+
+  .rpg-item-detail-card {
+    display: grid;
+    gap: 0.75rem;
+    border: 1px solid color-mix(in srgb, var(--c-sky-830) 18%, transparent);
+    border-radius: 1rem;
+    padding: 0.85rem;
+    background: linear-gradient(135deg, color-mix(in srgb, var(--c-blue-680) 10%, transparent), color-mix(in srgb, var(--c-violet-380-2) 18%, transparent));
+  }
+
+  .rpg-item-detail-card header {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 0.75rem;
+    align-items: center;
+  }
+
+  .rpg-item-detail-card h4,
+  .rpg-item-detail-card p,
+  .rpg-item-detail-card dl {
+    margin: 0;
+  }
+
+  .rpg-item-detail-card header small,
+  .rpg-item-detail-card dd,
+  .rpg-item-detail-card p {
+    color: var(--omnix-muted-text, var(--c-blue-710));
+  }
+
+  .rpg-item-detail-icon {
+    display: inline-grid;
+    width: 2.35rem;
+    height: 2.35rem;
+    place-items: center;
+    border: 1px solid color-mix(in srgb, var(--c-blue-710) 24%, transparent);
+    border-radius: 0.8rem;
+    background: color-mix(in srgb, var(--c-blue-130) 50%, transparent);
+    font-size: 1.15rem;
+  }
+
+  .rpg-item-detail-card dl {
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .rpg-item-detail-card dl > div {
+    display: grid;
+    grid-template-columns: minmax(3.2rem, 0.25fr) 1fr;
+    gap: 0.65rem;
+    border: 1px solid color-mix(in srgb, var(--c-blue-710) 12%, transparent);
+    border-radius: 0.65rem;
+    padding: 0.5rem 0.6rem;
+    background: color-mix(in srgb, var(--c-blue-130) 20%, transparent);
+  }
+
+  .rpg-item-detail-card dt {
+    font-weight: 700;
+  }
+
+  .rpg-item-detail-card dd {
+    margin: 0;
+  }
+
+  .rpg-item-detail-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  .rpg-item-detail-tags span {
+    border: 1px solid color-mix(in srgb, var(--c-violet-710) 22%, transparent);
+    border-radius: 999px;
+    padding: 0.2rem 0.5rem;
+    color: var(--omnix-muted-text, var(--c-blue-710));
+    background: color-mix(in srgb, var(--c-violet-380-2) 18%, transparent);
+    font-size: 0.72rem;
+  }
+
+  .rpg-item-detail-llm {
+    border-color: color-mix(in srgb, var(--c-sky-830) 34%, transparent);
+  }
+
+  .rpg-item-detail-unavailable {
+    border-color: color-mix(in srgb, var(--c-yellow-840) 32%, transparent);
+  }
+
+  .rpg-item-action-row small,
+  .rpg-item-empty {
+    color: var(--omnix-muted-text, var(--c-blue-710));
+  }
+
+  .rpg-item-actions,
+  .rpg-item-merchant {
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  .rpg-item-action-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .rpg-item-action-icon-button {
+    display: inline-grid;
+    place-items: center;
+    width: 2.45rem;
+    height: 2.45rem;
+    border: 1px solid color-mix(in srgb, var(--c-blue-710) 24%, transparent);
+    border-radius: 0.8rem;
+    background: color-mix(in srgb, var(--c-indigo-210) 72%, transparent);
+    color: inherit;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+
+  .rpg-item-action-icon-button:hover:not(:disabled),
+  .rpg-item-action-icon-button:focus-visible:not(:disabled) {
+    border-color: color-mix(in srgb, var(--c-violet-710) 72%, transparent);
+    background: color-mix(in srgb, var(--c-violet-380-2) 38%, transparent);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--c-violet-710) 22%, transparent);
+  }
+
+  .rpg-item-action-icon-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.42;
+  }
+
+  .rpg-item-action-sell:disabled {
+    border-color: color-mix(in srgb, var(--c-yellow-840) 16%, transparent);
+  }
+
+  .rpg-item-merchant h4 {
+    margin: 0.25rem 0 0;
+  }
+
+  .rpg-item-action-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.8rem;
+    width: 100%;
+    border: 1px solid color-mix(in srgb, var(--c-blue-710) 18%, transparent);
+    border-radius: 0.8rem;
+    padding: 0.7rem 0.8rem;
+    background: color-mix(in srgb, var(--c-indigo-210) 70%, transparent);
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .rpg-item-action-row:hover:not(:disabled),
+  .rpg-item-action-row:focus-visible:not(:disabled) {
+    border-color: color-mix(in srgb, var(--c-sky-830) 42%, transparent);
+    background: color-mix(in srgb, var(--c-blue-280-2) 82%, transparent);
+  }
+
+  .rpg-item-action-row:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+
+  .rpg-item-action-row > span {
+    display: grid;
+    gap: 0.2rem;
+  }
+
+  .rpg-item-action-row code {
+    border-radius: 999px;
+    padding: 0.2rem 0.45rem;
+    background: color-mix(in srgb, var(--c-blue-130) 55%, transparent);
+    color: var(--omnix-muted-text, var(--c-blue-710));
+    font-size: 0.72rem;
+  }
+
+  .rpg-item-empty {
+    margin: 0;
+    font-size: 0.9rem;
+  }
+}

@@ -1,0 +1,23 @@
+@layer features {
+  .rpg-launcher-dialog-world-library {
+    width: min(1600px, 100%);
+  }
+
+  .rpg-launcher-dialog-world-library > .rpg-launcher-panel-heading,
+  .rpg-launcher-dialog-world-library > .rpg-launcher-home-grid {
+    display: none;
+  }
+
+  .rpg-launcher-world-library-view {
+    display: grid;
+    gap: 1rem;
+    min-width: 0;
+  }
+
+  .rpg-launcher-world-library-view .rpg-world-library {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: auto;
+    margin: 0;
+  }
+}

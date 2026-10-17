@@ -1,0 +1,24 @@
+fastapi
+uvicorn[standard]
+uvloop==0.22.1; sys_platform != "win32"
+pydantic
+psycopg[binary]
+psycopg-pool
+httpx
+python-multipart
+websockets
+numpy
+# Memory v2 embeddings (multilingual-e5-small on CPU; no PyTorch).
+onnxruntime
+tokenizers
+soundfile
+pydub
+pypdf
+# Audiobook covers and image output normalization run in the gateway and job worker.
+Pillow
+python-docx
+pandas
+python-kasa
+huggingface_hub
+PyJWT[crypto]
+prometheus-client

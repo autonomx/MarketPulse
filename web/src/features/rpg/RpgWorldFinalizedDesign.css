@@ -1,0 +1,403 @@
+@layer features {
+  /* Finalized world-authoring visual system: vertical, readable, and responsive. */
+  .rpg-authoring-editor {
+    --rpg-gold: var(--c-yellow-770);
+    --rpg-gold-soft: color-mix(in srgb, var(--c-yellow-770) 20%, transparent);
+    --rpg-panel: color-mix(in srgb, var(--c-slate-150-2) 88%, transparent);
+    --rpg-panel-strong: color-mix(in srgb, var(--c-slate-150-2) 96%, transparent);
+    --rpg-border: color-mix(in srgb, var(--c-yellow-770) 22%, transparent);
+    background:
+      radial-gradient(circle at 16% 90%, color-mix(in srgb, var(--c-violet-390) 30%, transparent), transparent 34%),
+      linear-gradient(145deg, color-mix(in srgb, var(--c-indigo-170) 98%, transparent), color-mix(in srgb, var(--c-blue-130) 98%, transparent));
+  }
+
+  .rpg-authoring-editor-header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--rpg-border);
+    border-radius: 14px;
+    background: color-mix(in srgb, var(--c-slate-150-2) 90%, transparent);
+    backdrop-filter: blur(16px);
+  }
+
+  .rpg-authoring-editor-layout {
+    grid-template-columns: minmax(240px, 290px) minmax(0, 1fr);
+    gap: 1.2rem;
+  }
+
+  .rpg-authoring-editor-layout > nav {
+    position: sticky;
+    top: 5.25rem;
+    max-height: calc(100vh - 7rem);
+    padding: 0.85rem 0.55rem 1.25rem 0.2rem;
+    scrollbar-color: color-mix(in srgb, var(--c-yellow-770) 50%, transparent) color-mix(in srgb, var(--c-neutral-1000) 4%, transparent);
+  }
+
+  .rpg-authoring-editor-layout nav section {
+    position: relative;
+    gap: 0.38rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .rpg-authoring-editor-layout nav h4 {
+    color: var(--c-violet-810);
+    font-size: 0.71rem;
+    letter-spacing: 0.14em;
+  }
+
+  .rpg-authoring-editor-layout nav button {
+    min-height: 48px;
+    padding: 0.68rem 0.72rem;
+    border-radius: 12px;
+    transition: border-color 140ms ease, background 140ms ease, transform 140ms ease;
+  }
+
+  .rpg-authoring-editor-layout nav button:hover {
+    transform: translateX(2px);
+  }
+
+  .rpg-authoring-editor-layout nav button.is-active {
+    border-color: color-mix(in srgb, var(--c-yellow-770) 42%, transparent);
+    background: linear-gradient(90deg, color-mix(in srgb, var(--c-indigo-430) 56%, transparent), color-mix(in srgb, var(--c-indigo-260) 46%, transparent));
+    box-shadow: inset 3px 0 0 var(--rpg-gold);
+  }
+
+  .rpg-authoring-editor-layout nav small {
+    max-width: 78px;
+    text-align: right;
+  }
+
+  .rpg-authoring-editor-layout > main {
+    min-width: 0;
+  }
+
+  .rpg-authoring-page {
+    overflow: visible;
+    border-color: var(--rpg-border);
+    border-radius: 20px;
+    background: linear-gradient(180deg, color-mix(in srgb, var(--c-indigo-170) 96%, transparent), color-mix(in srgb, var(--c-slate-150-2) 90%, transparent));
+    box-shadow: 0 22px 70px color-mix(in srgb, var(--c-neutral-0) 24%, transparent);
+  }
+
+  .rpg-authoring-page-heading {
+    padding-bottom: 0.85rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--c-yellow-770) 16%, transparent);
+  }
+
+  .rpg-authoring-page-heading h2 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(1.75rem, 2.5vw, 2.6rem);
+    letter-spacing: -0.025em;
+  }
+
+  .rpg-authoring-page-summary {
+    max-width: 70ch;
+    font-size: clamp(1rem, 1.15vw, 1.16rem);
+  }
+
+  /* Collection catalogue */
+  .rpg-authoring-collection-toolbar {
+    position: sticky;
+    top: 5rem;
+    z-index: 10;
+    display: grid;
+    grid-template-columns: minmax(240px, 1fr) minmax(150px, 210px) minmax(150px, 210px);
+    gap: 0.7rem;
+    margin: 1rem 0 1.2rem;
+    padding: 0.75rem;
+    border: 1px solid var(--rpg-border);
+    border-radius: 14px;
+    background: color-mix(in srgb, var(--c-slate-150-2) 92%, transparent);
+    backdrop-filter: blur(14px);
+  }
+
+  .rpg-authoring-collection-toolbar input,
+  .rpg-authoring-collection-toolbar select {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid color-mix(in srgb, var(--c-indigo-750) 24%, transparent);
+    border-radius: 11px;
+    background: color-mix(in srgb, var(--c-blue-130) 78%, transparent);
+    color: var(--c-neutral-1000);
+    padding: 0.78rem 0.85rem;
+  }
+
+  .rpg-authoring-entity-grid {
+    grid-template-columns: repeat(3, minmax(230px, 1fr));
+    gap: 1.15rem;
+  }
+
+  .rpg-authoring-entity-grid article {
+    border-color: color-mix(in srgb, var(--c-yellow-770) 26%, transparent);
+    border-radius: 18px;
+    background: linear-gradient(180deg, color-mix(in srgb, var(--c-indigo-170) 98%, transparent), color-mix(in srgb, var(--c-slate-150-2) 98%, transparent));
+    box-shadow: 0 15px 34px color-mix(in srgb, var(--c-neutral-0) 23%, transparent);
+    transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+  }
+
+  .rpg-authoring-entity-grid article:hover {
+    transform: translateY(-3px);
+    border-color: color-mix(in srgb, var(--c-yellow-770) 58%, transparent);
+    box-shadow: 0 20px 44px color-mix(in srgb, var(--c-neutral-0) 32%, transparent);
+  }
+
+  .rpg-authoring-entity-placeholder {
+    min-height: 190px;
+    border-bottom: 1px solid color-mix(in srgb, var(--c-yellow-770) 18%, transparent);
+  }
+
+  .rpg-authoring-entity-card-copy {
+    min-height: 220px;
+  }
+
+  .rpg-authoring-entity-card-copy h3 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.38rem;
+    line-height: 1.2;
+  }
+
+  .rpg-authoring-card-highlights {
+    grid-template-columns: 1fr;
+  }
+
+  .rpg-authoring-card-highlights > div {
+    border: 1px solid color-mix(in srgb, var(--c-violet-710) 10%, transparent);
+  }
+
+  /* Lore is intentionally one readable vertical stream. */
+  .rpg-authoring-document-shell {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 210px;
+    gap: 1.25rem;
+    align-items: start;
+  }
+
+  .rpg-authoring-document-stream {
+    min-width: 0;
+    max-width: 920px;
+  }
+
+  .rpg-authoring-document-hero {
+    min-height: 190px;
+    display: flex;
+    align-items: flex-end;
+    margin-bottom: 1rem;
+    padding: 1.25rem;
+    border: 1px solid var(--rpg-border);
+    border-radius: 18px;
+    background:
+      linear-gradient(180deg, transparent, color-mix(in srgb, var(--c-blue-130) 90%, transparent)),
+      radial-gradient(circle at 58% 22%, color-mix(in srgb, var(--c-indigo-600) 55%, transparent), transparent 34%),
+      linear-gradient(125deg, var(--c-blue-240), var(--c-violet-240) 55%, var(--c-slate-170-2));
+    overflow: hidden;
+  }
+
+  .rpg-authoring-document-hero p {
+    max-width: 68ch;
+    margin: 0;
+    font-size: 1.05rem;
+    line-height: 1.65;
+    text-shadow: 0 2px 14px color-mix(in srgb, var(--c-neutral-0) 75%, transparent);
+  }
+
+  .rpg-authoring-document-block {
+    max-width: none;
+    margin-top: 1.2rem;
+    padding: 1.1rem 1.15rem;
+    border-color: color-mix(in srgb, var(--c-yellow-770) 18%, transparent);
+    border-radius: 16px;
+    background: color-mix(in srgb, var(--c-indigo-170) 80%, transparent);
+  }
+
+  .rpg-authoring-document-block h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    margin-bottom: 0.85rem;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.35rem;
+  }
+
+  .rpg-authoring-document-block h3::before {
+    content: '✦';
+    color: var(--rpg-gold);
+    font-size: 0.85rem;
+  }
+
+  .rpg-authoring-record-grid,
+  .rpg-authoring-fact-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.7rem;
+  }
+
+  .rpg-authoring-record-card {
+    padding: 0.85rem;
+    border: 1px solid color-mix(in srgb, var(--c-violet-710) 15%, transparent);
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--c-blue-130) 46%, transparent);
+  }
+
+  .rpg-authoring-record-card header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .rpg-authoring-section-metadata {
+    grid-template-columns: 1fr;
+  }
+
+  .rpg-authoring-document-toc {
+    position: sticky;
+    top: 5.25rem;
+    display: grid;
+    gap: 0.35rem;
+    padding: 0.9rem;
+    border-left: 1px solid color-mix(in srgb, var(--c-yellow-770) 32%, transparent);
+  }
+
+  .rpg-authoring-document-toc strong {
+    color: var(--c-violet-810);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .rpg-authoring-document-toc a {
+    color: var(--c-slate-870);
+    font-size: 0.78rem;
+    line-height: 1.35;
+    text-decoration: none;
+    padding: 0.35rem 0.15rem;
+  }
+
+  .rpg-authoring-document-toc a:hover {
+    color: var(--c-yellow-910-2);
+  }
+
+  /* History and calendar pages become explicit vertical timelines. */
+  .rpg-authoring-document-shell.is-chronicle .rpg-authoring-document-stream {
+    position: relative;
+    padding-left: 2.2rem;
+  }
+
+  .rpg-authoring-document-shell.is-chronicle .rpg-authoring-document-stream::before {
+    content: '';
+    position: absolute;
+    top: 216px;
+    bottom: 1.5rem;
+    left: 0.75rem;
+    width: 1px;
+    background: linear-gradient(var(--rpg-gold), color-mix(in srgb, var(--c-violet-710) 22%, transparent));
+  }
+
+  .rpg-authoring-document-shell.is-chronicle .rpg-authoring-document-block {
+    position: relative;
+  }
+
+  .rpg-authoring-document-shell.is-chronicle .rpg-authoring-document-block::before {
+    content: '';
+    position: absolute;
+    left: -1.9rem;
+    top: 1.3rem;
+    width: 0.72rem;
+    height: 0.72rem;
+    border: 2px solid var(--rpg-gold);
+    border-radius: 50%;
+    background: var(--c-indigo-170);
+    box-shadow: 0 0 0 5px color-mix(in srgb, var(--c-yellow-770) 8%, transparent);
+  }
+
+  /* Entity dossier: a full-height subpage, not a cramped modal. */
+  .rpg-authoring-detail-backdrop {
+    align-items: stretch;
+    justify-content: flex-end;
+    padding: 0;
+    background: color-mix(in srgb, var(--c-slate-100) 78%, transparent);
+  }
+
+  .rpg-authoring-entity-detail {
+    width: min(1040px, 92vw);
+    max-height: 100vh;
+    border-radius: 0;
+    border-left: 1px solid color-mix(in srgb, var(--c-yellow-770) 34%, transparent);
+    background: linear-gradient(180deg, var(--c-indigo-170), var(--c-slate-150-2));
+  }
+
+  .rpg-authoring-entity-detail-header {
+    position: sticky;
+    top: 0;
+    z-index: 4;
+    padding: 1rem 1.2rem;
+    background: color-mix(in srgb, var(--c-slate-150-2) 92%, transparent);
+    backdrop-filter: blur(15px);
+  }
+
+  .rpg-authoring-entity-detail-header h2 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+  }
+
+  .rpg-authoring-entity-detail-hero {
+    grid-template-columns: minmax(280px, 44%) minmax(0, 1fr);
+    min-height: 300px;
+  }
+
+  .rpg-authoring-entity-detail-art {
+    min-height: 300px;
+  }
+
+  .rpg-authoring-detail-section {
+    max-width: 820px;
+    margin-inline: auto;
+  }
+
+  .rpg-authoring-detail-field-grid {
+    grid-template-columns: 1fr;
+  }
+
+  @media (max-width: 1180px) {
+    .rpg-authoring-entity-grid { grid-template-columns: repeat(2, minmax(220px, 1fr)); }
+    .rpg-authoring-document-shell { grid-template-columns: 1fr; }
+    .rpg-authoring-document-toc {
+      position: static;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      border-left: 0;
+      border-top: 1px solid color-mix(in srgb, var(--c-yellow-770) 20%, transparent);
+    }
+  }
+
+  @media (max-width: 900px) {
+    .rpg-authoring-editor-layout { grid-template-columns: 1fr; }
+    .rpg-authoring-editor-layout > nav {
+      position: static;
+      max-height: 300px;
+      border-bottom: 1px solid var(--rpg-border);
+    }
+    .rpg-authoring-collection-toolbar { position: static; grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 680px) {
+    .rpg-authoring-page { padding: 0.85rem; }
+    .rpg-authoring-entity-grid { grid-template-columns: 1fr; }
+    .rpg-authoring-document-shell.is-chronicle .rpg-authoring-document-stream { padding-left: 1.4rem; }
+    .rpg-authoring-entity-detail { width: 100vw; }
+    .rpg-authoring-entity-detail-hero { grid-template-columns: 1fr; }
+  }
+}
+
+/* Declarations that must win over every other layer. */
+@layer overrides {
+  .rpg-authoring-page-heading .eyebrow,
+  .rpg-authoring-card-eyebrow {
+    color: var(--c-violet-810);
+  }
+
+  .rpg-authoring-entity-card-copy {
+    padding: 1rem;
+  }
+}

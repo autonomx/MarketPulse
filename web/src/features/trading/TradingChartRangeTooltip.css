@@ -1,0 +1,14 @@
+@layer features {
+  .trading-chart-panel>footer nav button[data-tooltip]{position:relative}
+  .trading-chart-panel>footer nav button[data-tooltip]::after{position:absolute;bottom:calc(100% + 8px);left:50%;z-index:20;display:block;width:max-content;max-width:220px;border:1px solid color-mix(in srgb, var(--c-blue-660) 24%, transparent);border-radius:4px;background:var(--c-neutral-270);padding:6px 9px;box-shadow:0 5px 14px color-mix(in srgb, var(--c-neutral-0) 30%, transparent);color:var(--c-neutral-1000);content:attr(data-tooltip);font-size:11px;font-weight:500;line-height:1.2;opacity:0;pointer-events:none;transform:translate(-50%,4px);transition:opacity .12s ease,transform .12s ease;white-space:nowrap}
+  .trading-chart-panel>footer nav button[data-tooltip]::before{position:absolute;bottom:calc(100% + 3px);left:50%;z-index:20;width:0;height:0;border:5px solid transparent;border-top-color:var(--c-neutral-270);content:"";opacity:0;pointer-events:none;transform:translateX(-50%);transition:opacity .12s ease}
+  .trading-chart-panel>footer nav button[data-tooltip]:hover::after,.trading-chart-panel>footer nav button[data-tooltip]:focus-visible::after,.trading-chart-panel>footer nav button[data-tooltip]:hover::before,.trading-chart-panel>footer nav button[data-tooltip]:focus-visible::before{opacity:1}
+  .trading-chart-panel>footer nav button[data-tooltip]:hover::after,.trading-chart-panel>footer nav button[data-tooltip]:focus-visible::after{transform:translate(-50%,0)}
+  .trading-chart-panel>footer nav button[data-tooltip]:first-child::after{left:0;transform:translate(0,4px)}
+  .trading-chart-panel>footer nav button[data-tooltip]:first-child::before{left:12px;transform:translateX(-50%)}
+  .trading-chart-panel>footer nav button[data-tooltip]:first-child:hover::after,.trading-chart-panel>footer nav button[data-tooltip]:first-child:focus-visible::after{transform:translate(0,0)}
+  .trading-chart-panel>footer nav button[data-tooltip]:last-child::after{right:0;left:auto;transform:translate(0,4px)}
+  .trading-chart-panel>footer nav button[data-tooltip]:last-child::before{right:12px;left:auto;transform:translateX(50%)}
+  .trading-chart-panel>footer nav button[data-tooltip]:last-child:hover::after,.trading-chart-panel>footer nav button[data-tooltip]:last-child:focus-visible::after{transform:translate(0,0)}
+  @media(prefers-reduced-motion:reduce){.trading-chart-panel>footer nav button[data-tooltip]::after,.trading-chart-panel>footer nav button[data-tooltip]::before{transition:none}}
+}

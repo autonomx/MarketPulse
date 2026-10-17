@@ -1,0 +1,132 @@
+@layer features {
+  .voice-session-evaluation {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding: 1rem;
+    border: 1px solid var(--mantine-color-dark-4, var(--c-neutral-350));
+    border-radius: 1rem;
+    background: color-mix(in srgb, var(--mantine-color-dark-8, var(--c-neutral-200)) 88%, transparent);
+  }
+
+  .voice-session-evaluation > header,
+  .voice-session-policy > header,
+  .voice-session-records article > header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .voice-session-evaluation h3,
+  .voice-session-evaluation h4,
+  .voice-session-evaluation p {
+    margin: 0;
+  }
+
+  .voice-session-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    gap: 0.75rem;
+  }
+
+  .voice-session-summary-grid > div,
+  .voice-session-gate,
+  .voice-session-policy,
+  .voice-session-records article {
+    padding: 0.85rem;
+    border: 1px solid var(--mantine-color-dark-4, var(--c-neutral-350));
+    border-radius: 0.75rem;
+    background: color-mix(in srgb, var(--mantine-color-dark-7, var(--c-neutral-250)) 92%, transparent);
+  }
+
+  .voice-session-gate {
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .voice-session-gate [role="alert"] {
+    color: var(--mantine-color-red-4, var(--c-red-770));
+  }
+
+  .voice-session-summary-grid span,
+  .voice-session-policy dt,
+  .voice-session-records dt {
+    color: var(--mantine-color-dimmed, var(--c-slate-660));
+    font-size: 0.78rem;
+  }
+
+  .voice-session-summary-grid strong {
+    display: block;
+    margin-top: 0.2rem;
+    font-size: 1.05rem;
+  }
+
+  .voice-session-policy {
+    display: grid;
+    gap: 0.85rem;
+  }
+
+  .voice-session-policy label {
+    display: grid;
+    gap: 0.25rem;
+    min-width: 11rem;
+  }
+
+  .voice-session-policy dl,
+  .voice-session-records article dl {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    gap: 0.65rem;
+    margin: 0;
+  }
+
+  .voice-session-policy dl div,
+  .voice-session-records article dl div {
+    display: grid;
+    gap: 0.15rem;
+  }
+
+  .voice-session-policy dd,
+  .voice-session-records dd {
+    margin: 0;
+    font-weight: 650;
+  }
+
+  .voice-session-policy-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+  }
+
+  .voice-session-records {
+    display: grid;
+    gap: 0.65rem;
+  }
+
+  .voice-session-records article {
+    display: grid;
+    gap: 0.65rem;
+  }
+
+  .voice-session-records time,
+  .voice-session-status,
+  .voice-session-records .muted,
+  .voice-session-gate p {
+    color: var(--mantine-color-dimmed, var(--c-slate-660));
+    font-size: 0.82rem;
+  }
+
+  @media (max-width: 48rem) {
+    .voice-session-evaluation > header,
+    .voice-session-policy > header,
+    .voice-session-records article > header {
+      align-items: stretch;
+      flex-direction: column;
+    }
+
+    .voice-session-policy label {
+      min-width: 0;
+    }
+  }
+}

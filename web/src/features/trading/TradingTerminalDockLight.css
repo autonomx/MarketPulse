@@ -1,0 +1,92 @@
+@layer features {
+  :root[data-omnix-appearance='light'] .trading-account-modal-backdrop { background: color-mix(in srgb, var(--c-blue-280-2) 35%, transparent); }
+  :root[data-omnix-appearance='light'] .trading-dock-notice { border-color: color-mix(in srgb, var(--c-green-560) 25%, transparent); background: var(--c-slate-970); color: var(--c-teal-520); }
+}
+
+/* Declarations that must win over every other layer. */
+@layer overrides {
+  :root[data-omnix-appearance='light'] .trading-dock-toolbar,
+  :root[data-omnix-appearance='light'] .trading-dock-summary,
+  :root[data-omnix-appearance='light'] .trading-dock-tabs,
+  :root[data-omnix-appearance='light'] .trading-order-filters,
+  :root[data-omnix-appearance='light'] .trading-dock-content,
+  :root[data-omnix-appearance='light'] .trading-dock-content th {
+    border-color: var(--trading-light-line-soft);
+    background: var(--trading-light-surface);
+    color: var(--trading-light-text);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-dock-mode strong,
+  :root[data-omnix-appearance='light'] .trading-dock-summary-item strong,
+  :root[data-omnix-appearance='light'] .trading-dock-content td strong {
+    color: var(--trading-light-text);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-dock-account-selector,
+  :root[data-omnix-appearance='light'] .trading-dock-tabs button,
+  :root[data-omnix-appearance='light'] .trading-order-filters button {
+    background: var(--trading-light-surface-muted);
+    color: var(--trading-light-text);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-dock-tabs button[aria-selected='true'],
+  :root[data-omnix-appearance='light'] .trading-order-filters button[aria-selected='true'] {
+    background: var(--c-neutral-290);
+    color: var(--c-neutral-1000);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-dock-summary-item span,
+  :root[data-omnix-appearance='light'] .trading-dock-summary-item strong small,
+  :root[data-omnix-appearance='light'] .trading-dock-content th,
+  :root[data-omnix-appearance='light'] .trading-dock-content td,
+  :root[data-omnix-appearance='light'] .trading-dock-empty,
+  :root[data-omnix-appearance='light'] .trading-dock-status {
+    color: var(--trading-light-muted);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-dock-content .positive { color: var(--c-green-560); }
+
+  :root[data-omnix-appearance='light'] .trading-dock-content .negative,
+  :root[data-omnix-appearance='light'] .trading-dock-summary-item strong.negative { color: var(--c-red-560); }
+
+  :root[data-omnix-appearance='light'] .trading-dock-account-menu {
+    border-color: var(--trading-light-line);
+    background: var(--c-neutral-1000);
+    box-shadow: 0 18px 40px color-mix(in srgb, var(--c-blue-390) 20%, transparent);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-dock-account-menu button { color: var(--trading-light-text); }
+
+  :root[data-omnix-appearance='light'] .trading-dock-account-menu button:hover,
+  :root[data-omnix-appearance='light'] .trading-dock-account-menu button.active { background: var(--c-neutral-960); }
+
+  :root[data-omnix-appearance='light'] .trading-account-modal {
+    border-color: var(--trading-light-line);
+    background: var(--c-neutral-1000);
+    color: var(--trading-light-text);
+    box-shadow: 0 24px 80px color-mix(in srgb, var(--c-blue-390) 26%, transparent);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-account-modal>header,
+  :root[data-omnix-appearance='light'] .trading-account-modal>footer,
+  :root[data-omnix-appearance='light'] .trading-account-modal fieldset { border-color: var(--trading-light-line-soft); }
+
+  :root[data-omnix-appearance='light'] .trading-account-modal h2,
+  :root[data-omnix-appearance='light'] .trading-account-check { color: var(--trading-light-text); }
+
+  :root[data-omnix-appearance='light'] .trading-account-modal legend,
+  :root[data-omnix-appearance='light'] .trading-account-field { color: var(--trading-light-muted); }
+
+  :root[data-omnix-appearance='light'] .trading-account-field input,
+  :root[data-omnix-appearance='light'] .trading-account-field select,
+  :root[data-omnix-appearance='light'] .trading-account-modal>footer button {
+    border-color: var(--trading-light-line);
+    background: var(--c-neutral-1000);
+    color: var(--trading-light-text);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-account-field input:disabled,
+  :root[data-omnix-appearance='light'] .trading-account-field input[readonly] { background: var(--c-neutral-960); color: var(--c-slate-580); }
+
+  :root[data-omnix-appearance='light'] .trading-account-modal>footer .trading-account-primary { background: var(--c-neutral-290); color: var(--c-neutral-1000); }
+}

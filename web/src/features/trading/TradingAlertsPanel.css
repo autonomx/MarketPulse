@@ -1,0 +1,83 @@
+@layer features {
+  .trading-alerts-panel{position:relative;display:flex;flex-direction:column;min-width:0;min-height:100%;margin:0;padding:0;border:0;color:var(--c-slate-910)}
+  .trading-side-panel .trading-alerts-panel{display:flex;flex-direction:column;gap:0;margin:-10px;min-height:calc(100% + 20px);width:calc(100% + 20px)}
+  .trading-alerts-panel-header{background:color-mix(in srgb, var(--c-slate-170-2) 96%, transparent)}
+  .trading-side-panel .trading-alerts-panel-header nav[role=tablist]{display:grid;grid-template-columns:1fr 1fr;gap:3px;height:38px;margin:0;padding:0;border:0;border-radius:8px;background:color-mix(in srgb, var(--c-blue-660) 12%, transparent)}
+  .trading-alerts-panel-header nav[role=tablist]{display:grid;grid-template-columns:1fr 1fr;gap:3px;height:38px;margin:0;padding:0;border:0;border-radius:8px;background:color-mix(in srgb, var(--c-blue-660) 12%, transparent)}
+  .trading-side-panel .trading-alerts-panel-header [role=tab],.trading-alerts-panel-header [role=tab]{min-width:0;color:var(--c-blue-710);font-size:12px;font-weight:500}
+  .trading-side-panel .trading-alerts-panel-header [role=tab][aria-selected=true],.trading-alerts-panel-header [role=tab][aria-selected=true]{color:var(--c-neutral-220)}
+  .trading-alert-log-count{display:inline-grid;place-items:center;min-width:17px;height:17px;margin-left:3px;border-radius:50%;background:var(--c-red-640);color:var(--c-neutral-1000);font-size:10px;font-weight:700;line-height:1}
+  .trading-alerts-toolbar{position:relative;display:flex;align-items:center;gap:10px;min-height:48px;padding:4px 12px;border-bottom:1px solid color-mix(in srgb, var(--c-blue-660) 14%, transparent)}
+  .trading-alert-icon-button{place-items:center;width:30px;height:32px}
+  .trading-alert-add-button{font-weight:300}
+  .trading-alert-list-options{position:relative;margin-left:auto}
+  .trading-alerts-panel .trading-alert-list{flex-direction:column;gap:0;max-height:none;overflow:visible;margin:0;padding:0;list-style:none}
+  .trading-alerts-panel .trading-alert-list>li{position:relative;display:flex;align-items:center;min-width:0;min-height:65px;padding:8px 10px;border-bottom:1px solid color-mix(in srgb, var(--c-blue-660) 12%, transparent);background:transparent}
+  .trading-alerts-panel .trading-alert-list>li.current{background:color-mix(in srgb, var(--c-blue-460-2) 12%, transparent)}
+  .trading-alert-row-main{align-items:center;min-width:0;flex:1;gap:9px}
+  .trading-alert-symbol-badge{display:grid;place-items:center;flex:0 0 24px;width:24px;height:24px;border:1px solid color-mix(in srgb, var(--c-blue-720) 48%, transparent);border-radius:50%;background:color-mix(in srgb, var(--c-blue-510) 22%, transparent);color:var(--c-sky-900);font-size:11px;font-weight:700}
+  .trading-alert-row-copy{display:grid;min-width:0;gap:3px;text-align:left}
+  .trading-alert-row-heading{align-items:baseline;min-width:0;gap:7px}
+  .trading-alert-row-symbol{flex:0 0 auto;letter-spacing:.03em}
+  .trading-alert-row-copy strong{display:block;overflow:hidden;color:var(--c-slate-930);font-size:13px;font-weight:500;text-overflow:ellipsis;white-space:nowrap}
+  .trading-alert-row-copy>span{display:flex;align-items:center;min-width:0;gap:5px;overflow:hidden;color:var(--c-blue-710);font-size:10px;white-space:nowrap}
+  .trading-alert-row-copy b{color:var(--c-slate-820);font-weight:500}
+  .trading-alert-row-copy i{color:var(--c-slate-630);font-style:normal}
+  .trading-alert-row-copy em{font-style:normal}
+  .trading-alert-row-copy small{color:var(--c-blue-710);font-size:15px;line-height:10px}
+  .trading-alert-row-copy .state-active{color:var(--c-green-790-2)}.trading-alert-row-copy .state-triggered{color:var(--c-amber-770)}.trading-alert-row-copy .state-expired,.trading-alert-row-copy .state-stopped{color:var(--c-red-720)}
+  .trading-alert-row-options{position:relative;flex:0 0 auto}
+  .trading-alert-row-options-button{place-items:center;width:28px;height:28px;letter-spacing:1px;opacity:0}
+  .trading-alerts-panel .trading-alert-list>li:hover .trading-alert-row-options-button,.trading-alert-row-options-button:focus-visible{opacity:1}
+  .trading-alert-options-menu{position:absolute;z-index:30;top:calc(100% + 3px);right:0;display:grid;min-width:145px;padding:4px;border:1px solid color-mix(in srgb, var(--c-blue-660) 25%, transparent);border-radius:6px;background:var(--c-indigo-210);box-shadow:0 10px 26px color-mix(in srgb, var(--c-neutral-0) 35%, transparent)}
+  .trading-alert-options-menu button{white-space:nowrap}
+  .trading-alerts-empty{display:grid;place-items:center;gap:5px;min-height:150px;padding:18px;color:var(--c-slate-600);text-align:center}
+  .trading-alerts-empty strong{color:var(--c-slate-870);font-size:13px;font-weight:500}
+  .trading-alerts-empty span{font-size:10px;line-height:1.4}
+  .trading-alert-log-panel{min-height:0;overflow:auto}
+  .trading-alert-log-toolbar{justify-content:space-between}
+  .trading-alert-log-group{padding:14px 0 0}
+  .trading-alert-log-group h3{margin:0;padding:0 14px 8px;color:var(--c-slate-680);font-size:10px;font-weight:500;letter-spacing:.04em}
+  .trading-alert-log-group ul{flex-direction:column;list-style:none}
+  .trading-alert-log-group li{align-items:center;gap:9px;min-height:64px;border-bottom:1px solid color-mix(in srgb, var(--c-blue-660) 12%, transparent);list-style:none}
+  .trading-alert-panel-editor{position:fixed;z-index:200;inset:0;display:grid;place-items:center;padding:16px;background:color-mix(in srgb, var(--c-slate-130) 55%, transparent);pointer-events:auto}
+  .trading-alert-panel-editor>.trading-chart-alert-editor{width:min(500px,calc(100vw - 32px));max-height:calc(100vh - 32px);overflow:hidden}
+  @media(max-width:700px){.trading-alerts-panel .trading-alert-list>li{min-height:61px;padding-inline:8px}.trading-alert-row-copy strong{font-size:12px}.trading-alert-row-copy>span{font-size:9px}.trading-alert-panel-editor{padding:8px}.trading-alert-panel-editor>.trading-chart-alert-editor{width:calc(100vw - 16px);max-height:calc(100vh - 16px)}}
+}
+
+/* Declarations that must win over every other layer. */
+@layer overrides {
+  .trading-alerts-panel-header{display:block;margin:0;padding:7px 10px;border:0}
+
+  .trading-side-panel .trading-alerts-panel-header [role=tab],.trading-alerts-panel-header [role=tab]{border:0;border-radius:7px;background:transparent;box-shadow:none;padding:0 10px}
+
+  .trading-side-panel .trading-alerts-panel-header [role=tab][aria-selected=true],.trading-alerts-panel-header [role=tab][aria-selected=true]{background:var(--c-slate-970-2);box-shadow:0 1px 4px color-mix(in srgb, var(--c-neutral-0) 16%, transparent)}
+
+  .trading-alert-icon-button{display:grid;border:0;border-radius:5px;background:transparent;padding:0;color:var(--c-slate-820);font-size:21px;line-height:1}
+
+  .trading-alert-icon-button:hover{background:color-mix(in srgb, var(--c-blue-650) 16%, transparent);color:var(--c-slate-950)}
+
+  .trading-alert-add-button{font-size:28px}
+
+  .trading-alert-search{width:calc(100% - 24px);margin:8px 12px;padding:7px 9px;font-size:11px}
+
+  .trading-alerts-panel .trading-alert-list{display:flex}
+
+  .trading-alert-row-main{display:flex;border:0;background:transparent;padding:0;text-align:left;color:inherit}
+
+  .trading-alert-row-heading{display:flex;overflow:hidden}
+
+  .trading-alert-row-symbol{color:var(--c-slate-870);font-size:10px;font-weight:700}
+
+  .trading-alert-row-options-button{display:grid;border:0;background:transparent;padding:0;color:var(--c-slate-680);font-size:14px}
+
+  .trading-alert-options-menu button{border:0;border-radius:4px;background:transparent;padding:7px 9px;color:var(--c-slate-870);font-size:10px;text-align:left}
+
+  .trading-alert-options-menu button:hover{background:color-mix(in srgb, var(--c-blue-580) 20%, transparent);color:var(--c-neutral-1000)}
+
+  .trading-alert-log-group ul{display:flex;gap:0;margin:0;padding:0}
+
+  .trading-alert-log-group li{display:flex;padding:8px 14px}
+
+  .trading-alert-panel-editor>.trading-chart-alert-editor{position:relative;inset:auto}
+}

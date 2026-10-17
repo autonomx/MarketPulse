@@ -1,0 +1,38 @@
+@layer features {
+  .live-chat-page-actions,
+  .live-chat-call-actions {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    justify-content: flex-end;
+  }
+
+  .live-chat-fullscreen-action {
+    background: color-mix(in srgb, var(--c-violet-570) 14%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-violet-570) 34%, transparent);
+    border-radius: 10px;
+    color: inherit;
+    cursor: pointer;
+    font-weight: 800;
+    min-height: 2.45rem;
+    padding: 0.55rem 0.9rem;
+  }
+
+  .live-chat-fullscreen-action:hover,
+  .live-chat-fullscreen-action:focus-visible,
+  .live-chat-card button.live-chat-secondary-action:hover,
+  .live-chat-card button.live-chat-secondary-action:focus-visible {
+    border-color: color-mix(in srgb, var(--c-indigo-750) 66%, transparent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--c-violet-570) 12%, transparent);
+    outline: none;
+  }
+
+  @media (max-width: 900px) {
+    .live-chat-page-actions,
+    .live-chat-call-actions {
+      align-items: stretch;
+      justify-content: flex-start;
+    }
+  }
+}

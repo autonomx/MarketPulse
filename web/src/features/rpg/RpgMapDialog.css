@@ -1,0 +1,77 @@
+@layer features {
+  .rpg-map-dialog-backdrop {
+    align-items: center;
+    background: color-mix(in srgb, var(--c-slate-130) 82%, transparent);
+    display: flex;
+    inset: 0;
+    justify-content: center;
+    padding: 2rem;
+    position: fixed;
+    z-index: 1200;
+  }
+
+  .rpg-map-dialog {
+    background: linear-gradient(180deg, color-mix(in srgb, var(--c-neutral-220) 99%, transparent), color-mix(in srgb, var(--c-neutral-160) 99%, transparent));
+    border: 1px solid color-mix(in srgb, var(--c-yellow-870) 22%, transparent);
+    border-radius: 1.2rem;
+    box-shadow: 0 2rem 6rem color-mix(in srgb, var(--c-neutral-0) 55%, transparent);
+    max-height: calc(100vh - 4rem);
+    max-width: 92rem;
+    overflow: auto;
+    padding: 1.15rem;
+    width: min(92vw, 92rem);
+  }
+
+  .rpg-map-dialog-header {
+    align-items: flex-start;
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+
+  .rpg-map-dialog-header h2 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(1.4rem, 2.3vw, 2.2rem);
+    margin: 0.08rem 0 0.18rem;
+  }
+
+  .rpg-map-dialog-header small {
+    color: var(--mantine-color-dimmed, var(--c-neutral-730));
+  }
+
+  .rpg-map-dialog-header button {
+    align-items: center;
+    background: color-mix(in srgb, var(--c-neutral-1000) 6%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-neutral-1000) 12%, transparent);
+    border-radius: 999px;
+    color: inherit;
+    display: inline-flex;
+    font-size: 1.45rem;
+    height: 2.5rem;
+    justify-content: center;
+    line-height: 1;
+    width: 2.5rem;
+  }
+
+  .rpg-map-dialog-header button:hover,
+  .rpg-map-dialog-header button:focus-visible {
+    background: color-mix(in srgb, var(--c-neutral-1000) 12%, transparent);
+    outline: 2px solid color-mix(in srgb, var(--c-yellow-870) 65%, transparent);
+    outline-offset: 2px;
+  }
+
+  @media (max-width: 760px) {
+    .rpg-map-dialog-backdrop {
+      padding: 0;
+    }
+
+    .rpg-map-dialog {
+      border-radius: 0;
+      max-height: 100vh;
+      min-height: 100vh;
+      padding: 0.85rem;
+      width: 100vw;
+    }
+  }
+}

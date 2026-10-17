@@ -1,0 +1,43 @@
+@layer features {
+  .desktop-companion-controls {
+    display: grid;
+    grid-template-columns: minmax(7rem, auto) minmax(5rem, auto) 1fr;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.45rem 0;
+  }
+
+  .desktop-companion-controls__title,
+  .desktop-companion-controls__status {
+    font-size: 0.78rem;
+  }
+
+  .desktop-companion-controls__status {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .desktop-companion-controls__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.35rem;
+  }
+
+  .desktop-companion-control {
+    min-height: 1.9rem;
+    padding: 0.25rem 0.55rem;
+    border: 1px solid var(--omnix-border, color-mix(in srgb, var(--c-neutral-1000) 16%, transparent));
+    border-radius: 0.45rem;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    font-size: 0.72rem;
+  }
+
+  .desktop-companion-control:disabled {
+    cursor: default;
+    opacity: 0.5;
+  }
+}

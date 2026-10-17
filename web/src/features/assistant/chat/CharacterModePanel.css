@@ -1,0 +1,34 @@
+@layer features {
+  .character-mode-card {
+    display: grid;
+    gap: 1rem;
+  }
+  .character-mode-card > header { align-items: start; display: flex; gap: 1rem; justify-content: space-between; }
+  .character-mode-card > header h3, .character-mode-card > header p { margin: 0; }
+  .character-mode-card > header > span { background: color-mix(in srgb, var(--c-blue-710) 14%, transparent); border: 1px solid color-mix(in srgb, var(--c-blue-710) 24%, transparent); border-radius: 999px; color: var(--omnix-muted); font-size: 0.76rem; font-weight: 800; padding: 0.4rem 0.65rem; white-space: nowrap; }
+  .character-mode-card > header > span.active { background: color-mix(in srgb, var(--c-indigo-600) 20%, transparent); border-color: color-mix(in srgb, var(--c-violet-660) 42%, transparent); color: var(--c-slate-940); }
+  .character-mode-controls { align-items: end; display: grid; gap: 0.8rem; grid-template-columns: minmax(12rem, 1fr) auto; }
+  .character-mode-actions { display: flex; flex-wrap: wrap; gap: 0.55rem; }
+  .character-memory-permissions { border: 1px solid color-mix(in srgb, var(--c-violet-660) 20%, transparent); border-radius: 0.65rem; display: flex; flex-wrap: wrap; gap: 1rem; margin: 0; padding: 0.8rem; }
+  .character-memory-permissions legend { color: var(--omnix-muted); font-size: 0.76rem; font-weight: 800; padding: 0 0.35rem; }
+  .character-memory-permissions label { align-items: center; color: var(--omnix-text); display: flex; gap: 0.45rem; }
+  .character-memory-permissions input { min-height: auto; width: auto; }
+  .character-mode-details { display: grid; gap: 0.5rem; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 0; }
+  .character-mode-details div { background: color-mix(in srgb, var(--c-slate-150-2) 48%, transparent); border: 1px solid color-mix(in srgb, var(--c-neutral-1000) 6%, transparent); border-radius: 0.55rem; padding: 0.65rem; }
+  .character-mode-details dt { color: var(--omnix-muted); font-size: 0.72rem; font-weight: 800; text-transform: uppercase; }
+  .character-mode-details dd { color: var(--omnix-text); margin: 0.2rem 0 0; overflow-wrap: anywhere; }
+  @media (max-width: 780px) {
+    .character-mode-controls, .character-mode-details { grid-template-columns: 1fr; }
+    .character-mode-card > header { flex-direction: column; }
+  }
+}
+
+/* Declarations that must win over every other layer. */
+@layer overrides {
+  .character-mode-card {
+    background: linear-gradient(145deg, color-mix(in srgb, var(--c-indigo-600) 16%, transparent), transparent 58%), color-mix(in srgb, var(--c-indigo-190) 78%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-violet-660) 30%, transparent);
+  }
+
+  .character-mode-status { color: var(--c-indigo-900); margin: 0; }
+}

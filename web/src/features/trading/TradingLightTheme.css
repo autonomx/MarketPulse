@@ -1,0 +1,732 @@
+@layer features {
+  :root[data-omnix-appearance='light'] .trading-workspace {
+    --trading-light-bg: var(--c-slate-970-2);
+    --trading-light-surface: var(--c-neutral-1000);
+    --trading-light-surface-muted: var(--c-slate-970-2);
+    --trading-light-line: color-mix(in srgb, var(--c-slate-550) 24%, transparent);
+    --trading-light-line-soft: color-mix(in srgb, var(--c-slate-550) 14%, transparent);
+    --trading-light-text: var(--c-blue-280-2);
+    --trading-light-muted: var(--c-blue-560);
+  }
+
+  /* Watchlist rows and hover actions need an explicit light palette because
+     their base styles intentionally use dark trading-terminal surfaces. */
+
+  /* Paper trading side panel */
+
+  /* Compact TradingView-style header and chart-session strip */
+}
+
+/* Declarations that must win over every other layer. */
+@layer overrides {
+  :root[data-omnix-appearance='light'] .trading-workspace {
+    color: var(--trading-light-text);
+    background: var(--trading-light-bg);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace button,
+  :root[data-omnix-appearance='light'] .trading-workspace select,
+  :root[data-omnix-appearance='light'] .trading-workspace input,
+  :root[data-omnix-appearance='light'] .trading-workspace textarea {
+    border-color: var(--trading-light-line);
+    background: var(--trading-light-surface);
+    color: var(--trading-light-text);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace button:hover,
+  :root[data-omnix-appearance='light'] .trading-workspace select:hover {
+    border-color: color-mix(in srgb, var(--c-blue-630) 62%, transparent);
+    background: var(--c-slate-970-2);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-terminal-header,
+  :root[data-omnix-appearance='light'] .trading-command-bar {
+    border-color: var(--trading-light-line-soft);
+    background: var(--trading-light-surface);
+    box-shadow: 0 4px 14px color-mix(in srgb, var(--c-blue-390) 6%, transparent);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-tool-shortcuts {
+    border-left-color: var(--trading-light-line-soft);
+    background: var(--trading-light-surface);
+    box-shadow: -14px 0 20px color-mix(in srgb, var(--c-blue-390) 8%, transparent);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-terminal-brand strong,
+  :root[data-omnix-appearance='light'] .trading-chart-title-row strong,
+  :root[data-omnix-appearance='light'] .trading-order-ticket-row strong,
+  :root[data-omnix-appearance='light'] .trading-dock-content td strong {
+    color: var(--trading-light-text);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-terminal-brand small,
+  :root[data-omnix-appearance='light'] .trading-terminal-header-actions > span,
+  :root[data-omnix-appearance='light'] .trading-chart-title-row span,
+  :root[data-omnix-appearance='light'] .trading-chart-ohlc,
+  :root[data-omnix-appearance='light'] .trading-chart-footer-meta,
+  :root[data-omnix-appearance='light'] .trading-provider-status,
+  :root[data-omnix-appearance='light'] .trading-timeframe-buttons button,
+  :root[data-omnix-appearance='light'] .trading-tool-shortcuts button {
+    color: var(--trading-light-muted);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-symbol-trigger,
+  :root[data-omnix-appearance='light'] .trading-chart-type-control,
+  :root[data-omnix-appearance='light'] .trading-indicator-manager > summary {
+    border-color: var(--trading-light-line);
+    background: var(--trading-light-surface-muted);
+    color: var(--trading-light-text);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-symbol-trigger:hover,
+  :root[data-omnix-appearance='light'] .trading-chart-type-control:hover,
+  :root[data-omnix-appearance='light'] .trading-indicator-manager > summary:hover,
+  :root[data-omnix-appearance='light'] .trading-indicator-manager[open] > summary {
+    background: var(--c-slate-970-2);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-symbol-trigger-copy strong,
+  :root[data-omnix-appearance='light'] .trading-chart-type-glyph,
+  :root[data-omnix-appearance='light'] .trading-indicator-manager > summary {
+    color: var(--trading-light-text);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-symbol-trigger-copy small,
+  :root[data-omnix-appearance='light'] .trading-symbol-trigger-caret,
+  :root[data-omnix-appearance='light'] .trading-menu-caret {
+    color: var(--trading-light-muted);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-indicator-picker-tabs button {
+    border-color: transparent;
+    background: var(--trading-light-surface-muted);
+    color: var(--trading-light-text);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-indicator-picker-tabs button:hover,
+  :root[data-omnix-appearance='light'] .trading-indicator-picker-tabs button[aria-selected='true'] {
+    border-color: color-mix(in srgb, var(--c-blue-630) 55%, transparent);
+    background: var(--c-slate-950);
+    color: var(--c-blue-460-2);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-indicator-picker-tabs button[aria-selected='true'] {
+    box-shadow: 0 1px 4px color-mix(in srgb, var(--c-blue-390) 16%, transparent);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-body,
+  :root[data-omnix-appearance='light'] .trading-tools,
+  :root[data-omnix-appearance='light'] .trading-right-dock,
+  :root[data-omnix-appearance='light'] .trading-side-panel,
+  :root[data-omnix-appearance='light'] .trading-side-rail {
+    border-color: var(--trading-light-line-soft);
+    background: var(--trading-light-surface);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-watchlist-columns {
+    border-color: var(--trading-light-line-soft);
+    color: var(--trading-light-muted);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-watchlist li {
+    border-color: var(--trading-light-line-soft);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-watchlist li.active,
+  :root[data-omnix-appearance='light'] .trading-watchlist-symbol-cell > button:hover,
+  :root[data-omnix-appearance='light'] .trading-watchlist-section-cell > button:hover {
+    background: var(--c-slate-970-2);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-watchlist li.selected {
+    background: color-mix(in srgb, var(--c-blue-630) 14%, transparent);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-watchlist-symbol-cell > button strong,
+  :root[data-omnix-appearance='light'] .trading-watchlist-section-cell > button strong {
+    color: var(--trading-light-text);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-watchlist-price {
+    color: var(--c-blue-390);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-watchlist-change.positive {
+    color: var(--c-teal-520);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-watchlist-change.negative {
+    color: var(--c-red-560);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-watchlist-change.neutral {
+    color: var(--c-blue-490);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-watchlist-row-actions {
+    border-color: var(--trading-light-line);
+    background: color-mix(in srgb, var(--c-neutral-1000) 98%, transparent);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--c-blue-390) 18%, transparent);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-watchlist-row-actions button {
+    border-color: var(--trading-light-line);
+    background: var(--c-neutral-960);
+    color: var(--c-blue-440);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-watchlist-row-actions button:hover,
+  :root[data-omnix-appearance='light'] .trading-watchlist-row-actions button:focus-visible {
+    border-color: color-mix(in srgb, var(--c-blue-630) 58%, transparent);
+    background: var(--c-slate-950);
+    color: var(--c-blue-460-2);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-chart-shell {
+    background: var(--trading-light-bg);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-chart-shell::before {
+    background-image:
+      linear-gradient(color-mix(in srgb, var(--c-slate-550) 8%, transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in srgb, var(--c-slate-550) 8%, transparent) 1px, transparent 1px);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-chart-grid {
+    background: var(--trading-light-line-soft);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-chart-grid-cell,
+  :root[data-omnix-appearance='light'] .trading-chart-panel {
+    background: var(--trading-light-surface);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-chart-panel {
+    border-color: transparent;
+  }
+
+  :root[data-omnix-appearance='light'] .trading-chart-panel.active {
+    border-color: var(--c-blue-630);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--c-blue-630) 18%, transparent);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-chart-panel > footer {
+    border-color: var(--trading-light-line-soft);
+    background: var(--trading-light-surface-muted);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-chart-ohlc b {
+    color: var(--c-blue-440);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-indicator-pane-controls {
+    border-color: var(--trading-light-line);
+    background: color-mix(in srgb, var(--c-neutral-1000) 98%, transparent);
+    box-shadow: 0 5px 16px color-mix(in srgb, var(--c-blue-390) 18%, transparent);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-indicator-pane-label {
+    color: var(--trading-light-muted);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-indicator-pane-controls button {
+    border-color: var(--trading-light-line);
+    background: var(--trading-light-surface);
+    color: var(--trading-light-text);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-indicator-pane-controls button:hover:not(:disabled) {
+    border-color: color-mix(in srgb, var(--c-blue-630) 62%, transparent);
+    background: var(--c-slate-970-2);
+    color: var(--c-blue-460-2);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-indicator-pane-controls button[aria-pressed='true'] {
+    border-color: color-mix(in srgb, var(--c-blue-630) 72%, transparent);
+    background: var(--c-slate-950);
+    color: var(--c-blue-460-2);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-indicator-pane-controls button:disabled {
+    background: var(--trading-light-surface-muted);
+    color: var(--trading-light-muted);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-indicator-pane-controls button:last-child {
+    color: var(--c-red-560);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-alerts-panel-header {
+    background: var(--trading-light-surface);
+    color: var(--trading-light-text);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-chart-provenance span {
+    background: color-mix(in srgb, var(--c-slate-550) 10%, transparent);
+    color: var(--c-blue-560);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-chart-state {
+    border-color: var(--trading-light-line);
+    background: color-mix(in srgb, var(--c-neutral-1000) 96%, transparent);
+    color: var(--c-blue-490);
+    box-shadow: 0 6px 18px color-mix(in srgb, var(--c-blue-390) 12%, transparent);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-chart-state.error {
+    color: var(--c-red-560);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-replay-mode-hint,
+  :root[data-omnix-appearance='light'] .trading-replay-toolbar {
+    border-color: var(--trading-light-line);
+    background: color-mix(in srgb, var(--c-neutral-1000) 96%, transparent);
+    box-shadow: 0 6px 18px color-mix(in srgb, var(--c-blue-390) 16%, transparent);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-replay-future-overlay {
+    background: linear-gradient(90deg, color-mix(in srgb, var(--c-neutral-1000) 12%, transparent), color-mix(in srgb, var(--c-neutral-1000) 58%, transparent));
+  }
+
+  :root[data-omnix-appearance='light'] .trading-replay-mode-hint {
+    color: var(--c-blue-510);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-replay-toolbar button,
+  :root[data-omnix-appearance='light'] .trading-replay-toolbar select {
+    color: var(--c-blue-490);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-tools button,
+  :root[data-omnix-appearance='light'] .trading-drawing-tool-group > button,
+  :root[data-omnix-appearance='light'] .trading-drawing-tool-cursor-control > button,
+  :root[data-omnix-appearance='light'] .trading-side-rail-toggle,
+  :root[data-omnix-appearance='light'] .trading-side-rail nav button,
+  :root[data-omnix-appearance='light'] .trading-side-panel > nav button,
+  :root[data-omnix-appearance='light'] .trading-timeframe-buttons button,
+  :root[data-omnix-appearance='light'] .trading-tool-shortcuts button {
+    border-color: transparent;
+    background: transparent;
+    color: var(--c-blue-560);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-tools button:hover,
+  :root[data-omnix-appearance='light'] .trading-drawing-tool-group > button:hover,
+  :root[data-omnix-appearance='light'] .trading-side-rail-toggle:hover,
+  :root[data-omnix-appearance='light'] .trading-side-rail nav button:hover,
+  :root[data-omnix-appearance='light'] .trading-side-panel > nav button:hover,
+  :root[data-omnix-appearance='light'] .trading-timeframe-buttons button:hover,
+  :root[data-omnix-appearance='light'] .trading-tool-shortcuts button:hover,
+  :root[data-omnix-appearance='light'] .trading-drawing-tool-cursor-control > button:hover {
+    background: var(--c-slate-970-2);
+    color: var(--c-blue-510);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-tools button.active,
+  :root[data-omnix-appearance='light'] .trading-drawing-tool-group > button.active,
+  :root[data-omnix-appearance='light'] .trading-drawing-tool-cursor-control > button:first-child.active,
+  :root[data-omnix-appearance='light'] .trading-side-rail nav button.active,
+  :root[data-omnix-appearance='light'] .trading-side-panel > nav button[aria-selected='true'],
+  :root[data-omnix-appearance='light'] .trading-timeframe-buttons button.active,
+  :root[data-omnix-appearance='light'] .trading-tool-shortcuts button[aria-pressed='true'] {
+    border-color: color-mix(in srgb, var(--c-blue-630) 55%, transparent);
+    background: color-mix(in srgb, var(--c-blue-630) 10%, transparent);
+    color: var(--c-blue-510);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-side-rail nav button.active {
+    box-shadow: inset 2px 0 var(--c-blue-630);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-side-panel > nav {
+    border-color: var(--trading-light-line-soft);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-side-panel > nav button,
+  :root[data-omnix-appearance='light'] .trading-side-rail nav button {
+    border-right-color: var(--trading-light-line-soft);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-side-panel li,
+  :root[data-omnix-appearance='light'] .trading-side-panel small,
+  :root[data-omnix-appearance='light'] .trading-news-panel > small,
+  :root[data-omnix-appearance='light'] .trading-layout-panel,
+  :root[data-omnix-appearance='light'] .trading-layout-panel fieldset,
+  :root[data-omnix-appearance='light'] .trading-chart-count-control,
+  :root[data-omnix-appearance='light'] .trading-diagnostics-panel {
+    border-color: var(--trading-light-line-soft);
+    color: var(--trading-light-muted);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-layout-panel legend,
+  :root[data-omnix-appearance='light'] .trading-layout-panel fieldset label,
+  :root[data-omnix-appearance='light'] .trading-layout-snap,
+  :root[data-omnix-appearance='light'] .trading-layout-diagnostics > summary,
+  :root[data-omnix-appearance='light'] .trading-news-empty p,
+  :root[data-omnix-appearance='light'] .trading-chart-count-control small {
+    color: var(--trading-light-muted);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-drawing-tool-menu,
+  :root[data-omnix-appearance='light'] .trading-indicator-menu,
+  :root[data-omnix-appearance='light'] .trading-interval-menu,
+  :root[data-omnix-appearance='light'] .trading-price-scale-menu,
+  :root[data-omnix-appearance='light'] .trading-chart-context-menu,
+  :root[data-omnix-appearance='light'] .trading-chart-context-submenu,
+  :root[data-omnix-appearance='light'] .trading-chart-table-view,
+  :root[data-omnix-appearance='light'] .trading-chart-object-tree,
+  :root[data-omnix-appearance='light'] .trading-chart-settings,
+  :root[data-omnix-appearance='light'] .trading-alert-options-menu,
+  :root[data-omnix-appearance='light'] .trading-symbol-search-dialog {
+    border-color: var(--trading-light-line);
+    background: color-mix(in srgb, var(--c-neutral-1000) 98%, transparent);
+    box-shadow: 0 16px 38px color-mix(in srgb, var(--c-blue-390) 18%, transparent);
+    color: var(--trading-light-text);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-drawing-tool-menu header,
+  :root[data-omnix-appearance='light'] .trading-drawing-tool-row,
+  :root[data-omnix-appearance='light'] .trading-chart-context-menu button,
+  :root[data-omnix-appearance='light'] .trading-chart-table-view th,
+  :root[data-omnix-appearance='light'] .trading-chart-table-view td,
+  :root[data-omnix-appearance='light'] .trading-chart-object-tree li,
+  :root[data-omnix-appearance='light'] .trading-chart-settings label {
+    border-color: var(--trading-light-line-soft);
+    color: var(--trading-light-muted);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-drawing-tool-item,
+  :root[data-omnix-appearance='light'] .trading-price-scale-menu-row,
+  :root[data-omnix-appearance='light'] .trading-alert-options-menu button,
+  :root[data-omnix-appearance='light'] .trading-chart-context-menu button {
+    color: var(--trading-light-text);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-drawing-tool-item:hover:not(:disabled),
+  :root[data-omnix-appearance='light'] .trading-price-scale-menu-row:hover,
+  :root[data-omnix-appearance='light'] .trading-price-scale-menu-row[aria-expanded='true'],
+  :root[data-omnix-appearance='light'] .trading-alert-options-menu button:hover,
+  :root[data-omnix-appearance='light'] .trading-chart-context-menu button:hover,
+  :root[data-omnix-appearance='light'] .trading-chart-context-menu button:focus-visible {
+    background: var(--c-slate-970-2);
+    color: var(--c-blue-460-2);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-drawing-tool-menu header,
+  :root[data-omnix-appearance='light'] .trading-drawing-tool-shortcut,
+  :root[data-omnix-appearance='light'] .trading-drawing-tool-soon,
+  :root[data-omnix-appearance='light'] .trading-price-scale-menu-row kbd,
+  :root[data-omnix-appearance='light'] .trading-price-scale-menu-row small,
+  :root[data-omnix-appearance='light'] .trading-chart-context-menu button > kbd,
+  :root[data-omnix-appearance='light'] .trading-chart-context-menu button > b {
+    color: var(--trading-light-muted);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-price-scale-trigger {
+    border-color: color-mix(in srgb, var(--c-slate-550) 38%, transparent);
+    background: color-mix(in srgb, var(--c-neutral-1000) 90%, transparent);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-price-scale-trigger::before {
+    background: var(--c-slate-600);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-price-scale-trigger::after {
+    background: radial-gradient(circle at center, var(--c-neutral-1000) 0 1.5px, var(--c-slate-600) 1.5px 2.5px, var(--c-neutral-1000) 2.5px 4px, transparent 4px), var(--c-neutral-1000);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-price-scale-trigger:hover,
+  :root[data-omnix-appearance='light'] .trading-price-scale-trigger[aria-expanded='true'] {
+    background: var(--c-slate-970-2);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-price-scale-trigger:hover::before,
+  :root[data-omnix-appearance='light'] .trading-price-scale-trigger[aria-expanded='true']::before {
+    background: var(--c-blue-510);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-price-scale-trigger:hover::after,
+  :root[data-omnix-appearance='light'] .trading-price-scale-trigger[aria-expanded='true']::after {
+    background: radial-gradient(circle at center, var(--c-slate-970-2) 0 2px, var(--c-blue-510) 2px 3px, var(--c-slate-970-2) 3px 5px, transparent 5px), var(--c-slate-970-2);
+  }
+
+  /* Edit handles only: a drawing's own markers (the dot tool) keep their colour, as in the dark theme. */
+  :root[data-omnix-appearance='light'] .trading-drawing-overlay circle[data-handle-id] {
+    fill: var(--c-neutral-1000);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-drawing-overlay text {
+    fill: var(--c-blue-350);
+    stroke: var(--c-neutral-1000);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-drawing-overlay text.selected {
+    fill: var(--c-yellow-530);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-terminal-dock,
+  :root[data-omnix-appearance='light'] .trading-dock-main,
+  :root[data-omnix-appearance='light'] .trading-dock-main > nav,
+  :root[data-omnix-appearance='light'] .trading-order-ticket {
+    border-color: var(--trading-light-line-soft);
+    background: var(--trading-light-surface);
+    color: var(--trading-light-text);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-dock-main > nav button,
+  :root[data-omnix-appearance='light'] .trading-dock-content th {
+    background: var(--trading-light-surface-muted);
+    color: var(--trading-light-muted);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-dock-main > nav button[aria-selected='true'] {
+    background: color-mix(in srgb, var(--c-blue-630) 10%, transparent);
+    color: var(--c-blue-510);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-dock-content th,
+  :root[data-omnix-appearance='light'] .trading-dock-content td,
+  :root[data-omnix-appearance='light'] .trading-order-ticket dl div {
+    border-color: var(--trading-light-line-soft);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-dock-content td,
+  :root[data-omnix-appearance='light'] .trading-order-ticket label,
+  :root[data-omnix-appearance='light'] .trading-order-ticket-row strong,
+  :root[data-omnix-appearance='light'] .trading-order-ticket dt,
+  :root[data-omnix-appearance='light'] .trading-order-ticket dd,
+  :root[data-omnix-appearance='light'] .trading-dock-status,
+  :root[data-omnix-appearance='light'] .trading-dock-empty,
+  :root[data-omnix-appearance='light'] .trading-dock-content code {
+    color: var(--trading-light-muted);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-alert-tooltip {
+    border-color: color-mix(in srgb, var(--c-slate-550) 24%, transparent);
+    background: var(--c-neutral-1000);
+    box-shadow: 0 12px 30px color-mix(in srgb, var(--c-blue-390) 20%, transparent);
+    color: var(--c-blue-350);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-alert-tooltip::after {
+    border-left-color: var(--c-neutral-1000);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-alert-tooltip-title {
+    color: var(--c-blue-280-2);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-alert-tooltip-meta,
+  :root[data-omnix-appearance='light'] .trading-alert-tooltip-detail {
+    color: var(--c-blue-490);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-paper-panel {
+    background: var(--trading-light-surface-muted);
+    color: var(--trading-light-text);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-paper-symbol strong,
+  :root[data-omnix-appearance='light'] .trading-paper-exits > summary,
+  :root[data-omnix-appearance='light'] .trading-paper-create strong,
+  :root[data-omnix-appearance='light'] .trading-paper-dom-empty strong {
+    color: var(--trading-light-text);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-paper-symbol small,
+  :root[data-omnix-appearance='light'] .trading-paper-disclaimer,
+  :root[data-omnix-appearance='light'] .trading-paper-account-row label,
+  :root[data-omnix-appearance='light'] .trading-paper-create label,
+  :root[data-omnix-appearance='light'] .trading-paper-price-field,
+  :root[data-omnix-appearance='light'] .trading-paper-units,
+  :root[data-omnix-appearance='light'] .trading-paper-exit-row label,
+  :root[data-omnix-appearance='light'] .trading-paper-create > span,
+  :root[data-omnix-appearance='light'] .trading-paper-dom-header,
+  :root[data-omnix-appearance='light'] .trading-paper-dom-footer,
+  :root[data-omnix-appearance='light'] .trading-paper-metrics dt {
+    color: var(--trading-light-muted);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-paper-header-actions button,
+  :root[data-omnix-appearance='light'] .trading-paper-exits > summary span {
+    color: var(--trading-light-muted);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-paper-mode,
+  :root[data-omnix-appearance='light'] .trading-paper-quotes,
+  :root[data-omnix-appearance='light'] .trading-paper-order-types {
+    background: var(--trading-light-line-soft);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-paper-mode button,
+  :root[data-omnix-appearance='light'] .trading-paper-order-types button {
+    background: transparent;
+    color: var(--trading-light-muted);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-paper-mode button[aria-selected='true'] {
+    background: var(--trading-light-surface);
+    color: var(--trading-light-text);
+    box-shadow: 0 1px 4px color-mix(in srgb, var(--c-blue-390) 16%, transparent);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-paper-account-row select,
+  :root[data-omnix-appearance='light'] .trading-paper-create input,
+  :root[data-omnix-appearance='light'] .trading-paper-price-field input,
+  :root[data-omnix-appearance='light'] .trading-paper-units > div,
+  :root[data-omnix-appearance='light'] .trading-paper-exit-row input {
+    border-color: var(--trading-light-line);
+    background: var(--trading-light-surface);
+    color: var(--trading-light-text);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-paper-new-account {
+    border-color: var(--trading-light-line);
+    background: var(--trading-light-surface);
+    color: var(--trading-light-text);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-paper-quote {
+    background: var(--trading-light-surface);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-paper-quote.sell {
+    color: var(--c-red-560);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-paper-quote.buy {
+    color: var(--c-blue-510);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-paper-quote.active.sell {
+    background: var(--c-slate-960);
+    box-shadow: inset 0 -2px var(--c-red-640);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-paper-quote.active.buy {
+    background: var(--c-slate-970-2);
+    box-shadow: inset 0 -2px var(--c-blue-580);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-paper-order-types button[aria-selected='true'] {
+    color: var(--c-blue-510);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-paper-units > div > span {
+    color: var(--trading-light-muted);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-paper-metrics,
+  :root[data-omnix-appearance='light'] .trading-paper-list li,
+  :root[data-omnix-appearance='light'] .trading-paper-create {
+    border-color: var(--trading-light-line-soft);
+    background: color-mix(in srgb, var(--c-slate-550) 6%, transparent);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-paper-metrics dd,
+  :root[data-omnix-appearance='light'] .trading-paper-list li strong,
+  :root[data-omnix-appearance='light'] .trading-paper-list li span,
+  :root[data-omnix-appearance='light'] .trading-paper-list li.empty,
+  :root[data-omnix-appearance='light'] .trading-paper-activity summary,
+  :root[data-omnix-appearance='light'] .trading-paper-activity summary span {
+    color: var(--trading-light-text);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-terminal-header,
+  :root[data-omnix-appearance='light'] .trading-command-bar,
+  :root[data-omnix-appearance='light'] .trading-session-tabs {
+    border-color: var(--trading-light-line-soft);
+    background: var(--trading-light-surface);
+    box-shadow: 0 2px 10px color-mix(in srgb, var(--c-blue-390) 6%, transparent);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace-switcher,
+  :root[data-omnix-appearance='light'] .trading-layout-switcher,
+  :root[data-omnix-appearance='light'] .trading-provider-status,
+  :root[data-omnix-appearance='light'] .trading-timeframe-buttons {
+    border-color: var(--trading-light-line-soft);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-chart-type-trigger,
+  :root[data-omnix-appearance='light'] .trading-interval-manager > summary,
+  :root[data-omnix-appearance='light'] .trading-indicator-manager > button {
+    border-color: var(--trading-light-line);
+    background: var(--trading-light-surface-muted);
+    color: var(--trading-light-text);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-chart-type-trigger:hover,
+  :root[data-omnix-appearance='light'] .trading-chart-type-trigger[aria-expanded='true'],
+  :root[data-omnix-appearance='light'] .trading-interval-manager > summary:hover,
+  :root[data-omnix-appearance='light'] .trading-interval-manager[open] > summary,
+  :root[data-omnix-appearance='light'] .trading-indicator-manager > button:hover,
+  :root[data-omnix-appearance='light'] .trading-indicator-manager > button[aria-expanded='true'] {
+    border-color: color-mix(in srgb, var(--c-blue-630) 62%, transparent);
+    background: var(--c-slate-970-2);
+    color: var(--c-blue-460-2);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-chart-type-trigger-caret,
+  :root[data-omnix-appearance='light'] .trading-interval-manager .trading-menu-caret,
+  :root[data-omnix-appearance='light'] .trading-indicator-manager .trading-menu-caret {
+    color: var(--trading-light-muted);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-session-tab {
+    border-right-color: var(--trading-light-line-soft);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-session-tab > [role='tab'] {
+    background: transparent;
+    color: var(--trading-light-muted);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-session-tab > [role='tab']:hover,
+  :root[data-omnix-appearance='light'] .trading-session-tab.active > [role='tab'] {
+    background: var(--c-slate-970-2);
+    color: var(--trading-light-text);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-session-tab.active > [role='tab'] {
+    box-shadow: inset 0 -2px var(--c-blue-630);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-session-tab-dot {
+    border-color: var(--c-blue-710);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-session-tab.active .trading-session-tab-dot {
+    border-color: var(--c-blue-630);
+    background: var(--c-blue-630);
+    box-shadow: 0 0 8px color-mix(in srgb, var(--c-blue-630) 35%, transparent);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-session-tab-close {
+    background: transparent;
+    color: var(--trading-light-muted);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-session-tab-close:hover:not(:disabled) {
+    background: var(--c-slate-960);
+    color: var(--c-red-560);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-session-tab-divider {
+    border-right-color: var(--trading-light-line-soft);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-session-tab-add {
+    border-color: color-mix(in srgb, var(--c-blue-630) 42%, transparent);
+    background: var(--c-slate-970-2);
+    color: var(--c-blue-510);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-session-tab-add:hover:not(:disabled) {
+    border-color: var(--c-blue-630);
+    background: var(--c-slate-950);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-session-tab-hint {
+    color: var(--trading-light-muted);
+  }
+}

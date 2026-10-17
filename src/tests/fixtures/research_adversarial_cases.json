@@ -1,0 +1,82 @@
+[
+  {
+    "case_id": "provider_transient_retry",
+    "category": "provider",
+    "description": "Transient provider failure retries once under one logical query."
+  },
+  {
+    "case_id": "provider_permanent_no_retry",
+    "category": "provider",
+    "description": "Permanent provider configuration failure is not retried."
+  },
+  {
+    "case_id": "provider_empty_is_not_proof",
+    "category": "provider",
+    "description": "Empty limited-provider output remains an explicit warning."
+  },
+  {
+    "case_id": "ssrf_private_targets",
+    "category": "ssrf",
+    "description": "Private, loopback, mapped, userinfo, and disallowed-port targets are blocked."
+  },
+  {
+    "case_id": "ssrf_dns_rebinding",
+    "category": "ssrf",
+    "description": "DNS is revalidated and a public-to-private rebinding is blocked."
+  },
+  {
+    "case_id": "redirect_private_target",
+    "category": "redirect",
+    "description": "Every redirect target is revalidated before retrieval."
+  },
+  {
+    "case_id": "redirect_limit",
+    "category": "redirect",
+    "description": "Redirect chains stop at the configured hard limit."
+  },
+  {
+    "case_id": "prompt_injection_is_data",
+    "category": "prompt_injection",
+    "description": "Retrieved instructions remain untrusted evidence after the system guard."
+  },
+  {
+    "case_id": "synthesis_excludes_raw_pages",
+    "category": "privacy",
+    "description": "Synthesis excludes raw page bodies and local extraction paths."
+  },
+  {
+    "case_id": "structured_unknown_citation",
+    "category": "citation",
+    "description": "Unknown structured citation labels are rejected and surfaced."
+  },
+  {
+    "case_id": "plain_text_citation_failures",
+    "category": "citation",
+    "description": "Missing and unknown plain-text citations fail validation."
+  },
+  {
+    "case_id": "deep_unknown_snapshot_fallback",
+    "category": "structured_output",
+    "description": "Unknown Deep Research snapshot references force a visible fallback."
+  },
+  {
+    "case_id": "cancellation_before_search",
+    "category": "cancellation",
+    "description": "Cancellation stops before the first provider call."
+  },
+  {
+    "case_id": "resume_skips_completed_query",
+    "category": "resume",
+    "description": "Resume continues after the durable operation checkpoint."
+  },
+  {
+    "case_id": "budget_exhaustion_is_partial",
+    "category": "partial_result",
+    "description": "Runtime budget exhaustion produces a readable partial result."
+  },
+  {
+    "case_id": "privacy_contract",
+    "category": "privacy",
+    "description": "Planner and synthesis privacy boundaries exclude unrelated sensitive context."
+  }
+]

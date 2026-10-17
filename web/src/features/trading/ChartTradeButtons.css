@@ -1,0 +1,10 @@
+@layer features {
+  .chart-trade-buttons{display:inline-flex;align-items:center;gap:2px;margin-left:8px;pointer-events:auto}
+  .chart-trade-buttons button{display:grid;min-width:62px;border:1px solid var(--chart-trade-color);border-radius:3px;background:color-mix(in srgb, var(--chart-trade-color) 14%, transparent);padding:1px 6px;color:var(--chart-trade-color);font-size:10px;line-height:13px;text-align:center;cursor:pointer}
+  .chart-trade-buttons button b{font-size:12px;font-weight:600}
+  .chart-trade-buttons button:hover{background:var(--chart-trade-color);color:var(--c-neutral-1000)}
+  .chart-trade-buttons button:focus-visible{outline:2px solid var(--c-neutral-1000);outline-offset:1px}
+  .chart-trade-buttons .is-sell{--chart-trade-color:var(--c-red-560)}
+  .chart-trade-buttons .is-buy{--chart-trade-color:var(--c-blue-630)}
+  .chart-trade-spread{min-width:24px;color:var(--c-slate-910);font-size:10px;text-align:center}
+}

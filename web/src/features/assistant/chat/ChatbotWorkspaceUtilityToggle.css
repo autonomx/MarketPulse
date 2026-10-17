@@ -1,0 +1,63 @@
+@layer features {
+  .assistant-side-panel-toggle {
+    align-items: center;
+    background: linear-gradient(180deg, color-mix(in srgb, var(--c-indigo-190) 92%, transparent), color-mix(in srgb, var(--c-slate-150-2) 96%, transparent));
+    border: 1px solid color-mix(in srgb, var(--c-blue-660) 20%, transparent);
+    border-radius: 0.95rem;
+    display: grid;
+    gap: 0.35rem;
+    grid-template-columns: minmax(0, 1fr) auto;
+    margin: 0;
+    padding: 0.35rem;
+  }
+
+  .assistant-side-panel-toggle button {
+    appearance: none;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 0.72rem;
+    color: var(--c-indigo-780);
+    cursor: pointer;
+    font-weight: 850;
+    min-height: 2.7rem;
+    padding: 0 0.85rem;
+    min-width: 0;
+    text-align: center;
+  }
+
+  .assistant-side-panel-toggle button:hover,
+  .assistant-side-panel-toggle button:focus-visible {
+    background: color-mix(in srgb, var(--c-indigo-600) 12%, transparent);
+    border-color: color-mix(in srgb, var(--c-violet-660) 24%, transparent);
+    color: var(--c-slate-970-2);
+    outline: none;
+  }
+
+  .assistant-side-panel-toggle button.active {
+    background: linear-gradient(135deg, color-mix(in srgb, var(--c-indigo-600) 96%, transparent), color-mix(in srgb, var(--c-sky-800) 42%, transparent));
+    border-color: color-mix(in srgb, var(--c-violet-660) 48%, transparent);
+    color: var(--c-neutral-1000);
+  }
+
+  .assistant-side-panel-minimize {
+    font-size: 1.35rem;
+    line-height: 1;
+    padding: 0 0.7rem;
+    white-space: nowrap;
+  }
+
+  .assistant-chat-side-minimized .assistant-side-panel-toggle {
+    grid-template-columns: 1fr;
+  }
+
+  .assistant-chat-side-minimized .assistant-side-panel-option {
+    display: none;
+  }
+}
+
+/* Declarations that must win over every other layer. */
+@layer overrides {
+  .assistant-chat-side > .assistant-side-panel-toggle ~ .assistant-side-panel-toggle {
+    display: none;
+  }
+}

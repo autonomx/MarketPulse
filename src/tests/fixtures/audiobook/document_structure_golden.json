@@ -1,0 +1,478 @@
+{
+  "cases": [
+    {
+      "name": "story_prose",
+      "text": "Daniel stepped through the gate.",
+      "target": "Daniel stepped through the gate.",
+      "role": "story_text",
+      "provenance": "pattern",
+      "standard": "READ",
+      "story_only": "READ",
+      "verbatim": "READ",
+      "speaker": "INCLUDE"
+    },
+    {
+      "name": "short_dialogue",
+      "text": "“Run!” Mara shouted.",
+      "target": "“Run!” Mara shouted.",
+      "role": "story_text",
+      "provenance": "source_span",
+      "standard": "READ",
+      "story_only": "READ",
+      "verbatim": "READ",
+      "speaker": "INCLUDE"
+    },
+    {
+      "name": "chapter_numeric",
+      "text": "Chapter 7\nDaniel entered the hall.",
+      "target": "Chapter 7",
+      "role": "chapter_heading",
+      "provenance": "source_semantic",
+      "standard": "READ",
+      "story_only": "SKIP",
+      "verbatim": "READ",
+      "speaker": "CONTEXT_ONLY"
+    },
+    {
+      "name": "chapter_roman",
+      "text": "Chapter XVII\nDaniel entered the hall.",
+      "target": "Chapter XVII",
+      "role": "chapter_heading",
+      "provenance": "source_semantic",
+      "standard": "READ",
+      "story_only": "SKIP",
+      "verbatim": "READ",
+      "speaker": "CONTEXT_ONLY"
+    },
+    {
+      "name": "chapter_word",
+      "text": "Chapter Seven\nDaniel entered the hall.",
+      "target": "Chapter Seven",
+      "role": "chapter_heading",
+      "provenance": "source_semantic",
+      "standard": "READ",
+      "story_only": "SKIP",
+      "verbatim": "READ",
+      "speaker": "CONTEXT_ONLY"
+    },
+    {
+      "name": "part_heading",
+      "text": "PART TWO\nThe road narrowed.",
+      "target": "PART TWO",
+      "role": "part_heading",
+      "provenance": "pattern",
+      "standard": "READ",
+      "story_only": "SKIP",
+      "verbatim": "READ",
+      "speaker": "CONTEXT_ONLY"
+    },
+    {
+      "name": "prologue",
+      "text": "PROLOGUE\nRain fell over the city.",
+      "target": "PROLOGUE",
+      "role": "prologue_heading",
+      "provenance": "pattern",
+      "standard": "READ",
+      "story_only": "SKIP",
+      "verbatim": "READ",
+      "speaker": "CONTEXT_ONLY"
+    },
+    {
+      "name": "epilogue",
+      "text": "EPILOGUE\nYears later, Daniel returned.",
+      "target": "EPILOGUE",
+      "role": "epilogue_heading",
+      "provenance": "pattern",
+      "standard": "READ",
+      "story_only": "SKIP",
+      "verbatim": "READ",
+      "speaker": "CONTEXT_ONLY"
+    },
+    {
+      "name": "toc_heading",
+      "text": "CONTENTS\nThe Marketplace ........ 17\nThe King's Tax ........ 36",
+      "target": "CONTENTS",
+      "role": "table_of_contents",
+      "provenance": "sequence_rule",
+      "standard": "SKIP",
+      "story_only": "SKIP",
+      "verbatim": "READ",
+      "speaker": "EXCLUDE"
+    },
+    {
+      "name": "toc_entry",
+      "text": "CONTENTS\nThe Marketplace ........ 17\nThe King's Tax ........ 36",
+      "target": "The Marketplace ........ 17",
+      "role": "table_of_contents",
+      "provenance": "sequence_rule",
+      "standard": "SKIP",
+      "story_only": "SKIP",
+      "verbatim": "READ",
+      "speaker": "EXCLUDE"
+    },
+    {
+      "name": "page_number",
+      "text": "Page 87 of 412\nDaniel walked on.",
+      "target": "Page 87 of 412",
+      "role": "page_number",
+      "provenance": "pattern",
+      "standard": "SKIP",
+      "story_only": "SKIP",
+      "verbatim": "READ",
+      "speaker": "EXCLUDE"
+    },
+    {
+      "name": "copyright",
+      "text": "Copyright © 2026 Example Press\nDaniel walked on.",
+      "target": "Copyright © 2026 Example Press",
+      "role": "copyright",
+      "provenance": "pattern",
+      "standard": "SKIP",
+      "story_only": "SKIP",
+      "verbatim": "READ",
+      "speaker": "EXCLUDE"
+    },
+    {
+      "name": "isbn",
+      "text": "ISBN 978-1-4028-9462-6\nDaniel walked on.",
+      "target": "ISBN 978-1-4028-9462-6",
+      "role": "isbn",
+      "provenance": "pattern",
+      "standard": "SKIP",
+      "story_only": "SKIP",
+      "verbatim": "READ",
+      "speaker": "EXCLUDE"
+    },
+    {
+      "name": "dedication",
+      "text": "DEDICATION\nFor my family\nChapter One\nThe door opened.",
+      "target": "DEDICATION",
+      "role": "dedication",
+      "provenance": "sequence_rule",
+      "standard": "SKIP",
+      "story_only": "SKIP",
+      "verbatim": "READ",
+      "speaker": "CONTEXT_ONLY"
+    },
+    {
+      "name": "foreword",
+      "text": "FOREWORD\nThis edition began as a small project.\nChapter One\nThe door opened.",
+      "target": "FOREWORD",
+      "role": "foreword",
+      "provenance": "sequence_rule",
+      "standard": "SKIP",
+      "story_only": "SKIP",
+      "verbatim": "READ",
+      "speaker": "CONTEXT_ONLY"
+    },
+    {
+      "name": "preface",
+      "text": "PREFACE\nThis book began on a winter evening.\nChapter One\nThe door opened.",
+      "target": "PREFACE",
+      "role": "preface",
+      "provenance": "sequence_rule",
+      "standard": "SKIP",
+      "story_only": "SKIP",
+      "verbatim": "READ",
+      "speaker": "CONTEXT_ONLY"
+    },
+    {
+      "name": "author_note",
+      "text": "AUTHOR'S NOTE\nSeveral locations are fictional.\nChapter One\nThe door opened.",
+      "target": "AUTHOR'S NOTE",
+      "role": "author_note",
+      "provenance": "sequence_rule",
+      "standard": "SKIP",
+      "story_only": "SKIP",
+      "verbatim": "READ",
+      "speaker": "CONTEXT_ONLY"
+    },
+    {
+      "name": "acknowledgements",
+      "text": "ACKNOWLEDGEMENTS\nThanks to everyone who helped.\nChapter One\nThe door opened.",
+      "target": "ACKNOWLEDGEMENTS",
+      "role": "acknowledgements",
+      "provenance": "sequence_rule",
+      "standard": "SKIP",
+      "story_only": "SKIP",
+      "verbatim": "READ",
+      "speaker": "CONTEXT_ONLY"
+    },
+    {
+      "name": "scene_heading",
+      "text": "LONDON\nDaniel stepped off the train.",
+      "target": "LONDON",
+      "role": "scene_heading",
+      "provenance": "pattern",
+      "standard": "READ",
+      "story_only": "READ",
+      "verbatim": "READ",
+      "speaker": "CONTEXT_ONLY"
+    },
+    {
+      "name": "scene_break",
+      "text": "***\nDaniel woke before dawn.",
+      "target": "***",
+      "role": "scene_break",
+      "provenance": "pattern",
+      "standard": "SKIP",
+      "story_only": "SKIP",
+      "verbatim": "READ",
+      "speaker": "CONTEXT_ONLY"
+    },
+    {
+      "name": "footnote_marker",
+      "text": "[1]\nDaniel continued walking.",
+      "target": "[1]",
+      "role": "footnote_marker",
+      "provenance": "pattern",
+      "standard": "SKIP",
+      "story_only": "SKIP",
+      "verbatim": "READ",
+      "speaker": "EXCLUDE"
+    },
+    {
+      "name": "footnote_body",
+      "text": "[1] This detail matters later.\nDaniel continued walking.",
+      "target": "[1] This detail matters later.",
+      "role": "footnote_body",
+      "provenance": "pattern",
+      "standard": "SKIP",
+      "story_only": "SKIP",
+      "verbatim": "READ",
+      "speaker": "CONTEXT_ONLY"
+    },
+    {
+      "name": "bibliography",
+      "text": "BIBLIOGRAPHY\nSmith, A. A History of Markets.",
+      "target": "BIBLIOGRAPHY",
+      "role": "bibliography",
+      "provenance": "sequence_rule",
+      "standard": "SKIP",
+      "story_only": "SKIP",
+      "verbatim": "READ",
+      "speaker": "EXCLUDE"
+    },
+    {
+      "name": "index",
+      "text": "INDEX\nAmazon, 12\nCastle, 18",
+      "target": "INDEX",
+      "role": "index",
+      "provenance": "sequence_rule",
+      "standard": "SKIP",
+      "story_only": "SKIP",
+      "verbatim": "READ",
+      "speaker": "EXCLUDE"
+    },
+    {
+      "name": "unknown_fail_open",
+      "text": "North Gate\nDaniel crossed the bridge.",
+      "target": "North Gate",
+      "role": "unknown",
+      "provenance": "deterministic",
+      "standard": "READ",
+      "story_only": "READ",
+      "verbatim": "READ",
+      "speaker": "INCLUDE"
+    },
+    {
+      "name": "book_title_metadata",
+      "text": "THE GOLD CART MERCHANT\nDaniel woke beside the road.",
+      "target": "THE GOLD CART MERCHANT",
+      "metadata": {
+        "title": "The Gold Cart Merchant"
+      },
+      "role": "book_title",
+      "provenance": "source_metadata",
+      "standard": "READ_ONCE",
+      "story_only": "SKIP",
+      "verbatim": "READ",
+      "speaker": "EXCLUDE"
+    },
+    {
+      "name": "author_metadata",
+      "text": "JANE EXAMPLE\nDaniel woke beside the road.",
+      "target": "JANE EXAMPLE",
+      "metadata": {
+        "creator": "Jane Example"
+      },
+      "role": "author_name",
+      "provenance": "source_metadata",
+      "standard": "SKIP",
+      "story_only": "SKIP",
+      "verbatim": "READ",
+      "speaker": "EXCLUDE"
+    },
+    {
+      "name": "pdf_running_header",
+      "text": "THE GOLD CART MERCHANT\nDaniel walked into town.\nTHE GOLD CART MERCHANT\nMara closed the gate.",
+      "target": "THE GOLD CART MERCHANT",
+      "source_format_override": "pdf",
+      "metadata": {
+        "pdf_page_edges": [
+          {
+            "page_index": 0,
+            "top": [
+              "THE GOLD CART MERCHANT"
+            ],
+            "bottom": [
+              "1"
+            ]
+          },
+          {
+            "page_index": 1,
+            "top": [
+              "THE GOLD CART MERCHANT"
+            ],
+            "bottom": [
+              "2"
+            ]
+          }
+        ],
+        "pdf_page_count": 2
+      },
+      "role": "running_header",
+      "provenance": "repetition",
+      "standard": "SKIP",
+      "story_only": "SKIP",
+      "verbatim": "READ",
+      "speaker": "EXCLUDE"
+    },
+    {
+      "name": "pdf_page_footer",
+      "text": "Page 1 of 2\nDaniel walked into town.\nPage 2 of 2\nMara closed the gate.",
+      "target": "Page 1 of 2",
+      "source_format_override": "pdf",
+      "metadata": {
+        "pdf_page_edges": [
+          {
+            "page_index": 0,
+            "top": [
+              "Daniel walked into town."
+            ],
+            "bottom": [
+              "Page 1 of 2"
+            ]
+          },
+          {
+            "page_index": 1,
+            "top": [
+              "Mara closed the gate."
+            ],
+            "bottom": [
+              "Page 2 of 2"
+            ]
+          }
+        ],
+        "pdf_page_count": 2
+      },
+      "role": "page_number",
+      "provenance": "pattern",
+      "standard": "SKIP",
+      "story_only": "SKIP",
+      "verbatim": "READ",
+      "speaker": "EXCLUDE"
+    },
+    {
+      "name": "docx_heading_style",
+      "text": "Winter Court\nDaniel crossed the bridge.",
+      "target": "Winter Court",
+      "source_format_override": "docx",
+      "metadata": {
+        "docx_style_blocks": [
+          {
+            "block_index": 0,
+            "text": "Winter Court",
+            "normalized_text": "winter court",
+            "style": "Heading 2",
+            "bold": true,
+            "italic": false
+          }
+        ]
+      },
+      "role": "scene_heading",
+      "provenance": "docx_style",
+      "standard": "READ",
+      "story_only": "READ",
+      "verbatim": "READ",
+      "speaker": "CONTEXT_ONLY"
+    },
+    {
+      "name": "docx_subtitle_style",
+      "text": "A MARKETPLACE ADVENTURE\nDaniel crossed the bridge.",
+      "target": "A MARKETPLACE ADVENTURE",
+      "source_format_override": "docx",
+      "metadata": {
+        "docx_style_blocks": [
+          {
+            "block_index": 0,
+            "text": "A MARKETPLACE ADVENTURE",
+            "normalized_text": "a marketplace adventure",
+            "style": "Subtitle",
+            "bold": false,
+            "italic": false
+          }
+        ]
+      },
+      "role": "subtitle",
+      "provenance": "docx_style",
+      "standard": "SKIP",
+      "story_only": "SKIP",
+      "verbatim": "READ",
+      "speaker": "EXCLUDE"
+    },
+    {
+      "name": "epub_semantic_heading",
+      "text": "November 1942\nDaniel crossed the bridge.",
+      "target": "November 1942",
+      "source_format_override": "epub",
+      "metadata": {
+        "epub_semantic_headings": [
+          {
+            "chapter_index": 0,
+            "heading_index": 1,
+            "text": "November 1942"
+          }
+        ]
+      },
+      "role": "scene_heading",
+      "provenance": "source_semantic",
+      "standard": "READ",
+      "story_only": "READ",
+      "verbatim": "READ",
+      "speaker": "CONTEXT_ONLY"
+    },
+    {
+      "name": "pdf_positioned_running_header",
+      "text": "THE WINTER ROAD\nDaniel crossed the bridge.\nTHE WINTER ROAD\nMara shut the gate.",
+      "target": "THE WINTER ROAD",
+      "source_format_override": "pdf",
+      "metadata": {
+        "pdf_page_blocks": [
+          {
+            "page_index": 0,
+            "block_index": 0,
+            "reading_order": 0,
+            "original_text": "THE WINTER ROAD",
+            "distance_from_top": 0,
+            "distance_from_bottom": 1
+          },
+          {
+            "page_index": 1,
+            "block_index": 0,
+            "reading_order": 0,
+            "original_text": "THE WINTER ROAD",
+            "distance_from_top": 0,
+            "distance_from_bottom": 1
+          }
+        ]
+      },
+      "role": "running_header",
+      "provenance": "repetition",
+      "standard": "SKIP",
+      "story_only": "SKIP",
+      "verbatim": "READ",
+      "speaker": "EXCLUDE"
+    }
+  ]
+}

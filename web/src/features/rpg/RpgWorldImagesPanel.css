@@ -1,0 +1,264 @@
+@layer features {
+  .rpg-world-images-panel {
+    display: grid;
+    gap: 18px;
+  }
+
+  .rpg-world-images-toolbar {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .rpg-world-images-category-filter {
+    align-items: center;
+    display: flex;
+    gap: 8px;
+  }
+
+  .rpg-world-images-category-filter > span {
+    color: var(--text-muted, var(--c-blue-710));
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .rpg-world-images-category-filter select {
+    background: color-mix(in srgb, var(--c-indigo-210) 72%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-blue-710) 24%, transparent);
+    border-radius: 9px;
+    color: inherit;
+    font: inherit;
+    padding: 8px 28px 8px 10px;
+  }
+
+  .rpg-world-images-advanced {
+    background: color-mix(in srgb, var(--c-indigo-210) 45%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-blue-710) 18%, transparent);
+    border-radius: 12px;
+    padding: 12px 14px;
+  }
+
+  .rpg-world-images-advanced summary {
+    cursor: pointer;
+    font-weight: 700;
+  }
+
+  .rpg-world-images-advanced > div {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: minmax(220px, 2fr) minmax(180px, 1fr) minmax(110px, .5fr) minmax(110px, .5fr);
+    padding-top: 14px;
+  }
+
+  .rpg-world-images-advanced label,
+  .rpg-world-image-prompt {
+    display: grid;
+    gap: 6px;
+  }
+
+  .rpg-world-images-advanced label > span,
+  .rpg-world-image-prompt > span {
+    color: var(--text-muted, var(--c-blue-710));
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+
+  .rpg-world-images-advanced input,
+  .rpg-world-image-copy textarea {
+    background: color-mix(in srgb, var(--c-indigo-210) 72%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-blue-710) 24%, transparent);
+    border-radius: 10px;
+    color: inherit;
+    font: inherit;
+    padding: 10px 12px;
+  }
+
+  .rpg-world-images-progress {
+    background: color-mix(in srgb, var(--c-blue-280) 42%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-cyan-810) 20%, transparent);
+    border-radius: 14px;
+    display: grid;
+    gap: 12px;
+    padding: 15px 16px;
+  }
+
+  .rpg-world-images-progress-heading {
+    align-items: end;
+    display: flex;
+    gap: 16px;
+    justify-content: space-between;
+  }
+
+  .rpg-world-images-progress-heading .eyebrow {
+    margin: 0 0 3px;
+  }
+
+  .rpg-world-images-progress-heading strong {
+    font-size: 17px;
+  }
+
+  .rpg-world-images-progress-heading > span {
+    color: var(--c-cyan-910-2);
+    font-size: 18px;
+    font-weight: 800;
+  }
+
+  .rpg-world-images-progress-track {
+    background: color-mix(in srgb, var(--c-indigo-210) 76%, transparent);
+    border-radius: 999px;
+    height: 9px;
+    overflow: hidden;
+  }
+
+  .rpg-world-images-progress-track > span {
+    background: linear-gradient(90deg, var(--c-cyan-810), var(--c-violet-710));
+    border-radius: inherit;
+    display: block;
+    height: 100%;
+    min-width: 0;
+    transition: width .3s ease;
+  }
+
+  .rpg-world-images-progress-summary {
+    color: var(--text-muted, var(--c-blue-710));
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 13px;
+    gap: 8px 16px;
+  }
+
+  .rpg-world-images-progress-summary .is-generating {
+    color: var(--c-violet-810);
+  }
+
+  .rpg-world-images-progress-summary .is-failed {
+    color: var(--c-red-810);
+  }
+
+  .rpg-world-images-progress-summary .is-complete {
+    color: var(--c-cyan-910-2);
+  }
+
+  .rpg-world-image-grid {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+
+  .rpg-world-image-grid > article {
+    background: color-mix(in srgb, var(--c-indigo-210) 54%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-blue-710) 18%, transparent);
+    border-radius: 16px;
+    display: grid;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .rpg-world-image-preview {
+    align-items: center;
+    aspect-ratio: 16 / 10;
+    background: linear-gradient(145deg, color-mix(in srgb, var(--c-blue-280-2) 95%, transparent), color-mix(in srgb, var(--c-indigo-210) 95%, transparent));
+    background-position: center;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    position: relative;
+  }
+
+  .rpg-world-image-preview > span {
+    color: color-mix(in srgb, var(--c-slate-930) 58%, transparent);
+    font-size: 54px;
+    font-weight: 800;
+  }
+
+  .rpg-world-image-preview label {
+    align-items: center;
+    background: color-mix(in srgb, var(--c-blue-130) 82%, transparent);
+    border-radius: 999px;
+    bottom: 10px;
+    display: flex;
+    gap: 6px;
+    left: 10px;
+    padding: 6px 10px;
+    position: absolute;
+  }
+
+  .rpg-world-image-copy {
+    display: grid;
+    gap: 10px;
+    padding: 14px;
+  }
+
+  .rpg-world-image-copy h3,
+  .rpg-world-image-copy p {
+    margin: 0;
+  }
+
+  .rpg-world-image-copy > p {
+    color: var(--text-muted, var(--c-blue-710));
+    font-size: 13px;
+  }
+
+  .rpg-world-image-copy textarea {
+    box-sizing: border-box;
+    min-height: 104px;
+    resize: vertical;
+    width: 100%;
+  }
+
+  .rpg-world-image-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .rpg-world-image-copy details {
+    border-top: 1px solid color-mix(in srgb, var(--c-blue-710) 16%, transparent);
+    padding-top: 10px;
+  }
+
+  .rpg-world-image-copy details > div {
+    align-items: center;
+    display: grid;
+    font-size: 13px;
+    gap: 8px;
+    grid-template-columns: minmax(80px, 1fr) auto auto;
+    padding: 8px 0;
+  }
+
+  .rpg-world-image-copy details small {
+    color: var(--c-red-810);
+    grid-column: 1 / -1;
+    overflow-wrap: anywhere;
+  }
+
+  .rpg-link-button {
+    background: transparent;
+    border: 0;
+    color: var(--c-sky-830);
+    cursor: pointer;
+    padding: 0;
+    text-decoration: underline;
+  }
+
+  .rpg-link-button:disabled {
+    cursor: default;
+    opacity: .45;
+  }
+
+  @media (max-width: 900px) {
+    .rpg-world-images-advanced > div {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (max-width: 620px) {
+    .rpg-world-images-advanced > div {
+      grid-template-columns: 1fr;
+    }
+  }
+}

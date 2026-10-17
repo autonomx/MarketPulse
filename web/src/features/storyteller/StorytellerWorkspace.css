@@ -1,0 +1,577 @@
+@layer features {
+  .storyteller-workspace {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 14.5rem minmax(0, 1fr) 15.25rem;
+    min-height: calc(100vh - 8rem);
+  }
+
+  .storyteller-workspace button,
+  .storyteller-workspace input,
+  .storyteller-workspace select,
+  .storyteller-workspace textarea {
+    font: inherit;
+  }
+
+  .storyteller-library,
+  .storyteller-controls,
+  .storyteller-outline,
+  .storyteller-project-header,
+  .storyteller-manuscript,
+  .storyteller-action-bar,
+  .storyteller-versions {
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--c-slate-190-3) 88%, transparent), color-mix(in srgb, var(--c-slate-150-2) 88%, transparent)),
+      color-mix(in srgb, var(--c-slate-150-2) 90%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-violet-660) 18%, transparent);
+    border-radius: 0.625rem;
+    box-shadow:
+      inset 0 1px 0 color-mix(in srgb, var(--c-neutral-1000) 4.5%, transparent),
+      0 1.25rem 3rem color-mix(in srgb, var(--c-neutral-0) 26%, transparent);
+  }
+
+  .storyteller-stage {
+    display: grid;
+    gap: 1rem;
+    min-width: 0;
+  }
+
+  .storyteller-library,
+  .storyteller-outline {
+    align-self: start;
+    display: grid;
+    gap: 1rem;
+    min-width: 0;
+    padding: 0.85rem;
+    position: sticky;
+    top: 6.5rem;
+  }
+
+  .storyteller-library {
+    max-height: calc(100vh - 8rem);
+    overflow: auto;
+  }
+
+  .storyteller-outline {
+    max-height: calc(100vh - 8rem);
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+  }
+
+  .storyteller-panel-heading {
+    align-items: center;
+    display: flex;
+    gap: 0.75rem;
+    justify-content: space-between;
+  }
+
+  .storyteller-panel-heading h3,
+  .storyteller-panel-heading p,
+  .storyteller-project-copy h1,
+  .storyteller-project-copy p,
+  .storyteller-manuscript h2,
+  .storyteller-output-card p {
+    margin: 0;
+  }
+
+  .storyteller-panel-heading.compact button,
+  .storyteller-project-actions button,
+  .storyteller-action-bar button,
+  .storyteller-versions button,
+  .storyteller-trash,
+  .storyteller-outline button,
+  .storyteller-chip-row button,
+  .storyteller-chapter-controls button,
+  .storyteller-output-status button {
+    background: color-mix(in srgb, var(--c-neutral-1000) 3.5%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-violet-660) 18%, transparent);
+    border-radius: 0.5rem;
+    color: var(--c-slate-970-2);
+    cursor: pointer;
+  }
+
+  .storyteller-panel-heading.compact button:hover,
+  .storyteller-project-actions button:hover,
+  .storyteller-action-bar button:hover,
+  .storyteller-versions button:hover,
+  .storyteller-trash:hover,
+  .storyteller-outline button:hover,
+  .storyteller-chip-row button:hover,
+  .storyteller-chapter-controls button:hover,
+  .storyteller-output-status button:hover,
+  .storyteller-panel-heading.compact button:focus-visible,
+  .storyteller-project-actions button:focus-visible,
+  .storyteller-action-bar button:focus-visible,
+  .storyteller-versions button:focus-visible,
+  .storyteller-trash:focus-visible,
+  .storyteller-outline button:focus-visible,
+  .storyteller-chip-row button:focus-visible,
+  .storyteller-chapter-controls button:focus-visible,
+  .storyteller-output-status button:focus-visible {
+    border-color: color-mix(in srgb, var(--c-sky-800) 48%, transparent);
+    outline: none;
+  }
+
+  .storyteller-library nav,
+  .storyteller-recent-list,
+  .storyteller-outline,
+  .storyteller-outline article,
+  .storyteller-outline ol,
+  .storyteller-form,
+  .storyteller-output-status,
+  .storyteller-output-card {
+    display: grid;
+    gap: 0.65rem;
+  }
+
+  .storyteller-library nav a {
+    align-items: center;
+    border: 1px solid transparent;
+    border-radius: 0.5rem;
+    color: var(--c-slate-890);
+    display: flex;
+    justify-content: space-between;
+    padding: 0.65rem 0.7rem;
+    text-decoration: none;
+  }
+
+  .storyteller-library nav a.active,
+  .storyteller-library nav a:hover,
+  .storyteller-library nav a:focus-visible {
+    background: color-mix(in srgb, var(--c-violet-540) 18%, transparent);
+    border-color: color-mix(in srgb, var(--c-violet-660) 34%, transparent);
+    outline: none;
+  }
+
+  .storyteller-recent-list article {
+    align-items: center;
+    background: color-mix(in srgb, var(--c-slate-130) 52%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-violet-660) 12%, transparent);
+    border-radius: 0.5rem;
+    display: grid;
+    gap: 0.65rem;
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+    padding: 0.55rem;
+  }
+
+  .storyteller-recent-list article.active {
+    background: linear-gradient(135deg, color-mix(in srgb, var(--c-violet-540) 28%, transparent), color-mix(in srgb, var(--c-cyan-720) 12%, transparent));
+    border-color: color-mix(in srgb, var(--c-sky-800) 46%, transparent);
+  }
+
+  .storyteller-recent-list strong,
+  .storyteller-recent-list small {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .storyteller-recent-list small,
+  .storyteller-outline span,
+  .storyteller-output-card small,
+  .storyteller-action-bar span,
+  .storyteller-versions span,
+  .storyteller-empty-small {
+    color: var(--c-slate-730);
+    font-size: 0.8rem;
+  }
+
+  .storyteller-thumb,
+  .storyteller-cover {
+    background:
+      radial-gradient(circle at 30% 25%, color-mix(in srgb, var(--c-yellow-950) 90%, transparent), transparent 0.7rem),
+      linear-gradient(145deg, color-mix(in srgb, var(--c-sky-800) 50%, transparent), color-mix(in srgb, var(--c-violet-540) 28%, transparent)),
+      linear-gradient(180deg, var(--c-blue-310), var(--c-slate-190-3));
+    border: 1px solid color-mix(in srgb, var(--c-violet-810) 28%, transparent);
+    border-radius: 0.5rem;
+    box-shadow: 0 0.65rem 1.5rem color-mix(in srgb, var(--c-neutral-0) 28%, transparent);
+  }
+
+  .storyteller-thumb {
+    height: 2.5rem;
+    width: 2.5rem;
+  }
+
+  .storyteller-thumb.muted {
+    filter: saturate(0.55);
+  }
+
+  .storyteller-trash {
+    margin-top: 1rem;
+    padding: 0.7rem;
+    text-align: left;
+  }
+
+  .storyteller-project-header {
+    align-items: center;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 4.8rem minmax(16rem, 1fr) minmax(16rem, auto) auto;
+    padding: 0.85rem 1rem;
+  }
+
+  .storyteller-cover {
+    height: 4.8rem;
+    width: 4.8rem;
+  }
+
+  .storyteller-project-copy h1 {
+    color: var(--c-slate-970-2);
+    font-size: 1.35rem;
+  }
+
+  .storyteller-project-copy > p:last-of-type {
+    color: var(--c-slate-830);
+    margin-top: 0.2rem;
+  }
+
+  .storyteller-tags,
+  .storyteller-chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.55rem;
+  }
+
+  .storyteller-tags span,
+  .storyteller-chip-row button {
+    background: color-mix(in srgb, var(--c-violet-540) 16%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-violet-660) 28%, transparent);
+    border-radius: 999px;
+    color: var(--c-violet-920);
+    font-size: 0.78rem;
+    padding: 0.32rem 0.55rem;
+  }
+
+  .storyteller-chip-row button.active {
+    background: linear-gradient(135deg, color-mix(in srgb, var(--c-cyan-720) 82%, transparent), color-mix(in srgb, var(--c-violet-540) 42%, transparent));
+    border-color: color-mix(in srgb, var(--c-sky-800) 64%, transparent);
+  }
+
+  .storyteller-project-stats {
+    align-items: center;
+    display: flex;
+    gap: 1rem;
+  }
+
+  .storyteller-project-stats div {
+    border-left: 1px solid color-mix(in srgb, var(--c-violet-660) 18%, transparent);
+    display: grid;
+    min-width: 4rem;
+    padding-left: 1rem;
+  }
+
+  .storyteller-project-stats strong {
+    color: var(--c-slate-970-2);
+    font-size: 0.95rem;
+  }
+
+  .storyteller-project-stats span {
+    color: var(--c-slate-730);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+  }
+
+  .storyteller-project-actions {
+    display: flex;
+    gap: 0.6rem;
+  }
+
+  .storyteller-project-actions button {
+    min-width: 5.5rem;
+    padding: 0.7rem 1rem;
+  }
+
+  .storyteller-compose-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: minmax(0, 1fr) 19.5rem;
+  }
+
+  .storyteller-manuscript {
+    background:
+      radial-gradient(circle at 12% 20%, color-mix(in srgb, var(--c-sky-800) 8%, transparent), transparent 15rem),
+      radial-gradient(circle at 80% 8%, color-mix(in srgb, var(--c-violet-540) 12%, transparent), transparent 12rem),
+      linear-gradient(180deg, color-mix(in srgb, var(--c-slate-170-2) 94%, transparent), color-mix(in srgb, var(--c-slate-130) 92%, transparent));
+    min-height: 34rem;
+    padding: clamp(1.25rem, 3vw, 3rem);
+  }
+
+  .storyteller-manuscript-meta {
+    align-items: center;
+    color: var(--c-violet-830);
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    text-transform: uppercase;
+  }
+
+  .storyteller-manuscript h2 {
+    color: var(--c-slate-980);
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(2rem, 4vw, 3.15rem);
+    font-weight: 500;
+    margin-top: 1.4rem;
+    text-align: center;
+  }
+
+  .storyteller-flourish {
+    align-items: center;
+    color: var(--c-violet-710);
+    display: flex;
+    gap: 0.65rem;
+    justify-content: center;
+    margin: 1.15rem auto 1.6rem;
+    max-width: 10rem;
+  }
+
+  .storyteller-flourish span {
+    background: color-mix(in srgb, var(--c-violet-710) 36%, transparent);
+    height: 1px;
+    flex: 1;
+  }
+
+  .storyteller-prose {
+    color: var(--c-neutral-960);
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(1rem, 1.3vw, 1.12rem);
+    line-height: 1.85;
+    margin: 0 auto;
+    max-width: 44rem;
+  }
+
+  .storyteller-prose p {
+    margin: 0 0 1.35rem;
+  }
+
+  .storyteller-empty-manuscript {
+    color: var(--c-violet-830);
+    margin: 3rem auto 0;
+    max-width: 36rem;
+    text-align: center;
+  }
+
+  .storyteller-empty-manuscript h3 {
+    color: var(--c-slate-980);
+    font-size: 1.5rem;
+    margin: 0.5rem 0;
+  }
+
+  .storyteller-controls {
+    align-self: start;
+    display: grid;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .storyteller-form label,
+  .storyteller-control-block,
+  .storyteller-chapter-controls {
+    color: var(--c-violet-830);
+    display: grid;
+    gap: 0.4rem;
+    font-size: 0.86rem;
+  }
+
+  .storyteller-form input,
+  .storyteller-form select,
+  .storyteller-form textarea {
+    background: color-mix(in srgb, var(--c-slate-130) 82%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-violet-660) 16%, transparent);
+    border-radius: 0.5rem;
+    color: var(--c-slate-970-2);
+    min-width: 0;
+    padding: 0.72rem 0.75rem;
+  }
+
+  .storyteller-form input:focus,
+  .storyteller-form select:focus,
+  .storyteller-form textarea:focus {
+    border-color: color-mix(in srgb, var(--c-sky-800) 68%, transparent);
+    box-shadow: 0 0 0 0.18rem color-mix(in srgb, var(--c-cyan-720) 15%, transparent);
+    outline: none;
+  }
+
+  .storyteller-form textarea {
+    resize: vertical;
+  }
+
+  .storyteller-chapter-controls {
+    align-items: center;
+    grid-template-columns: 1fr auto auto auto auto;
+  }
+
+  .storyteller-chapter-controls button {
+    padding: 0.55rem 0.7rem;
+  }
+
+  .storyteller-generate {
+    margin-top: 0.25rem;
+  }
+
+  .storyteller-output-card {
+    background: color-mix(in srgb, var(--c-slate-130) 64%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-violet-660) 15%, transparent);
+    border-radius: 0.5rem;
+    padding: 0.8rem;
+  }
+
+  .storyteller-output-card > div {
+    align-items: center;
+    display: flex;
+    gap: 0.7rem;
+    justify-content: space-between;
+  }
+
+  .storyteller-output-card p {
+    color: var(--c-indigo-900);
+    font-size: 0.86rem;
+    line-height: 1.5;
+  }
+
+  .storyteller-empty-small {
+    border: 1px dashed color-mix(in srgb, var(--c-slate-730) 24%, transparent);
+    border-radius: 0.5rem;
+    padding: 0.8rem;
+  }
+
+  .storyteller-action-bar {
+    display: grid;
+    gap: 0.65rem;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    padding: 0.65rem;
+  }
+
+  .storyteller-action-bar button {
+    display: grid;
+    gap: 0.25rem;
+    padding: 0.75rem;
+    text-align: left;
+  }
+
+  .storyteller-versions {
+    align-items: center;
+    display: grid;
+    gap: 0.6rem;
+    grid-template-columns: auto repeat(5, minmax(4.5rem, 1fr)) auto;
+    padding: 0.65rem;
+  }
+
+  .storyteller-versions button {
+    display: grid;
+    gap: 0.2rem;
+    min-height: 3rem;
+    padding: 0.5rem 0.65rem;
+    text-align: left;
+  }
+
+  .storyteller-versions button.active {
+    border-color: color-mix(in srgb, var(--c-sky-800) 48%, transparent);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--c-sky-800) 18%, transparent);
+  }
+
+  .storyteller-outline article {
+    background: color-mix(in srgb, var(--c-slate-130) 50%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-violet-660) 12%, transparent);
+    border-radius: 0.5rem;
+    padding: 0.55rem;
+  }
+
+  .storyteller-outline article.active {
+    border-color: color-mix(in srgb, var(--c-sky-800) 36%, transparent);
+  }
+
+  .storyteller-outline article > button {
+    background: transparent;
+    border-color: transparent;
+    display: grid;
+    gap: 0.2rem;
+    padding: 0.35rem;
+    text-align: left;
+    width: 100%;
+  }
+
+  .storyteller-outline ol {
+    list-style: none;
+    margin: 0;
+    padding: 0.25rem 0 0;
+  }
+
+  .storyteller-outline li {
+    border-radius: 0.45rem;
+    color: var(--c-indigo-900);
+    min-width: 0;
+    padding: 0.3rem;
+  }
+
+  .storyteller-outline li.active {
+    background: color-mix(in srgb, var(--c-violet-540) 20%, transparent);
+  }
+
+  .storyteller-outline li button {
+    align-items: start;
+    display: grid;
+    gap: 0.45rem;
+    grid-template-columns: 3.4rem minmax(0, 1fr);
+    padding: 0.45rem 0.5rem;
+    text-align: left;
+    width: 100%;
+  }
+
+  .storyteller-outline li button span,
+  .storyteller-outline li button strong {
+    min-width: 0;
+  }
+
+  .storyteller-outline li button strong {
+    color: var(--c-slate-970-2);
+    display: -webkit-box;
+    line-height: 1.25;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .storyteller-add-chapter {
+    padding: 0.7rem;
+  }
+
+  @media (max-width: 1400px) {
+    .storyteller-workspace {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .storyteller-library,
+    .storyteller-outline {
+      position: static;
+    }
+
+    .storyteller-compose-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (max-width: 900px) {
+    .storyteller-project-header,
+    .storyteller-action-bar,
+    .storyteller-versions {
+      grid-template-columns: 1fr;
+    }
+
+    .storyteller-project-stats,
+    .storyteller-project-actions {
+      flex-wrap: wrap;
+    }
+  }
+}
+
+/* Declarations that must win over every other layer. */
+@layer overrides {
+  .storyteller-project-actions button:last-child,
+  .storyteller-generate {
+    background: linear-gradient(135deg, var(--c-cyan-720), var(--c-violet-540));
+    border-color: color-mix(in srgb, var(--c-violet-810) 32%, transparent);
+  }
+}

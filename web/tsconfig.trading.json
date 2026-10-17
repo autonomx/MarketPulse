@@ -1,0 +1,18 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "composite": false,
+    "noEmit": true,
+    // Browser code: no Node globals, so timers are the DOM's (as in the image and avatar typechecks).
+    "types": ["vite/client"]
+  },
+  "include": [
+    "src/*.d.ts",
+    "src/features/trading/**/*.ts",
+    "src/features/trading/**/*.tsx"
+  ],
+  "exclude": [
+    "src/features/trading/**/*.test.ts",
+    "src/features/trading/**/*.test.tsx"
+  ]
+}

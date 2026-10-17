@@ -1,0 +1,73 @@
+@layer features {
+  .settings-text-scale-control {
+    align-items: center;
+    display: grid;
+    gap: 0.55rem;
+    grid-template-columns: auto minmax(8rem, 1fr) auto auto auto;
+    width: 100%;
+  }
+
+  .settings-text-scale-control > button {
+    align-items: center;
+    background: var(--omnix-control-bg);
+    border: 1px solid var(--omnix-border);
+    border-radius: 0.55rem;
+    color: var(--omnix-control-text);
+    cursor: pointer;
+    display: inline-flex;
+    font-weight: 800;
+    justify-content: center;
+    min-height: 2.35rem;
+    min-width: 2.7rem;
+    padding: 0 0.65rem;
+  }
+
+  .settings-text-scale-control > button:hover:not(:disabled),
+  .settings-text-scale-control > button:focus-visible {
+    border-color: var(--omnix-strong-border);
+    outline: none;
+  }
+
+  .settings-text-scale-control > button:disabled {
+    cursor: default;
+    opacity: 0.45;
+  }
+
+  .settings-text-scale-control > input[type='range'] {
+    accent-color: var(--omnix-purple);
+    cursor: pointer;
+    min-width: 8rem;
+    width: 100%;
+  }
+
+  .settings-text-scale-control > output {
+    color: var(--omnix-text);
+    font-variant-numeric: tabular-nums;
+    font-weight: 800;
+    min-width: 3.5rem;
+    text-align: center;
+  }
+
+  .settings-text-scale-control > .settings-text-scale-reset {
+    color: var(--omnix-muted);
+    font-weight: 700;
+    min-width: 4.25rem;
+  }
+
+  .settings-text-scale-help {
+    color: var(--omnix-muted);
+    font-size: 0.82rem;
+    margin: 0.65rem 0 0;
+  }
+
+  @media (max-width: 760px) {
+    .settings-text-scale-control {
+      grid-template-columns: auto minmax(5rem, 1fr) auto auto;
+    }
+
+    .settings-text-scale-control > .settings-text-scale-reset {
+      grid-column: 1 / -1;
+      justify-self: start;
+    }
+  }
+}

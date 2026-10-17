@@ -1,0 +1,12 @@
+@layer features {
+  .trading-compare-dialog{width:min(920px,100%);grid-template-rows:auto auto minmax(0,1fr) auto auto}
+  .trading-compare-heading{padding:14px 24px 9px;border-top:1px solid var(--c-slate-930);color:var(--c-slate-660);font-size:11px;text-transform:uppercase;letter-spacing:.07em}
+  .trading-compare-selected{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 24px;border-top:1px solid var(--c-slate-930);background:var(--c-slate-970-2);color:var(--c-slate-260-2)}
+  .trading-compare-selected div{display:grid;gap:3px}.trading-compare-selected span{color:var(--c-slate-630);font-size:12px}
+  .trading-compare-selected button{border:0;background:transparent;color:var(--c-blue-540);font-size:12px}
+  .trading-compare-placement{display:grid;gap:8px;padding:13px 24px;border-top:1px solid var(--c-slate-930);background:var(--c-slate-970-2);color:var(--c-slate-630);font-size:11px}
+  .trading-compare-placement>div{display:flex;flex-wrap:wrap;gap:8px}.trading-compare-placement button{border:1px solid var(--c-slate-870);border-radius:7px;background:var(--c-neutral-1000);color:var(--c-slate-240);padding:8px 12px;font-size:13px}.trading-compare-placement button:hover:not(:disabled){border-color:var(--c-blue-650);background:var(--c-slate-970-2)}.trading-compare-placement button:disabled{cursor:not-allowed;opacity:.45}
+  .trading-compare-dialog .trading-symbol-search-results-wrap{min-height:220px}
+  .trading-compare-dialog .trading-symbol-search-results li>button:disabled{cursor:not-allowed;opacity:.55}
+  @media(max-width:700px){.trading-compare-selected,.trading-compare-heading,.trading-compare-placement{padding-left:16px;padding-right:16px}.trading-compare-placement>div{display:grid;grid-template-columns:1fr}.trading-compare-placement button{width:100%}}
+}

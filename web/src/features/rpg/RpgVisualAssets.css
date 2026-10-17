@@ -1,0 +1,103 @@
+@layer features {
+  .rpg-hero-avatar-art {
+    border-color: color-mix(in srgb, var(--c-indigo-900) 38%, transparent);
+    color: transparent;
+    padding: 0;
+  }
+
+  .rpg-hero-avatar-art img {
+    display: block;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+    width: 100%;
+  }
+
+  .rpg-scene-art-has-image img,
+  .rpg-map-preview-has-image img {
+    display: block;
+    height: 100%;
+    inset: 0;
+    object-fit: cover;
+    object-position: center center;
+    position: absolute;
+    width: 100%;
+    z-index: 1;
+  }
+
+  .rpg-map-preview-has-image .rpg-map-controls,
+  .rpg-map-preview-has-image .rpg-map-pin {
+    position: absolute;
+    z-index: 2;
+  }
+
+  .rpg-live-visual-label {
+    align-items: center;
+    color: color-mix(in srgb, var(--c-slate-940) 90%, transparent);
+    display: flex;
+    font-size: 0.86rem;
+    font-weight: 700;
+    inset: 0;
+    justify-content: center;
+    letter-spacing: 0.04em;
+    padding: 1rem;
+    position: absolute;
+    text-align: center;
+    z-index: 1;
+  }
+
+  .rpg-turn-diagnostics {
+    border: 1px solid color-mix(in srgb, var(--c-indigo-900) 22%, transparent);
+    border-radius: 0.75rem;
+    margin: 0.75rem 0;
+    padding: 0.65rem 0.8rem;
+  }
+
+  .rpg-turn-diagnostics summary {
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .rpg-turn-diagnostics dl {
+    display: grid;
+    font-size: 0.78rem;
+    gap: 0.25rem 0.75rem;
+    grid-template-columns: minmax(9rem, auto) 1fr;
+    margin: 0.75rem 0;
+  }
+
+  .rpg-turn-diagnostics dt {
+    font-weight: 700;
+  }
+
+  .rpg-turn-diagnostics dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .rpg-turn-diagnostics code,
+  .rpg-turn-diagnostics pre {
+    display: block;
+    font-size: 0.72rem;
+    max-height: 12rem;
+    overflow: auto;
+    white-space: pre-wrap;
+  }
+}
+
+/* Declarations that must win over every other layer. */
+@layer overrides {
+  .rpg-hero-avatar-art {
+    background:
+      linear-gradient(color-mix(in srgb, var(--c-slate-130) 4%, transparent), color-mix(in srgb, var(--c-slate-130) 12%, transparent)),
+      color-mix(in srgb, var(--c-slate-130) 88%, transparent);
+  }
+
+  .rpg-scene-art-has-image,
+  .rpg-map-preview-has-image {
+    background: color-mix(in srgb, var(--c-slate-130) 78%, transparent);
+  }
+}

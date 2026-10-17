@@ -1,0 +1,71 @@
+"""VoiceMem-derived Omnix Memory v2 contract surface.
+
+Memory v2 is contract-first and the only curated memory authority (Memory v1 was
+retired by migration 0156).
+"""
+
+from .authority import (
+    AuthorityEpochState,
+    MemoryAuthorityError,
+    PostgresMemoryV2AuthorityStore,
+)
+from .contracts import (
+    SYSTEM_MEMORY_OWNER_ID,
+    AffectObservation,
+    ConsolidationDecisionSet,
+    ConsolidationReceipt,
+    CutoverReadiness,
+    DerivedMemoryRevision,
+    DerivedPolicyEnvelope,
+    Episode,
+    GraphAssertion,
+    GraphEntityRef,
+    GraphValue,
+    MemoryAuthorityEpoch,
+    MemoryGrant,
+    MemorySpaceKey,
+    MemoryWatermarks,
+    Observation,
+    ObservationDisposition,
+    ObservationProvenance,
+    RelationshipMetric,
+    RelationshipState,
+    RetrievalCandidate,
+    RetrievalQuery,
+    RetrievalResult,
+    RetrievalScore,
+    RetrievalSourceRevision,
+    VisibilityScope,
+)
+
+__all__ = [
+    "SYSTEM_MEMORY_OWNER_ID",
+    "AffectObservation",
+    "AuthorityEpochState",
+    "ConsolidationDecisionSet",
+    "ConsolidationReceipt",
+    "CutoverReadiness",
+    "DerivedMemoryRevision",
+    "DerivedPolicyEnvelope",
+    "Episode",
+    "GraphAssertion",
+    "GraphEntityRef",
+    "GraphValue",
+    "MemoryAuthorityEpoch",
+    "MemoryAuthorityError",
+    "MemoryGrant",
+    "MemorySpaceKey",
+    "MemoryWatermarks",
+    "Observation",
+    "ObservationDisposition",
+    "ObservationProvenance",
+    "PostgresMemoryV2AuthorityStore",
+    "RelationshipMetric",
+    "RelationshipState",
+    "RetrievalCandidate",
+    "RetrievalQuery",
+    "RetrievalResult",
+    "RetrievalScore",
+    "RetrievalSourceRevision",
+    "VisibilityScope",
+]

@@ -1,0 +1,11 @@
+@layer features {
+  .trading-chart-events{position:absolute;z-index:5;inset:0;pointer-events:none}
+  .trading-chart-event{position:absolute;display:grid;place-items:center;width:16px;height:16px;padding:0;border:1px solid transparent;border-radius:50%;color:var(--c-neutral-1000);font-size:9px;font-weight:700;line-height:1;cursor:pointer;pointer-events:auto}
+  .trading-chart-event.is-earnings{background:var(--c-amber-700)}
+  .trading-chart-event.is-dividend{background:var(--c-green-560)}
+  .trading-chart-event.is-split{background:var(--c-violet-570)}
+  .trading-chart-event.is-estimated{border:1px dashed currentColor;background:transparent;color:var(--c-amber-700)}
+  .trading-chart-event:focus-visible{outline:2px solid var(--c-blue-630);outline-offset:1px}
+  .trading-chart-event-card{position:absolute;z-index:5;display:grid;gap:3px;max-width:280px;padding:7px 9px;transform:translate(-50%,-100%);border:1px solid color-mix(in srgb, var(--c-blue-660) 18%, transparent);border-radius:5px;background:var(--c-indigo-190);box-shadow:0 8px 24px color-mix(in srgb, var(--c-neutral-0) 28%, transparent);color:var(--c-slate-910);font-size:10px;pointer-events:none}
+  .trading-chart-event-card small{color:var(--c-slate-630);font-size:9px}
+}

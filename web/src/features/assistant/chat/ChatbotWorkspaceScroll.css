@@ -1,0 +1,20 @@
+@layer features {
+  /*
+   * Keep chat message geometry stable while the user scrolls. Long transcripts are
+   * virtualized (design/VirtualList.tsx); messages render at their real height, so
+   * scrollHeight does not change mid-gesture.
+   */
+  .assistant-chat-messages {
+    scroll-behavior: auto;
+  }
+
+  /*
+   * Below 1500px the chat layout grows with its content; the transcript still
+   * scrolls inside its panel so long sessions do not stretch the page.
+   */
+  @media (max-width: 1500px) {
+    .assistant-chat-page:not(.assistant-chat-page-fullscreen) .assistant-chat-messages {
+      max-height: max(24rem, calc(100vh - 12rem));
+    }
+  }
+}

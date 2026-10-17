@@ -1,0 +1,344 @@
+@layer features {
+  /*
+   * Light-mode contract for Trading analysis tools.
+   *
+   * Scanner, Backtest/Replay, Strategies and AI Research are mounted inside the
+   * shared trading-tool-drawer. Keep this file imported after every tool-specific
+   * stylesheet so a component cannot accidentally re-introduce a dark surface.
+   */
+
+  /* Scanner */
+
+  /* Generic replay/backtest tool */
+
+  /* AI Research */
+
+  /* Strategy workspace shell and reusable cards */
+
+  /* Keep semantic state colors legible on the light surfaces. */
+}
+
+/* Declarations that must win over every other layer. */
+@layer overrides {
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-tool-drawer,
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-tool-drawer.is-fullscreen,
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-tool-drawer.is-fullscreen > header,
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-tool-drawer > div {
+    border-color: var(--trading-light-line-soft);
+    background: var(--trading-light-surface);
+    color: var(--trading-light-text);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-tool-drawer.is-fullscreen {
+    box-shadow: 0 18px 55px color-mix(in srgb, var(--c-blue-390) 18%, transparent);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-tool-drawer > header {
+    border-color: var(--trading-light-line-soft);
+    background: var(--trading-light-surface-muted);
+    color: var(--trading-light-text);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-tool-drawer > header strong {
+    color: var(--trading-light-text);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-tool-drawer > header .trading-tool-drawer-actions button {
+    border-color: var(--trading-light-line);
+    background: var(--trading-light-surface);
+    color: var(--trading-light-muted);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-tool-drawer > header .trading-tool-drawer-actions button:hover {
+    border-color: color-mix(in srgb, var(--c-blue-630) 62%, transparent);
+    background: var(--c-slate-970-2);
+    color: var(--c-blue-510);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-scanner-panel,
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-scanner-universe,
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-scanner-definitions li,
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-scanner-runs li,
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-scanner-results th,
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-scanner-results td {
+    border-color: var(--trading-light-line-soft);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-scanner-panel > p,
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-scanner-form label,
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-scanner-universe legend,
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-scanner-definitions small,
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-scanner-runs small,
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-scanner-results th {
+    color: var(--trading-light-muted);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-scanner-universe label,
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-scanner-definitions li,
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-scanner-runs li,
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-scanner-results td {
+    color: var(--trading-light-text);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-replay-panel,
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-replay-bar,
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-backtest-summary div {
+    border-color: var(--trading-light-line-soft);
+    background: var(--trading-light-surface);
+    color: var(--trading-light-text);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-replay-panel > p,
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-replay-panel > label,
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-backtest-form label,
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-replay-controls label,
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-replay-bar time,
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-replay-bar span,
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-backtest-summary dt {
+    color: var(--trading-light-muted);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-backtest-summary dd {
+    color: var(--trading-light-text);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-research-panel,
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-research-result,
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-research-result dl div {
+    border-color: var(--trading-light-line-soft);
+    background: var(--trading-light-surface);
+    color: var(--trading-light-text);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-research-panel > header strong,
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-research-result h4 {
+    color: var(--trading-light-text);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-research-panel > header small,
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-research-panel > p,
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-research-form label,
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-research-result dt {
+    color: var(--trading-light-muted);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-research-result ul,
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-research-result dd {
+    color: var(--c-slate-390);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-research-result footer {
+    color: var(--c-yellow-530);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-strategies-panel {
+    color: var(--trading-light-text);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-strategies-panel > aside,
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-strategy-overview,
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-strategy-pipeline,
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-strategy-config-section,
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-research-workbench,
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-strategy-monitoring > section,
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-provider-card,
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-range-backtest {
+    border-color: var(--trading-light-line);
+    background: var(--trading-light-surface);
+    color: var(--trading-light-text);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-strategies-panel > aside > button,
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-config-block,
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-strategy-phase-grid article,
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-strategy-grid .toggle-field,
+  :root[data-omnix-appearance='light'] .trading-workspace .quality-score-explainer span,
+  :root[data-omnix-appearance='light'] .trading-workspace .candidate-toolbar,
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-event-list details,
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-protection-list article,
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-provider-status-grid > div,
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-backtest-summary > article,
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-backtest-trades article {
+    border-color: var(--trading-light-line-soft);
+    background: var(--trading-light-surface-muted);
+    color: var(--trading-light-text);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-strategies-panel > aside > button:hover {
+    border-color: color-mix(in srgb, var(--c-blue-630) 42%, transparent);
+    background: var(--c-slate-970-2);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-strategies-panel > aside > button.active {
+    border-color: color-mix(in srgb, var(--c-blue-630) 55%, transparent);
+    background: color-mix(in srgb, var(--c-blue-630) 9%, transparent);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-mode-switch {
+    border-color: var(--trading-light-line);
+    background: var(--trading-light-surface-muted);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-mode-switch button {
+    background: transparent;
+    color: var(--trading-light-muted);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-mode-switch button.active {
+    background: color-mix(in srgb, var(--c-blue-630) 10%, transparent);
+    color: var(--c-blue-510);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-strategy-notice,
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-backtest-causality-note {
+    border-color: color-mix(in srgb, var(--c-blue-630) 24%, transparent);
+    background: var(--c-slate-970-2);
+    color: var(--c-blue-460);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-strategy-safety {
+    border-color: color-mix(in srgb, var(--c-teal-600) 24%, transparent);
+    background: var(--c-slate-970);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-strategy-safety strong {
+    color: var(--c-teal-520);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace .llm-research-bar {
+    border-color: color-mix(in srgb, var(--c-indigo-500) 24%, transparent);
+    background: var(--c-slate-970-2);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace .llm-research-bar strong {
+    color: var(--c-violet-470);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace .candidate-table-wrap,
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-backtest-days-wrap {
+    border-color: var(--trading-light-line);
+    background: var(--trading-light-surface);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-candidate-table th,
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-backtest-days th {
+    border-color: var(--trading-light-line);
+    background: var(--c-neutral-960);
+    color: var(--c-blue-490);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-candidate-table td,
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-backtest-days td {
+    border-color: var(--trading-light-line-soft);
+    color: var(--c-slate-390);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-candidate-table tr[data-tone='ready'] {
+    background: var(--c-slate-970);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-candidate-table tr[data-tone='rejected'] {
+    background: var(--c-slate-980);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace .universe-json-editor textarea,
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-event-list pre {
+    border-color: var(--trading-light-line);
+    background: var(--c-slate-970-2);
+    color: var(--c-blue-390);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-strategies-panel small,
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-strategies-panel > aside > button span,
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-strategies-empty p,
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-strategy-phase-grid article p,
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-strategy-config-section > summary span,
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-strategy-grid label,
+  :root[data-omnix-appearance='light'] .trading-workspace .quality-score-explainer span,
+  :root[data-omnix-appearance='light'] .trading-workspace .workbench-empty,
+  :root[data-omnix-appearance='light'] .trading-workspace .universe-json-editor summary,
+  :root[data-omnix-appearance='light'] .trading-workspace .universe-json-editor p,
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-event-list summary span,
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-event-list summary time,
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-provider-card > header small,
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-range-backtest > header small,
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-provider-status-grid small,
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-provider-status-grid span,
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-backtest-summary small,
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-backtest-summary span,
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-provider-credential-grid label,
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-backtest-controls label,
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-provider-message,
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-backtest-notice,
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-provider-security-note,
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-backtest-days td small,
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-backtest-trades > summary,
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-backtest-trades article small {
+    color: var(--trading-light-muted);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-provider-status-grid strong,
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-backtest-summary strong,
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-strategy-editor-header strong,
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-strategy-phase-grid article header strong,
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-config-block > header strong,
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-event-list summary strong,
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-protection-list article strong {
+    color: var(--trading-light-text);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-strategy-phase-grid article header span,
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-candidate-table .score {
+    background: color-mix(in srgb, var(--c-slate-550) 10%, transparent);
+    color: var(--c-blue-490);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-strategy-phase-grid article[data-tone='complete'] header span,
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-candidate-table .score.pass {
+    background: var(--c-slate-970);
+    color: var(--c-teal-520);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-strategy-phase-grid article[data-tone='active'] header span {
+    background: var(--c-neutral-960);
+    color: var(--c-blue-510);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace .trading-strategy-phase-grid article[data-tone='attention'] header span {
+    background: var(--c-slate-980);
+    color: var(--c-yellow-530);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-provider-card > header > span,
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-range-backtest > header > span {
+    background: var(--c-slate-980);
+    color: var(--c-yellow-530);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-provider-card > header > span[data-ready='true'] {
+    background: var(--c-slate-970);
+    color: var(--c-teal-520);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-backtest-causality-note strong,
+  :root[data-omnix-appearance='light'] .trading-workspace .quality-score-explainer b {
+    color: var(--c-blue-510);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-candidate-table .pass,
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-backtest-days tr[data-status='backtested'] strong,
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-backtest-trades article b {
+    color: var(--c-teal-520);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-candidate-table .warn,
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-backtest-days tr[data-status='missing_universe'] strong,
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-backtest-days tr[data-status='data_unavailable'] strong {
+    color: var(--c-yellow-530);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-candidate-table .fail,
+  :root[data-omnix-appearance='light'] .trading-workspace .strategy-backtest-days tr[data-status='error'] strong {
+    color: var(--c-red-560);
+  }
+}

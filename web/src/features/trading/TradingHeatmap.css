@@ -1,0 +1,13 @@
+@layer features {
+  .trading-heatmap{display:flex;flex-direction:column;gap:8px;padding:8px 10px;min-height:0;height:100%;font-size:12px}
+  .trading-heatmap header{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+  .trading-heatmap header label{display:flex;gap:6px;align-items:center}
+  .trading-heatmap [role='tab'][aria-selected='true']{font-weight:700;box-shadow:inset 0 -2px 0 currentColor}
+  .trading-heatmap-note{color:var(--c-slate-630);font-size:11px}
+  .trading-heatmap-map{width:100%;flex:1;min-height:240px}
+  .trading-heatmap-group{fill:none;stroke:var(--c-neutral-1000);stroke-width:2}
+  .trading-heatmap-group-label{fill:currentColor;font-size:10px;font-weight:700}
+  .trading-heatmap-tile{cursor:pointer}
+  .trading-heatmap-tile text{fill:var(--c-neutral-1000);font-weight:600;pointer-events:none}
+  .trading-heatmap-tile:is(:hover,:focus) rect{stroke:var(--c-neutral-1000);stroke-width:1.5}
+}

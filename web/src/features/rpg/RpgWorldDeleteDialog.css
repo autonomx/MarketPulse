@@ -1,0 +1,129 @@
+@layer features {
+  .rpg-danger-button:hover:not(:disabled) {
+    box-shadow: 0 12px 30px color-mix(in srgb, var(--c-orange-400) 35%, transparent);
+  }
+
+  .rpg-danger-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.48;
+  }
+
+  .rpg-world-delete-modal form {
+    width: min(650px, 100%);
+  }
+
+  .rpg-world-delete-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .rpg-world-delete-heading h3,
+  .rpg-world-delete-heading p {
+    margin: 0;
+  }
+
+  .rpg-world-delete-heading > span {
+    display: grid;
+    width: 2.5rem;
+    height: 2.5rem;
+    place-items: center;
+    border: 1px solid color-mix(in srgb, var(--c-red-720) 55%, transparent);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--c-orange-400) 35%, transparent);
+    color: var(--c-red-890);
+    font-size: 1.35rem;
+    font-weight: 900;
+  }
+
+  .rpg-world-delete-blocked,
+  .rpg-world-delete-preview {
+    padding: 0.9rem;
+    border-radius: 14px;
+  }
+
+  .rpg-world-delete-blocked {
+    border: 1px solid color-mix(in srgb, var(--c-yellow-840) 35%, transparent);
+    background: color-mix(in srgb, var(--c-amber-410) 18%, transparent);
+  }
+
+  .rpg-world-delete-preview {
+    border: 1px solid color-mix(in srgb, var(--c-red-720) 28%, transparent);
+    background: color-mix(in srgb, var(--c-orange-260) 22%, transparent);
+  }
+
+  .rpg-world-delete-blocked h4,
+  .rpg-world-delete-preview h4,
+  .rpg-world-delete-blocked p,
+  .rpg-world-delete-preview p {
+    margin: 0;
+  }
+
+  .rpg-world-delete-blocked ul {
+    display: grid;
+    gap: 0.55rem;
+    margin: 0.75rem 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .rpg-world-delete-blocked li {
+    display: grid;
+    gap: 0.2rem;
+    padding: 0.65rem;
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--c-indigo-210) 48%, transparent);
+  }
+
+  .rpg-world-delete-blocked li span,
+  .rpg-world-delete-preview small {
+    color: var(--omnix-muted, var(--c-slate-730));
+  }
+
+  .rpg-world-delete-preview dl {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.55rem;
+    margin: 0.75rem 0;
+  }
+
+  .rpg-world-delete-preview dl div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.55rem 0.65rem;
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--c-indigo-210) 52%, transparent);
+  }
+
+  .rpg-world-delete-preview dt {
+    color: var(--c-slate-870);
+  }
+
+  .rpg-world-delete-preview dd {
+    margin: 0;
+    color: var(--c-red-890);
+    font-weight: 800;
+  }
+
+  @media (max-width: 560px) {
+    .rpg-world-delete-preview dl {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+/* Declarations that must win over every other layer. */
+@layer overrides {
+  .rpg-danger-button {
+    border-color: color-mix(in srgb, var(--c-red-720) 60%, transparent);
+    background: linear-gradient(135deg, var(--c-orange-400), var(--c-red-500));
+    color: var(--c-slate-980);
+  }
+
+  .rpg-danger-button:hover:not(:disabled) {
+    border-color: color-mix(in srgb, var(--c-red-890) 90%, transparent);
+  }
+}

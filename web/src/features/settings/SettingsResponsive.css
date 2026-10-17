@@ -1,0 +1,8 @@
+@import './SettingsAccessibility.css';
+
+@layer features {
+  @media(max-width:1180px){.settings-control-center{grid-template-columns:220px minmax(0,1fr)}.settings-status-rail{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;border-left:0;border-top:1px solid var(--omnix-border)}.settings-status-card{margin:0}}
+  @media(max-width:900px){.settings-control-center{grid-template-columns:190px minmax(0,1fr)}.settings-control-content{padding:20px}.settings-status-rail{grid-template-columns:1fr 1fr}.settings-control-header{align-items:stretch}.settings-save-actions{flex-wrap:wrap;justify-content:flex-end}}
+  @media(max-width:780px){.settings-control-center{display:block}.settings-category-rail{border-right:0;border-bottom:1px solid var(--omnix-border)}.settings-category-rail nav{display:flex;overflow:auto;scroll-snap-type:x proximity}.settings-category-rail nav button{min-width:190px;scroll-snap-align:start}.settings-control-content{padding:20px 16px}.settings-control-header{display:block}.settings-save-actions{padding-top:14px;justify-content:flex-start}.settings-status-rail{display:block}.settings-status-card{margin-bottom:12px}}
+  @media(max-width:520px){.settings-control-content{padding:16px 12px}.settings-save-actions button{flex:1}.settings-section-header{display:block}.settings-section-actions{margin-top:10px}.settings-form-grid{grid-template-columns:1fr}}
+}

@@ -1,0 +1,275 @@
+@layer features {
+  .prospective-economic-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px;
+    overflow: auto;
+    min-width: 0;
+  }
+
+  .prospective-economic-hero,
+  .prospective-economic-events > header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .prospective-economic-hero > div,
+  .prospective-economic-step header > div {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+  }
+
+  .prospective-economic-hero small,
+  .prospective-economic-step small,
+  .prospective-economic-panel p,
+  .prospective-economic-fingerprints small,
+  .prospective-economic-events small {
+    color: var(--omnix-text-muted, var(--c-blue-710));
+  }
+
+  .prospective-economic-hero .monitor-live,
+  .prospective-economic-hero .monitor-off,
+  .prospective-economic-step-state {
+    border: 1px solid var(--omnix-border, var(--c-blue-390));
+    border-radius: 999px;
+    padding: 3px 7px;
+    font-size: 10px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .prospective-economic-hero .monitor-live,
+  .prospective-economic-step.done .prospective-economic-step-state {
+    color: var(--omnix-success, var(--c-green-720));
+  }
+
+  .prospective-economic-hero .monitor-off,
+  .prospective-economic-step.failed .prospective-economic-step-state {
+    color: var(--omnix-danger, var(--c-red-640));
+  }
+
+  .prospective-economic-strategy-select,
+  .prospective-economic-form-grid label,
+  .prospective-economic-action {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .prospective-economic-strategy-select span,
+  .prospective-economic-form-grid span {
+    font-size: 11px;
+    color: var(--omnix-text-muted, var(--c-blue-710));
+  }
+
+  .prospective-economic-panel select,
+  .prospective-economic-panel input,
+  .prospective-economic-panel textarea,
+  .prospective-economic-panel button {
+    font: inherit;
+  }
+
+  .prospective-economic-panel select,
+  .prospective-economic-panel input,
+  .prospective-economic-panel textarea {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid var(--omnix-border, var(--c-blue-390));
+    border-radius: 7px;
+    background: var(--omnix-surface-raised, var(--c-indigo-210));
+    color: inherit;
+    padding: 7px 8px;
+  }
+
+  .prospective-economic-panel textarea {
+    min-height: 72px;
+    resize: vertical;
+  }
+
+  .prospective-economic-panel button {
+    border: 1px solid var(--omnix-border-strong, var(--c-blue-440));
+    border-radius: 7px;
+    background: var(--omnix-accent, var(--c-blue-540));
+    color: var(--c-neutral-1000);
+    padding: 7px 10px;
+    cursor: pointer;
+    font-weight: 650;
+  }
+
+  .prospective-economic-panel button:disabled {
+    opacity: .45;
+    cursor: not-allowed;
+  }
+
+  .prospective-economic-notice {
+    border: 1px solid color-mix(in srgb, var(--omnix-danger, var(--c-red-640)) 50%, transparent);
+    background: color-mix(in srgb, var(--omnix-danger, var(--c-red-640)) 8%, transparent);
+    border-radius: 7px;
+    padding: 8px;
+    font-size: 12px;
+  }
+
+  .prospective-economic-empty {
+    padding: 20px 8px;
+    text-align: center;
+  }
+
+  .prospective-economic-summary,
+  .prospective-economic-inline-metrics {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px;
+  }
+
+  .prospective-economic-metric {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    gap: 2px;
+    padding: 8px;
+    border: 1px solid var(--omnix-border, var(--c-blue-390));
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--omnix-surface-raised, var(--c-indigo-210)) 86%, transparent);
+  }
+
+  .prospective-economic-metric span,
+  .prospective-economic-metric small {
+    font-size: 10px;
+    color: var(--omnix-text-muted, var(--c-blue-710));
+  }
+
+  .prospective-economic-metric strong {
+    font-size: 15px;
+  }
+
+  .prospective-economic-step {
+    border: 1px solid var(--omnix-border, var(--c-blue-390));
+    border-radius: 9px;
+    overflow: hidden;
+  }
+
+  .prospective-economic-step.done {
+    border-color: color-mix(in srgb, var(--omnix-success, var(--c-green-720)) 42%, var(--omnix-border, var(--c-blue-390)));
+  }
+
+  .prospective-economic-step.failed {
+    border-color: color-mix(in srgb, var(--omnix-danger, var(--c-red-640)) 48%, var(--omnix-border, var(--c-blue-390)));
+  }
+
+  .prospective-economic-step > header {
+    display: grid;
+    grid-template-columns: 25px minmax(0, 1fr) auto;
+    gap: 8px;
+    align-items: center;
+    padding: 9px;
+    background: color-mix(in srgb, var(--omnix-surface-raised, var(--c-indigo-210)) 70%, transparent);
+  }
+
+  .prospective-economic-step-number {
+    width: 23px;
+    height: 23px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--omnix-border-strong, var(--c-blue-440));
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .prospective-economic-step.done .prospective-economic-step-number {
+    border-color: var(--omnix-success, var(--c-green-720));
+  }
+
+  .prospective-economic-step.failed .prospective-economic-step-number {
+    border-color: var(--omnix-danger, var(--c-red-640));
+  }
+
+  .prospective-economic-step-body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 9px;
+  }
+
+  .prospective-economic-progress {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .prospective-economic-progress > div {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 11px;
+  }
+
+  .prospective-economic-progress progress {
+    width: 100%;
+    height: 5px;
+    accent-color: var(--omnix-accent, var(--c-blue-540));
+  }
+
+  .prospective-economic-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px;
+  }
+
+  .prospective-economic-form-grid .wide {
+    grid-column: 1 / -1;
+  }
+
+  .prospective-economic-fingerprints,
+  .prospective-economic-events {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    border-top: 1px solid var(--omnix-border, var(--c-blue-390));
+    padding-top: 10px;
+  }
+
+  .prospective-economic-fingerprints code {
+    display: inline-block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: bottom;
+  }
+
+  .prospective-economic-events article {
+    border: 1px solid var(--omnix-border, var(--c-blue-390));
+    border-radius: 7px;
+    padding: 7px;
+  }
+
+  .prospective-economic-events article > div {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .prospective-economic-events article span {
+    font-size: 10px;
+    color: var(--omnix-text-muted, var(--c-blue-710));
+    text-transform: uppercase;
+    text-align: right;
+  }
+
+  @media (max-width: 560px) {
+    .prospective-economic-summary,
+    .prospective-economic-form-grid,
+    .prospective-economic-inline-metrics {
+      grid-template-columns: 1fr;
+    }
+
+    .prospective-economic-form-grid .wide {
+      grid-column: auto;
+    }
+  }
+}

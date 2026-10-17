@@ -1,0 +1,57 @@
+@layer features {
+  .trading-chart-alert-editor-positioner > .trading-chart-alert-editor,
+  .trading-alert-panel-editor > .trading-chart-alert-editor {
+    opacity: 1;
+  }
+
+  .trading-chart-alert-editor .trading-alert-condition-row select,
+  .trading-chart-alert-editor .trading-alert-condition-row input,
+  .trading-chart-alert-editor .trading-alert-value-row input,
+  .trading-chart-alert-editor .trading-alert-dialog-settings input,
+  .trading-chart-alert-editor .trading-alert-dialog-settings select {
+    opacity: 1;
+  }
+}
+
+/* Declarations that must win over every other layer. */
+@layer overrides {
+  .trading-chart-alert-editor-positioner > .trading-chart-alert-editor,
+  .trading-alert-panel-editor > .trading-chart-alert-editor {
+    background: var(--c-slate-170-2);
+  }
+
+  .trading-chart-alert-editor > header,
+  .trading-alert-dialog-body,
+  .trading-chart-alert-editor-actions {
+    background: var(--c-slate-170-2);
+  }
+
+  .trading-chart-alert-editor .trading-alert-condition-row select,
+  .trading-chart-alert-editor .trading-alert-condition-row input,
+  .trading-chart-alert-editor .trading-alert-value-row input,
+  .trading-chart-alert-editor .trading-alert-dialog-settings input,
+  .trading-chart-alert-editor .trading-alert-dialog-settings select {
+    background: var(--c-slate-170-2);
+    border: 1px solid color-mix(in srgb, var(--c-blue-710) 24%, transparent);
+    color: var(--c-slate-930);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-chart-alert-editor-positioner > .trading-chart-alert-editor,
+  :root[data-omnix-appearance='light'] .trading-alert-panel-editor > .trading-chart-alert-editor,
+  :root[data-omnix-appearance='light'] .trading-chart-alert-editor > header,
+  :root[data-omnix-appearance='light'] .trading-alert-dialog-body,
+  :root[data-omnix-appearance='light'] .trading-chart-alert-editor-actions {
+    background: var(--trading-light-surface);
+    color: var(--trading-light-text);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-chart-alert-editor .trading-alert-condition-row select,
+  :root[data-omnix-appearance='light'] .trading-chart-alert-editor .trading-alert-condition-row input,
+  :root[data-omnix-appearance='light'] .trading-chart-alert-editor .trading-alert-value-row input,
+  :root[data-omnix-appearance='light'] .trading-chart-alert-editor .trading-alert-dialog-settings input,
+  :root[data-omnix-appearance='light'] .trading-chart-alert-editor .trading-alert-dialog-settings select {
+    background: var(--trading-light-surface-muted);
+    border-color: var(--trading-light-line);
+    color: var(--trading-light-text);
+  }
+}

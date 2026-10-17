@@ -1,0 +1,6 @@
+//@version=5
+indicator("Multi-timeframe EMA", overlay=true)
+tf = input.timeframe("D", "Timeframe")
+len = input.int(50, "Length")
+htfEma = request.security(syminfo.tickerid, tf, ta.ema(close, len))
+plot(htfEma, "HTF EMA", color=color.purple, linewidth=2)

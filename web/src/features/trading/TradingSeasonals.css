@@ -1,0 +1,22 @@
+@layer features {
+  .trading-seasonals{display:grid;gap:8px;padding:8px 10px;font-size:12px}
+  .trading-seasonals header{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+  .trading-seasonals header label{display:flex;gap:6px;align-items:center}
+  .trading-seasonals-chart{width:100%;height:220px}
+  .trading-seasonals-chart path{fill:none;stroke-width:1.2;vector-effect:non-scaling-stroke;opacity:.75}
+  .trading-seasonals-chart path.is-current{stroke-width:2.5;opacity:1}
+  .trading-seasonals-chart path.is-average{stroke:currentColor;stroke-dasharray:6 4;stroke-width:1.5;opacity:.7}
+  .trading-seasonals-chart line{stroke:currentColor;vector-effect:non-scaling-stroke}
+  .trading-seasonals-chart .is-grid{opacity:.08}
+  .trading-seasonals-chart .is-zero{opacity:.3}
+  .trading-seasonals-axis{display:grid;grid-template-columns:repeat(12,1fr);color:var(--c-slate-630);font-size:10px}
+  .trading-seasonals-legend{display:flex;flex-wrap:wrap;gap:4px 12px;margin:0;padding:0;list-style:none;font-size:11px}
+  .trading-seasonals-legend i{display:inline-block;width:10px;height:3px;margin-right:4px;vertical-align:middle}
+  .trading-seasonals-table{overflow:auto}
+  .trading-seasonals-table table{width:100%;border-collapse:collapse;font-size:11px}
+  .trading-seasonals-table :is(th,td){padding:3px 5px;text-align:right;white-space:nowrap}
+  .trading-seasonals-table th[scope='row']{text-align:left}
+  .trading-seasonals-table .is-up{color:var(--c-teal-600)}
+  .trading-seasonals-table .is-down{color:var(--c-red-640)}
+  .trading-seasonals-table .is-summary{font-weight:600;border-top:1px solid var(--c-neutral-910)}
+}

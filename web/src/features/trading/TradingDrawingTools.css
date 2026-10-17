@@ -1,0 +1,49 @@
+@layer features {
+  /* TVP-3.8: behaviour toggles at the bottom of the toolbar, the favourites toolbar and the settings sections. */
+  .trading-drawing-tool-toggles{display:flex;flex-direction:column;gap:2px;margin-top:auto;padding-top:6px;border-top:1px solid color-mix(in srgb, var(--c-slate-680) 25%, transparent)}
+  .trading-drawing-tool-toggles button{display:grid;place-items:center;width:34px;height:30px;border-color:transparent;background:transparent;padding:0;color:var(--c-slate-680)}
+  .trading-drawing-tool-toggles button.active{color:var(--c-blue-630)}
+  .trading-drawing-favorites{position:absolute;top:8px;left:calc(100% + 8px);z-index:20;display:flex;gap:2px;padding:3px;border:1px solid color-mix(in srgb, var(--c-slate-680) 25%, transparent);border-radius:6px;background:color-mix(in srgb, var(--c-indigo-190) 98%, transparent);box-shadow:0 4px 14px color-mix(in srgb, var(--c-neutral-0) 35%, transparent);color:var(--c-slate-910)}
+  .trading-drawing-favorites button{display:grid;place-items:center;min-width:28px;height:28px;border-color:transparent;background:transparent;padding:0;color:var(--c-slate-680)}
+  .trading-drawing-favorites button.active{color:var(--c-blue-630)}
+  .trading-drawing-visibility,.trading-drawing-templates{display:grid;gap:4px;margin:6px 0;padding:6px;border:1px solid color-mix(in srgb, var(--c-slate-680) 25%, transparent);border-radius:6px}
+  .trading-drawing-visibility-row{display:flex;align-items:center;justify-content:space-between;gap:6px}
+  .trading-drawing-visibility-range{display:flex;align-items:center;gap:3px}
+  .trading-drawing-visibility-range input{width:52px}
+  .trading-drawing-visibility-actions{display:flex;gap:4px}
+  .trading-drawing-templates ul{margin:0;padding:0;list-style:none;display:grid;gap:2px}
+  .trading-drawing-tools{position:relative;z-index:20;gap:2px;overflow:visible}
+  .trading-drawing-tool-group{position:relative;flex:0 0 auto}
+  .trading-drawing-tool-group>button{display:grid;place-items:center;width:34px;height:34px;border-color:transparent;background:transparent;padding:0;color:var(--c-slate-680);font-size:17px;line-height:1}
+  .trading-drawing-tool-group>button:hover,.trading-drawing-tool-group>button[aria-expanded=true]{border-color:color-mix(in srgb, var(--c-blue-630) 55%, transparent);background:color-mix(in srgb, var(--c-blue-630) 14%, transparent);color:var(--c-slate-950)}
+  .trading-drawing-tool-group>button.active{border-color:var(--c-cyan-720);background:color-mix(in srgb, var(--c-cyan-720) 18%, transparent);color:var(--c-sky-800)}
+  .trading-drawing-tool-menu{position:fixed;top:0;left:0;z-index:1000;width:min(310px,calc(100vw - 72px));max-height:calc(100vh - 16px);overflow:auto;padding:8px;border:1px solid color-mix(in srgb, var(--c-blue-660) 26%, transparent);border-radius:8px;background:color-mix(in srgb, var(--c-indigo-190) 98%, transparent);box-shadow:0 16px 40px color-mix(in srgb, var(--c-neutral-0) 45%, transparent);color:var(--c-slate-910)}
+  .trading-drawing-tool-menu header{padding:3px 8px 8px;border-bottom:1px solid color-mix(in srgb, var(--c-blue-660) 15%, transparent);color:var(--c-slate-680);font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+  .trading-drawing-tool-row{display:flex;align-items:center;min-height:38px;border-bottom:1px solid color-mix(in srgb, var(--c-blue-660) 8%, transparent)}
+  .trading-drawing-tool-row:last-child{border-bottom:0}
+  .trading-drawing-tool-row.selected{background:color-mix(in srgb, var(--c-blue-630) 14%, transparent)}
+  .trading-drawing-tool-item{grid-template-columns:28px minmax(0,1fr) auto auto;align-items:center;flex:1;gap:8px;text-align:left}
+  .trading-drawing-tool-item:disabled{cursor:not-allowed;opacity:.42}
+  .trading-drawing-tool-glyph{display:grid;place-items:center;color:var(--c-slate-870);font-size:18px;line-height:1}
+  .trading-drawing-tool-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .trading-drawing-tool-shortcut{color:var(--c-slate-630);font-size:9px;white-space:nowrap}
+  .trading-drawing-tool-soon{color:var(--c-slate-600);font-size:8px;text-transform:uppercase;white-space:nowrap}
+  .trading-drawing-tool-row .trading-drawing-tool-favorite{place-items:center;flex:0 0 24px;line-height:1}
+  .trading-drawing-tool-cursor-control{display:flex;align-items:center;width:34px;height:34px}
+  .trading-drawing-tool-cursor-control>button{display:grid;place-items:center;height:34px;border-color:transparent;background:transparent;padding:0;color:var(--c-slate-680);line-height:1}
+  .trading-drawing-tool-cursor-control>button:first-child{width:34px;font-size:17px}
+  .trading-drawing-tool-cursor-control>button:first-child:hover,.trading-drawing-tool-cursor-control>button:first-child.active{border-color:var(--c-cyan-720);background:color-mix(in srgb, var(--c-cyan-720) 18%, transparent);color:var(--c-sky-800)}
+  .trading-drawing-tool-cursor-control>.trading-drawing-tool-cursor-menu-toggle{display:none;width:14px;border-left:1px solid color-mix(in srgb, var(--c-blue-660) 14%, transparent);font-size:10px}
+  .trading-drawing-tool-cursor-control>.trading-drawing-tool-cursor-menu-toggle:hover,.trading-drawing-tool-cursor-control>.trading-drawing-tool-cursor-menu-toggle[aria-expanded=true]{border-color:color-mix(in srgb, var(--c-blue-630) 55%, transparent);background:color-mix(in srgb, var(--c-blue-630) 14%, transparent);color:var(--c-slate-950)}
+}
+
+/* Declarations that must win over every other layer. */
+@layer overrides {
+  .trading-drawing-tool-item{display:grid;min-width:0;width:auto;height:36px;border:0;border-radius:5px;background:transparent;padding:0 6px;color:var(--c-slate-910);font-size:11px}
+
+  .trading-drawing-tool-item:hover:not(:disabled){background:color-mix(in srgb, var(--c-blue-630) 16%, transparent);color:var(--c-neutral-1000)}
+
+  .trading-drawing-tool-row .trading-drawing-tool-favorite{display:grid;width:24px;height:36px;border:0;border-radius:4px;background:transparent;padding:0;color:var(--c-slate-680);font-size:19px}
+
+  .trading-drawing-tool-row .trading-drawing-tool-favorite:hover{background:color-mix(in srgb, var(--c-blue-630) 16%, transparent);color:var(--c-yellow-910-3)}
+}

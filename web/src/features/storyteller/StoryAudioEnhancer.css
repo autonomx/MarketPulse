@@ -1,0 +1,291 @@
+@layer features {
+  .storyteller-audio-panel,
+  .storyteller-cast-panel {
+    align-items: stretch;
+    background:
+      radial-gradient(circle at 85% 10%, color-mix(in srgb, var(--c-sky-800) 12%, transparent), transparent 18rem),
+      linear-gradient(180deg, color-mix(in srgb, var(--c-slate-190-3) 90%, transparent), color-mix(in srgb, var(--c-slate-150-2) 90%, transparent)),
+      color-mix(in srgb, var(--c-slate-150-2) 92%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-violet-660) 22%, transparent);
+    border-radius: 0.625rem;
+    box-shadow:
+      inset 0 1px 0 color-mix(in srgb, var(--c-neutral-1000) 4.5%, transparent),
+      0 1.25rem 3rem color-mix(in srgb, var(--c-neutral-0) 22%, transparent);
+    display: grid;
+    gap: 1rem;
+    margin-top: 0.8rem;
+    padding: 0.95rem 1rem;
+  }
+
+  .storyteller-audio-panel {
+    grid-template-columns: minmax(18rem, 0.9fr) minmax(22rem, 1.1fr);
+  }
+
+  .storyteller-cast-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .storyteller-toolbox {
+    background:
+      radial-gradient(circle at 85% 10%, color-mix(in srgb, var(--c-sky-800) 10%, transparent), transparent 14rem),
+      linear-gradient(180deg, color-mix(in srgb, var(--c-slate-190-3) 90%, transparent), color-mix(in srgb, var(--c-slate-150-2) 90%, transparent)),
+      color-mix(in srgb, var(--c-slate-150-2) 92%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-violet-660) 22%, transparent);
+    border-radius: 0.625rem;
+    box-shadow:
+      inset 0 1px 0 color-mix(in srgb, var(--c-neutral-1000) 4.5%, transparent),
+      0 1.25rem 3rem color-mix(in srgb, var(--c-neutral-0) 16%, transparent);
+    margin-top: 0.65rem;
+    overflow: clip;
+  }
+
+  .storyteller-toolbox summary {
+    align-items: center;
+    cursor: pointer;
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+    list-style: none;
+    min-height: 3.25rem;
+    padding: 0.65rem 0.85rem;
+  }
+
+  .storyteller-toolbox summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .storyteller-toolbox summary span {
+    display: grid;
+    gap: 0.1rem;
+    min-width: 0;
+  }
+
+  .storyteller-toolbox summary strong {
+    color: var(--c-slate-970-2);
+    font-size: 0.98rem;
+  }
+
+  .storyteller-toolbox summary small {
+    color: var(--c-slate-730);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .storyteller-toolbox summary em {
+    background: color-mix(in srgb, var(--c-violet-540) 22%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-violet-660) 24%, transparent);
+    border-radius: 999px;
+    color: var(--c-slate-970-2);
+    flex: 0 0 auto;
+    font-style: normal;
+    padding: 0.22rem 0.65rem;
+  }
+
+  .storyteller-toolbox[open] summary {
+    border-bottom: 1px solid color-mix(in srgb, var(--c-violet-660) 18%, transparent);
+  }
+
+  .storyteller-toolbox[open] summary em::before {
+    content: 'Close';
+  }
+
+  .storyteller-toolbox[open] summary em {
+    font-size: 0;
+  }
+
+  .storyteller-toolbox[open] summary em::before {
+    font-size: 0.86rem;
+  }
+
+  .storyteller-toolbox-content {
+    display: grid;
+    gap: 0.75rem;
+    padding: 0.75rem;
+  }
+
+  .storyteller-toolbox-grid {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 26rem), 1fr));
+  }
+
+  .storyteller-toolbox .storyteller-audio-panel,
+  .storyteller-toolbox .storyteller-cast-panel {
+    box-shadow: none;
+    margin-top: 0;
+  }
+
+  .storyteller-toolbox-primary .storyteller-audio-panel,
+  .storyteller-toolbox-primary .storyteller-cast-panel:nth-child(2) {
+    grid-column: 1 / -1;
+  }
+
+  .storyteller-audio-copy {
+    align-content: center;
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .storyteller-audio-copy h3,
+  .storyteller-audio-copy p,
+  .storyteller-cast-panel h3,
+  .storyteller-cast-panel p {
+    margin: 0;
+  }
+
+  .storyteller-audio-copy h3,
+  .storyteller-cast-panel h3 {
+    color: var(--c-slate-970-2);
+    font-size: 1.05rem;
+  }
+
+  .storyteller-audio-copy p:not(.eyebrow),
+  .storyteller-cast-panel p {
+    color: var(--c-slate-830);
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .storyteller-audio-controls {
+    display: grid;
+    gap: 0.7rem;
+  }
+
+  .storyteller-audio-controls label {
+    color: var(--c-violet-920);
+    display: grid;
+    gap: 0.35rem;
+    font-size: 0.86rem;
+  }
+
+  .storyteller-audio-controls select,
+  .storyteller-cast-add input,
+  .storyteller-voice-row select {
+    background: color-mix(in srgb, var(--c-slate-130) 82%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-violet-660) 22%, transparent);
+    border-radius: 0.5rem;
+    color: var(--c-slate-970-2);
+    min-height: 2.5rem;
+    padding: 0 0.75rem;
+  }
+
+  .storyteller-audio-actions,
+  .storyteller-cast-add {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+  }
+
+  .storyteller-audio-actions button,
+  .storyteller-cast-add button {
+    background: color-mix(in srgb, var(--c-neutral-1000) 3.5%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-violet-660) 24%, transparent);
+    border-radius: 0.5rem;
+    color: var(--c-slate-970-2);
+    cursor: pointer;
+    min-height: 2.5rem;
+    padding: 0 0.85rem;
+  }
+
+  .storyteller-audio-actions button:first-child,
+  .storyteller-cast-add button {
+    background: linear-gradient(135deg, var(--c-cyan-720), var(--c-violet-540));
+    border-color: color-mix(in srgb, var(--c-violet-810) 32%, transparent);
+  }
+
+  .storyteller-audio-actions button:disabled,
+  .storyteller-cast-add button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  .storyteller-audio-progress {
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .storyteller-audio-progress span,
+  .storyteller-audio-controls small {
+    color: var(--c-slate-730);
+    font-size: 0.8rem;
+  }
+
+  .storyteller-audio-progress progress {
+    accent-color: var(--c-cyan-720);
+    height: 0.7rem;
+    width: 100%;
+  }
+
+  .storyteller-audio-controls audio {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .storyteller-cast-heading {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .storyteller-cast-heading strong {
+    background: color-mix(in srgb, var(--c-violet-540) 22%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-violet-660) 24%, transparent);
+    border-radius: 999px;
+    color: var(--c-slate-970-2);
+    padding: 0.25rem 0.65rem;
+  }
+
+  .storyteller-cast-list,
+  .storyteller-voice-cast-table {
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  .storyteller-cast-list {
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  }
+
+  .storyteller-cast-card,
+  .storyteller-voice-row {
+    background: color-mix(in srgb, var(--c-slate-130) 55%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-violet-660) 16%, transparent);
+    border-radius: 0.5rem;
+    display: grid;
+    gap: 0.55rem;
+    padding: 0.7rem;
+  }
+
+  .storyteller-voice-row {
+    align-items: center;
+    grid-template-columns: minmax(10rem, 0.8fr) minmax(12rem, 1fr) minmax(10rem, 0.8fr);
+  }
+
+  .storyteller-cast-card div,
+  .storyteller-voice-row div {
+    display: grid;
+    gap: 0.1rem;
+  }
+
+  .storyteller-cast-card strong,
+  .storyteller-voice-row strong {
+    color: var(--c-slate-970-2);
+  }
+
+  .storyteller-cast-card span,
+  .storyteller-cast-card small,
+  .storyteller-voice-row span {
+    color: var(--c-slate-730);
+    font-size: 0.78rem;
+  }
+
+  .storyteller-cast-add input {
+    flex: 1 1 14rem;
+  }
+
+  @media (max-width: 1180px) {
+    .storyteller-audio-panel,
+    .storyteller-voice-row {
+      grid-template-columns: 1fr;
+    }
+  }
+}

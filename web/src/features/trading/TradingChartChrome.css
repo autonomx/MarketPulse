@@ -1,0 +1,131 @@
+@layer features {
+  /* Keep the chart chrome inside the header instead of floating over the plot. */
+  .trading-chart-symbol-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+    border: 0;
+    border-radius: 3px;
+    background: transparent;
+    padding: 1px 3px;
+    color: inherit;
+    cursor: pointer;
+    font: inherit;
+  }
+
+  .trading-chart-symbol-trigger:hover {
+    background: color-mix(in srgb, var(--c-blue-630) 14%, transparent);
+  }
+
+  .trading-chart-symbol-trigger span {
+    color: var(--c-blue-710-2);
+    font-size: 10px;
+  }
+
+  .trading-workspace .trading-chart-title-row .trading-compare-trigger {
+    display: inline-grid;
+    place-items: center;
+    width: 18px;
+    height: 18px;
+    border: 1px solid color-mix(in srgb, var(--c-blue-660) 35%, transparent);
+    border-radius: 50%;
+    background: transparent;
+    padding: 0;
+    color: var(--c-slate-740);
+    font-size: 15px;
+    line-height: 1;
+  }
+
+  .trading-workspace .trading-chart-title-row .trading-compare-trigger:hover,
+  .trading-workspace .trading-chart-title-row .trading-compare-trigger:focus-visible {
+    border-color: var(--c-blue-630);
+    background: color-mix(in srgb, var(--c-blue-630) 14%, transparent);
+    color: var(--c-blue-770);
+  }
+
+  .trading-chart-header .trading-drawing-manager {
+    top: 5px;
+    right: 118px;
+    z-index: 7;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    padding: 0;
+  }
+
+  .trading-chart-header .trading-drawing-manager button,
+  .trading-chart-header .trading-drawing-manager input {
+    border: 0;
+    box-shadow: none;
+  }
+
+  .trading-chart-header .trading-drawing-manager button {
+    background: transparent;
+  }
+
+  .trading-chart-header .trading-drawing-manager button:hover {
+    background: color-mix(in srgb, var(--c-blue-630) 14%, transparent);
+  }
+
+  /* Match the currency control to the narrow price-scale column. */
+  .trading-y-axis-controls {
+    width: 88px;
+  }
+
+  .trading-y-axis-currency-row {
+    min-height: 24px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .trading-y-axis-controls .trading-y-axis-currency-trigger {
+    width: 88px;
+    min-width: 0;
+    height: 22px;
+    border: 0;
+    background: transparent;
+    padding: 0 8px;
+    color: inherit;
+    font-size: 10px;
+  }
+
+  .trading-y-axis-controls .trading-y-axis-currency-trigger:hover {
+    border: 0;
+    background: color-mix(in srgb, var(--c-blue-630) 12%, transparent);
+  }
+
+  .trading-y-axis-controls .trading-y-axis-action {
+    display: grid;
+    place-items: center;
+    width: 25px;
+    height: 25px;
+    padding: 0;
+    line-height: 1;
+    text-align: center;
+  }
+
+  /* Overlay labels must remain readable against the dark chart surface. */
+  .trading-overlay-indicator,
+  .trading-overlay-indicator.active,
+  .trading-overlay-indicator.hidden {
+    color: var(--c-slate-910);
+  }
+
+  @media (max-width: 700px) {
+    .trading-y-axis-controls {
+      width: 88px;
+    }
+  }
+}
+
+/* Declarations that must win over every other layer. */
+@layer overrides {
+  :root[data-omnix-appearance='light'] .trading-overlay-indicator,
+  :root[data-omnix-appearance='light'] .trading-overlay-indicator.active,
+  :root[data-omnix-appearance='light'] .trading-overlay-indicator.hidden {
+    color: var(--trading-light-text);
+  }
+}

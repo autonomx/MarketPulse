@@ -1,0 +1,18 @@
+{
+  "name": "@marketpulse/web",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --config marketpulse/vite.marketpulse.config.ts --host 127.0.0.1 --port 5174",
+    "build": "tsc -p marketpulse/tsconfig.marketpulse.json && vite build --config marketpulse/vite.marketpulse.config.ts",
+    "preview": "vite preview --config marketpulse/vite.marketpulse.config.ts --host 127.0.0.1 --port 4174",
+    "test": "vitest run",
+    "test:trading": "vitest run src/features/trading src/app src/shared marketpulse",
+    "test:marketpulse": "vitest run marketpulse",
+    "test:e2e:trading": "playwright test --config marketpulse/playwright.marketpulse.config.ts",
+    "typecheck:trading": "tsc -p tsconfig.trading.json",
+    "typecheck:marketpulse": "tsc -p marketpulse/tsconfig.marketpulse.json",
+    "lint": "eslint src/features/trading marketpulse"
+  }
+}

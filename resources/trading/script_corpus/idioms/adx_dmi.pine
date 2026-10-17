@@ -1,0 +1,10 @@
+//@version=6
+indicator(title="Directional Movement Index", shorttitle="DMI", format=format.price, precision=4)
+lensig = input.int(14, title="ADX Smoothing", minval=1, maxval=50)
+len = input.int(14, minval=1, title="DI Length")
+[diplus, diminus, adx] = ta.dmi(len, lensig)
+plot(adx, color=#F50057, title="ADX")
+plot(diplus, color=#2962FF, title="+DI")
+plot(diminus, color=#FF6D00, title="-DI")
+hline(25, "Trend threshold", color=color.gray, linestyle=hline.style_dashed)
+bgcolor(adx > 25 and diplus > diminus ? color.new(color.green, 92) : na)

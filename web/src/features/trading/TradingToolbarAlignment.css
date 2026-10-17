@@ -1,0 +1,46 @@
+@layer features {
+  .trading-command-bar > .trading-symbol-search,
+  .trading-command-bar > .trading-favorite,
+  .trading-command-bar > select[aria-label='Active Trading chart'] {
+    order: 0;
+  }
+
+  .trading-chart-controls {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex: 0 0 auto;
+    margin-left: 0;
+  }
+
+  .trading-chart-symbol-options {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: 0 0 auto;
+  }
+
+  .trading-chart-symbol-options > .trading-symbol-trigger {
+    order: 1;
+  }
+
+  .trading-chart-symbol-options > select {
+    order: 2;
+  }
+
+  .trading-chart-symbol-options > .trading-favorite {
+    order: 3;
+  }
+
+  .trading-header-actions {
+    order: 2;
+    margin-left: 0;
+  }
+}
+
+/* Declarations that must win over every other layer. */
+@layer overrides {
+  .trading-chart-controls {
+    order: 0;
+  }
+}

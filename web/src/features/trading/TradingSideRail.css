@@ -1,0 +1,21 @@
+@layer features {
+  .trading-right-dock{display:grid;grid-template-columns:minmax(0,1fr) 48px;width:348px;min-width:48px;overflow:hidden;border-left:1px solid color-mix(in srgb, var(--c-blue-660) 14%, transparent);background:var(--c-slate-170-2)}
+  .trading-right-dock.is-collapsed{grid-template-columns:48px;width:48px}
+  .trading-right-dock>.trading-side-panel{min-width:0;border-left:0}
+  .trading-side-rail{display:flex;flex-direction:column;align-items:center;min-width:0;border-left:1px solid color-mix(in srgb, var(--c-blue-660) 14%, transparent);background:var(--c-slate-170-2)}
+  .trading-side-rail-toggle{place-items:center;width:100%;height:32px}
+  .trading-side-rail nav{display:flex;flex-direction:column;align-items:center;width:100%;gap:4px;padding:8px 0}
+  .trading-side-rail nav button{place-items:center;width:40px;height:40px}
+  .trading-side-rail nav button.active{box-shadow:inset 2px 0 var(--c-blue-630)}
+}
+
+/* Declarations that must win over every other layer. */
+@layer overrides {
+  .trading-side-rail-toggle{display:grid;border:0;border-bottom:1px solid color-mix(in srgb, var(--c-blue-660) 12%, transparent);border-radius:0;background:transparent;padding:0;color:var(--c-slate-680);font-size:20px;line-height:1}
+
+  .trading-side-rail-toggle:hover{background:color-mix(in srgb, var(--c-blue-630) 14%, transparent);color:var(--c-blue-770)}
+
+  .trading-side-rail nav button{display:grid;border:0;border-radius:5px;background:transparent;padding:0;color:var(--c-slate-680);font-size:21px;line-height:1}
+
+  .trading-side-rail nav button:hover,.trading-side-rail nav button.active{background:color-mix(in srgb, var(--c-blue-630) 15%, transparent);color:var(--c-slate-950)}
+}

@@ -1,0 +1,191 @@
+@layer features {
+  .assistant-html-previews {
+    display: grid;
+    gap: 0.8rem;
+  }
+
+  .assistant-html-preview-card {
+    background: var(--omnix-panel-solid);
+    border: 1px solid var(--omnix-border);
+    border-radius: 0.75rem;
+    overflow: hidden;
+  }
+
+  .assistant-html-preview-toolbar {
+    align-items: center;
+    background: var(--omnix-soft-bg);
+    display: flex;
+    gap: 0.75rem;
+    justify-content: space-between;
+    min-height: 3.25rem;
+    padding: 0.55rem 0.7rem;
+  }
+
+  .assistant-html-preview-title {
+    align-items: center;
+    display: flex;
+    gap: 0.6rem;
+    min-width: 0;
+  }
+
+  .assistant-html-preview-title > div {
+    display: grid;
+    gap: 0.08rem;
+    min-width: 0;
+  }
+
+  .assistant-html-preview-title strong,
+  .assistant-html-preview-title small {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .assistant-html-preview-title strong {
+    color: var(--omnix-text);
+    font-size: 0.86rem;
+  }
+
+  .assistant-html-preview-title small {
+    color: var(--omnix-muted);
+    font-size: 0.7rem;
+  }
+
+  .assistant-html-preview-file-icon {
+    align-items: center;
+    border: 1px solid var(--omnix-border);
+    border-radius: 0.42rem;
+    color: var(--omnix-muted);
+    display: inline-flex;
+    flex: 0 0 auto;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.68rem;
+    height: 1.8rem;
+    justify-content: center;
+    width: 1.8rem;
+  }
+
+  .assistant-html-preview-actions {
+    align-items: center;
+    display: flex;
+    flex: 0 0 auto;
+    gap: 0.35rem;
+  }
+
+  .assistant-html-preview-actions button,
+  .assistant-html-preview-actions a {
+    align-items: center;
+    background: var(--omnix-control-bg);
+    border: 1px solid var(--omnix-border);
+    border-radius: 0.45rem;
+    color: var(--omnix-text);
+    cursor: pointer;
+    display: inline-flex;
+    font: inherit;
+    font-size: 0.74rem;
+    justify-content: center;
+    min-height: 1.95rem;
+    min-width: 1.95rem;
+    padding: 0 0.55rem;
+    text-decoration: none;
+  }
+
+  .assistant-html-preview-actions button:hover,
+  .assistant-html-preview-actions a:hover {
+    border-color: var(--omnix-strong-border);
+  }
+
+  .assistant-html-preview-body {
+    background: var(--c-neutral-1000);
+    height: clamp(22rem, 50vh, 34rem);
+    position: relative;
+  }
+
+  .assistant-html-preview-frame {
+    background: var(--c-neutral-1000);
+    border: 0;
+    display: block;
+    height: 100%;
+    width: 100%;
+  }
+
+  .assistant-html-preview-source {
+    background: var(--omnix-control-bg);
+    color: var(--omnix-text);
+    height: 100%;
+    overflow: auto;
+  }
+
+  .assistant-html-preview-source > span {
+    color: var(--omnix-muted);
+    display: block;
+    padding: 0.9rem;
+  }
+
+  .assistant-html-preview-source pre {
+    margin: 0;
+    min-height: 100%;
+    padding: 1rem;
+    white-space: pre;
+  }
+
+  .assistant-html-preview-source code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.76rem;
+    line-height: 1.55;
+  }
+
+  .assistant-html-preview-modal {
+    background: color-mix(in srgb, var(--c-neutral-160) 72%, transparent);
+    inset: 0;
+    padding: 1.4rem;
+    position: fixed;
+    z-index: 1000;
+  }
+
+  .assistant-html-preview-modal-shell {
+    background: var(--omnix-panel-solid);
+    border: 1px solid var(--omnix-border);
+    border-radius: 0.8rem;
+    box-shadow: 0 1.2rem 4rem color-mix(in srgb, var(--c-neutral-0) 35%, transparent);
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    height: 100%;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  .assistant-html-preview-modal-body {
+    background: var(--c-neutral-1000);
+    min-height: 0;
+  }
+
+  .assistant-html-preview-modal-body > .assistant-html-preview-frame,
+  .assistant-html-preview-modal-body > .assistant-html-preview-source {
+    height: 100%;
+  }
+
+  @media (max-width: 720px) {
+    .assistant-html-preview-toolbar {
+      align-items: stretch;
+      flex-direction: column;
+    }
+
+    .assistant-html-preview-actions {
+      justify-content: flex-end;
+    }
+
+    .assistant-html-preview-body {
+      height: 24rem;
+    }
+
+    .assistant-html-preview-modal {
+      padding: 0;
+    }
+
+    .assistant-html-preview-modal-shell {
+      border: 0;
+      border-radius: 0;
+    }
+  }
+}

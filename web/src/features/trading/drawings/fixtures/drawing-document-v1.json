@@ -1,0 +1,55 @@
+{
+  "instrumentId": "crypto:BINANCE:spot:BTC-USDT",
+  "drawings": [
+    {
+      "drawingId": "5b1d7c2e-6f0a-4c58-9a3e-2f7d1b9c0a11",
+      "instrumentId": "crypto:BINANCE:spot:BTC-USDT",
+      "toolType": "trend-line",
+      "points": [
+        { "time": "2026-10-06T13:00:00.000Z", "price": 62114.25, "x": 412.5, "y": 188.25 },
+        { "time": "2026-10-07T09:00:00.000Z", "price": 63980.5, "x": 655, "y": 97.5 }
+      ],
+      "selected": false,
+      "revision": 3,
+      "style": { "color": "#66d9e8", "lineWidth": 2, "lineStyle": "solid" },
+      "locked": false,
+      "hidden": false,
+      "text": ""
+    },
+    {
+      "drawingId": "a4f3b6d2-1c9e-4e7b-8f20-6d5c4b3a2f19",
+      "instrumentId": "crypto:BINANCE:spot:BTC-USDT",
+      "toolType": "fibonacci",
+      "points": [
+        { "time": "2026-10-05T00:00:00.000Z", "price": 60500, "x": 120, "y": 320 },
+        { "time": "2026-10-07T00:00:00.000Z", "price": 64200, "x": 610, "y": 80 }
+      ],
+      "selected": false,
+      "revision": 1,
+      "style": { "color": "#ffd43b", "lineWidth": 1, "lineStyle": "dashed" },
+      "locked": true,
+      "hidden": false,
+      "text": ""
+    },
+    {
+      "drawingId": "0e9d8c7b-6a5f-4e3d-2c1b-0a9f8e7d6c5b",
+      "instrumentId": "crypto:BINANCE:spot:BTC-USDT",
+      "toolType": "text",
+      "points": [{ "time": "2026-10-07T12:00:00.000Z", "price": 63100, "x": 702, "y": 140 }],
+      "selected": false,
+      "revision": 2,
+      "style": { "color": "#66d9e8", "lineWidth": 2, "lineStyle": "solid" },
+      "locked": false,
+      "hidden": true,
+      "text": "Breakout retest"
+    },
+    {
+      "drawingId": "other-instrument",
+      "instrumentId": "equity:NASDAQ:AAPL",
+      "toolType": "horizontal-line",
+      "points": [{ "time": "2026-10-07T12:00:00.000Z", "price": 231.5 }],
+      "selected": false,
+      "revision": 1
+    }
+  ]
+}

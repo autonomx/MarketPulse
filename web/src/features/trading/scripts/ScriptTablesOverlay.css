@@ -1,0 +1,11 @@
+@layer features {
+  /* Omnix Script tables (TVP-11.1): nine anchor positions in their script's pane; tables in one slot stack. */
+  .trading-script-tables{position:absolute;z-index:6;inset:0;pointer-events:none}
+  .trading-script-table-pane{position:absolute;left:0}
+  .trading-script-table-slot{position:absolute;display:flex;flex-direction:column;gap:4px}
+  .trading-script-table{border:1px solid transparent;border-collapse:collapse;background:color-mix(in srgb, var(--c-slate-970-2) 72%, transparent);color:var(--c-slate-260-2);font-size:11px;font-variant-numeric:tabular-nums}
+  .trading-script-table td{padding:3px 7px;border:1px solid color-mix(in srgb, var(--c-blue-710) 14%, transparent);white-space:nowrap}
+  .trading-script-table-slot.is-top-left{top:6px;left:6px}.trading-script-table-slot.is-top-center{top:6px;left:50%;transform:translateX(-50%);align-items:center}.trading-script-table-slot.is-top-right{top:6px;right:6px;align-items:flex-end}
+  .trading-script-table-slot.is-middle-left{top:50%;left:6px;transform:translateY(-50%)}.trading-script-table-slot.is-middle-center{top:50%;left:50%;transform:translate(-50%,-50%);align-items:center}.trading-script-table-slot.is-middle-right{top:50%;right:6px;transform:translateY(-50%);align-items:flex-end}
+  .trading-script-table-slot.is-bottom-left{bottom:6px;left:6px}.trading-script-table-slot.is-bottom-center{bottom:6px;left:50%;transform:translateX(-50%);align-items:center}.trading-script-table-slot.is-bottom-right{bottom:6px;right:6px;align-items:flex-end}
+}

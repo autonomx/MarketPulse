@@ -1,0 +1,240 @@
+{
+ "note": "Written by externalIndicatorContract.test.ts (UPDATE_EXTERNAL_CONTRACT=1); checked by test_trading_external_indicators.py.",
+ "entries": [
+  {
+   "id": "tv-advance-decline-line",
+   "metric": "breadth.ad_line",
+   "scope": "market",
+   "outputs": [
+    "tv-advance-decline-line:nyse",
+    "tv-advance-decline-line:nasdaq"
+   ]
+  },
+  {
+   "id": "tv-advance-decline-ratio",
+   "metric": "breadth.ad_ratio",
+   "scope": "market",
+   "outputs": [
+    "tv-advance-decline-ratio:nyse",
+    "tv-advance-decline-ratio:nasdaq"
+   ]
+  },
+  {
+   "id": "tv-analyst-price-forecast",
+   "metric": "yahoo.analyst_price_forecast",
+   "scope": "equity",
+   "outputs": [
+    "tv-analyst-price-forecast:target-low",
+    "tv-analyst-price-forecast:target-mean",
+    "tv-analyst-price-forecast:target-high"
+   ]
+  },
+  {
+   "id": "tv-basis",
+   "metric": "binance.basis",
+   "scope": "binance-crypto",
+   "outputs": [
+    "tv-basis:basis"
+   ]
+  },
+  {
+   "id": "tv-blocks-mined",
+   "metric": "blockchain.blocks_mined",
+   "scope": "bitcoin",
+   "outputs": [
+    "tv-blocks-mined:n-blocks-mined"
+   ]
+  },
+  {
+   "id": "tv-cumulative-volume-index-cvi",
+   "metric": "breadth.cvi",
+   "scope": "market",
+   "outputs": [
+    "tv-cumulative-volume-index-cvi:nyse",
+    "tv-cumulative-volume-index-cvi:nasdaq"
+   ]
+  },
+  {
+   "id": "tv-difficulty",
+   "metric": "blockchain.difficulty",
+   "scope": "bitcoin",
+   "outputs": [
+    "tv-difficulty:difficulty"
+   ]
+  },
+  {
+   "id": "tv-dividend-yield",
+   "metric": "yahoo.dividend_yield",
+   "scope": "equity",
+   "outputs": [
+    "tv-dividend-yield:dividend-yield"
+   ]
+  },
+  {
+   "id": "tv-funding-rate-a-guide-to-market-sentiment",
+   "metric": "binance.funding_rate",
+   "scope": "binance-crypto",
+   "outputs": [
+    "tv-funding-rate-a-guide-to-market-sentiment:funding-rate"
+   ]
+  },
+  {
+   "id": "tv-hash-rate",
+   "metric": "blockchain.hash_rate",
+   "scope": "bitcoin",
+   "outputs": [
+    "tv-hash-rate:hash-rate"
+   ]
+  },
+  {
+   "id": "tv-index-price",
+   "metric": "binance.index_price",
+   "scope": "binance-crypto",
+   "outputs": [
+    "tv-index-price:index"
+   ]
+  },
+  {
+   "id": "tv-liquidation-data-what-to-watch-and-why-it-matters",
+   "metric": "binance.liquidations",
+   "scope": "binance-crypto",
+   "outputs": [
+    "tv-liquidation-data-what-to-watch-and-why-it-matters:long-liquidations",
+    "tv-liquidation-data-what-to-watch-and-why-it-matters:short-liquidations"
+   ]
+  },
+  {
+   "id": "tv-long-short-accounts",
+   "metric": "binance.global_long_short_accounts",
+   "scope": "binance-crypto",
+   "outputs": [
+    "tv-long-short-accounts:long-percent",
+    "tv-long-short-accounts:short-percent"
+   ]
+  },
+  {
+   "id": "tv-long-short-ratio-accounts",
+   "metric": "binance.global_long_short_accounts",
+   "scope": "binance-crypto",
+   "outputs": [
+    "tv-long-short-ratio-accounts:ratio"
+   ]
+  },
+  {
+   "id": "tv-mark-price",
+   "metric": "binance.mark_price",
+   "scope": "binance-crypto",
+   "outputs": [
+    "tv-mark-price:mark"
+   ]
+  },
+  {
+   "id": "tv-mean-block-size-in-bytes",
+   "metric": "blockchain.mean_block_size_bytes",
+   "scope": "bitcoin",
+   "outputs": [
+    "tv-mean-block-size-in-bytes:avg-block-size"
+   ]
+  },
+  {
+   "id": "tv-open-interest",
+   "metric": "binance.open_interest",
+   "scope": "binance-crypto",
+   "outputs": [
+    "tv-open-interest:open-interest"
+   ]
+  },
+  {
+   "id": "tv-premium",
+   "metric": "binance.premium",
+   "scope": "binance-crypto",
+   "outputs": [
+    "tv-premium:premium"
+   ]
+  },
+  {
+   "id": "tv-price-target-indicator",
+   "metric": "yahoo.price_target",
+   "scope": "equity",
+   "outputs": [
+    "tv-price-target-indicator:target-low",
+    "tv-price-target-indicator:target-mean",
+    "tv-price-target-indicator:target-high"
+   ]
+  },
+  {
+   "id": "tv-top-trader-long-short-accounts",
+   "metric": "binance.top_long_short_accounts",
+   "scope": "binance-crypto",
+   "outputs": [
+    "tv-top-trader-long-short-accounts:long-percent",
+    "tv-top-trader-long-short-accounts:short-percent"
+   ]
+  },
+  {
+   "id": "tv-top-trader-long-short-accounts-ratio",
+   "metric": "binance.top_long_short_accounts",
+   "scope": "binance-crypto",
+   "outputs": [
+    "tv-top-trader-long-short-accounts-ratio:ratio"
+   ]
+  },
+  {
+   "id": "tv-top-trader-long-short-positions",
+   "metric": "binance.top_long_short_positions",
+   "scope": "binance-crypto",
+   "outputs": [
+    "tv-top-trader-long-short-positions:long-percent",
+    "tv-top-trader-long-short-positions:short-percent"
+   ]
+  },
+  {
+   "id": "tv-top-trader-long-short-positions-ratio",
+   "metric": "binance.top_long_short_positions",
+   "scope": "binance-crypto",
+   "outputs": [
+    "tv-top-trader-long-short-positions-ratio:ratio"
+   ]
+  },
+  {
+   "id": "tv-total-block-size-in-bytes",
+   "metric": "blockchain.total_block_size_bytes",
+   "scope": "bitcoin",
+   "outputs": [
+    "tv-total-block-size-in-bytes:blocks-size"
+   ]
+  },
+  {
+   "id": "tv-total-utxos",
+   "metric": "blockchain.total_utxos",
+   "scope": "bitcoin",
+   "outputs": [
+    "tv-total-utxos:utxo-count"
+   ]
+  },
+  {
+   "id": "tv-transaction-fees",
+   "metric": "blockchain.transaction_fees",
+   "scope": "bitcoin",
+   "outputs": [
+    "tv-transaction-fees:transaction-fees"
+   ]
+  },
+  {
+   "id": "tv-transaction-rate",
+   "metric": "blockchain.transaction_rate",
+   "scope": "bitcoin",
+   "outputs": [
+    "tv-transaction-rate:transactions-per-second"
+   ]
+  },
+  {
+   "id": "tv-understanding-crypto-open-interest",
+   "metric": "binance.open_interest",
+   "scope": "binance-crypto",
+   "outputs": [
+    "tv-understanding-crypto-open-interest:open-interest"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,24 @@
+@layer features {
+  .trading-market-badge{display:inline-flex;align-items:center;gap:7px;max-width:100%;vertical-align:middle}.trading-market-badge strong{display:inline-block;overflow:hidden;border-radius:6px;background:var(--c-indigo-590);padding:6px 9px;font-size:11px;line-height:1;text-overflow:ellipsis;white-space:nowrap}.trading-market-icon{display:grid;place-items:center;flex:0 0 auto;width:20px;height:20px;border-radius:50%;background:linear-gradient(145deg,var(--c-neutral-1000) 0 28%,var(--c-blue-630) 29% 54%,var(--c-blue-280) 55%);color:var(--c-teal-860);font-size:11px;font-weight:800;box-shadow:0 0 0 1px color-mix(in srgb, var(--c-blue-350) 18%, transparent)}
+  .trading-dock-content td small{color:var(--c-slate-680);font-size:10px}.trading-positions-table{min-width:1100px}.trading-positions-table th,.trading-positions-table td{vertical-align:middle}.trading-row-actions{display:flex;align-items:center;gap:8px}.trading-row-actions button{color:var(--c-slate-890);font-size:16px;line-height:1}.trading-row-actions button:hover{color:var(--c-blue-630)}.trading-pending-position,.trading-open-position{font-size:10px;line-height:1.2}.trading-pending-position{color:var(--c-yellow-770)}.trading-open-position{color:var(--c-green-790-2)}
+  .trading-order-history-scroll,.trading-dock-content-history{scrollbar-width:none}.trading-order-history-scroll::-webkit-scrollbar,.trading-dock-content-history::-webkit-scrollbar{display:none;width:0;height:0}.trading-order-history-table{min-width:1480px}.trading-order-history-table td,.trading-order-history-table th{padding-left:15px;padding-right:15px}.trading-balance-history-table{min-width:980px}.trading-balance-history-table th:nth-child(1){min-width:190px}.trading-balance-history-table th:nth-child(5){min-width:520px}.trading-action-cell{max-width:650px;line-height:1.35}.trading-journal-table{min-width:900px}.trading-journal-table th:first-child{min-width:190px}.trading-journal-text{font-size:13px}:root[data-omnix-appearance='light'] .trading-market-icon{box-shadow:0 0 0 1px color-mix(in srgb, var(--c-blue-350) 20%, transparent)}:root[data-omnix-appearance='light'] .trading-row-actions button{color:var(--c-slate-310)}:root[data-omnix-appearance='light'] .trading-pending-position{color:var(--c-yellow-530)}:root[data-omnix-appearance='light'] .trading-open-position{color:var(--c-green-560)}
+  .trading-dock-content,.trading-dock-table-scroll,.trading-dock-summary,.trading-dock-tabs,.trading-order-filters,.trading-account-modal-body{scrollbar-width:none;-ms-overflow-style:none}.trading-dock-content::-webkit-scrollbar,.trading-dock-table-scroll::-webkit-scrollbar,.trading-dock-summary::-webkit-scrollbar,.trading-dock-tabs::-webkit-scrollbar,.trading-order-filters::-webkit-scrollbar,.trading-account-modal-body::-webkit-scrollbar{width:0;height:0}
+  .trading-order-rejected-status{position:relative;display:inline-flex;cursor:help;outline:none}.trading-order-rejection-tooltip{position:absolute;z-index:20;right:0;top:calc(100% + 8px);width:250px;padding:9px 11px;border:1px solid color-mix(in srgb, var(--c-blue-660) 35%, transparent);border-radius:6px;background:var(--c-blue-230);box-shadow:0 8px 24px color-mix(in srgb, var(--c-neutral-0) 35%, transparent);color:var(--c-neutral-960);font-size:11px;font-weight:400;line-height:1.35;white-space:normal;text-align:left;opacity:0;pointer-events:none;transform:translateY(-3px);transition:opacity .12s ease,transform .12s ease}.trading-order-rejected-status:hover .trading-order-rejection-tooltip,.trading-order-rejected-status:focus-visible .trading-order-rejection-tooltip{opacity:1;transform:translateY(0)}:root[data-omnix-appearance='light'] .trading-order-rejection-tooltip{border-color:var(--trading-light-line);background:var(--c-neutral-1000);box-shadow:0 8px 24px color-mix(in srgb, var(--c-blue-390) 20%, transparent);color:var(--trading-light-text)}
+}
+
+/* Declarations that must win over every other layer. */
+@layer overrides {
+  .trading-market-badge strong{color:var(--c-neutral-1000)}
+
+  .trading-row-actions button{border:0;background:transparent;padding:3px}
+
+  .trading-action-cell{white-space:normal}
+
+  .trading-journal-text{white-space:normal;color:var(--c-slate-910)}
+
+  .trading-dock-summary-item strong.positive{color:var(--c-teal-600)}
+
+  :root[data-omnix-appearance='light'] .trading-dock-content td small{color:var(--trading-light-muted)}
+
+  :root[data-omnix-appearance='light'] .trading-journal-text{color:var(--trading-light-text)}
+}

@@ -1,0 +1,15 @@
+@layer features {
+  .chart-price-handle{position:absolute;right:0;left:0;z-index:4;height:0;pointer-events:none;--chart-handle-color:var(--c-blue-630)}
+  .chart-price-handle.is-sell{--chart-handle-color:var(--c-red-560)}
+  .chart-price-handle-line{position:absolute;right:0;left:0;top:-3px;height:6px;border-top:0;pointer-events:none}
+  .chart-price-handle-line::after{position:absolute;right:0;left:0;top:3px;border-top:1px dashed var(--chart-handle-color);content:""}
+  .chart-price-handle.is-draggable .chart-price-handle-line{pointer-events:auto;cursor:ns-resize;touch-action:none}
+  .chart-price-handle.is-dragging .chart-price-handle-line::after{border-top-style:solid}
+  .chart-price-handle-label{position:absolute;right:18%;top:-12px;display:inline-flex;align-items:stretch;overflow:hidden;border:1px solid var(--chart-handle-color);border-radius:3px;background:var(--c-indigo-190);color:var(--c-neutral-960);font-size:11px;line-height:20px;white-space:nowrap;pointer-events:auto}
+  .chart-price-handle-grip{padding:1px 7px;background:var(--chart-handle-color);color:var(--c-neutral-1000);font-weight:600}
+  .chart-price-handle.is-draggable .chart-price-handle-grip{cursor:ns-resize;touch-action:none}
+  .chart-price-handle-label button{border:0;border-left:1px solid var(--chart-handle-color);background:transparent;padding:0 7px;color:inherit;font:inherit;cursor:pointer}
+  .chart-price-handle-label button:hover{background:color-mix(in srgb, var(--chart-handle-color) 18%, transparent)}
+  .chart-price-handle-label button:focus-visible,.chart-price-handle-grip:focus-visible{outline:2px solid var(--c-neutral-1000);outline-offset:-2px}
+  :root[data-omnix-appearance='light'] .chart-price-handle-label{background:var(--c-neutral-1000);color:var(--c-slate-260-2)}
+}

@@ -1,0 +1,12 @@
+//@version=5
+indicator(title="On Balance Volume Oscillator (idiom)", shorttitle="OBV Osc", format=format.volume)
+fastLength = input.int(5, "Fast EMA")
+slowLength = input.int(20, "Slow EMA")
+obv = ta.cum(math.sign(ta.change(close)) * volume)
+osc = ta.ema(obv, fastLength) - ta.ema(obv, slowLength)
+plot(osc, "OBV Oscillator", color=osc >= 0 ? color.teal : color.red, style=plot.style_columns)
+plot(ta.obv, "Built-in OBV", display=display.none)
+hline(0, "Zero", color=color.gray)
+cciValue = ta.cci(hlc3, 20)
+plot(cciValue, "CCI", display=display.none)
+bgcolor(cciValue > 100 ? color.new(color.green, 95) : cciValue < -100 ? color.new(color.red, 95) : na)

@@ -1,0 +1,9 @@
+-r gateway.in
+# Optional OpenTelemetry tracing (WP-10.4): installed on top of the gateway
+# runtime and inert unless OMNIX_OTEL_ENABLED=true.
+opentelemetry-api
+opentelemetry-sdk
+opentelemetry-exporter-otlp-proto-http
+opentelemetry-instrumentation-fastapi
+opentelemetry-instrumentation-httpx
+opentelemetry-instrumentation-psycopg

@@ -1,0 +1,107 @@
+@layer features {
+  .trading-symbol-search-overlay{position:fixed;z-index:1200;inset:0;display:grid;place-items:start center;padding:7vh 22px 22px;background:color-mix(in srgb, var(--c-slate-130) 66%, transparent);backdrop-filter:blur(4px)}
+  .trading-symbol-search-dialog{display:grid;width:min(1060px,100%);max-height:min(820px,86vh);grid-template-rows:auto auto auto minmax(0,1fr) auto;overflow:hidden;border:1px solid color-mix(in srgb, var(--c-slate-790) 38%, transparent);border-radius:7px;background:var(--c-neutral-1000);color:var(--c-slate-240);box-shadow:0 24px 70px color-mix(in srgb, var(--c-neutral-0) 45%, transparent)}
+  .trading-symbol-search-header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:21px 24px 17px;background:var(--c-neutral-1000)}
+  .trading-symbol-search-header h2{margin:0;font-size:23px;line-height:1.1;letter-spacing:-.02em}
+  .trading-symbol-search-close{position:relative;width:30px;height:30px;line-height:0}
+  .trading-symbol-search-close:before,.trading-symbol-search-close:after{position:absolute;top:14px;left:6px;width:19px;height:1.5px;transform:rotate(45deg);border-radius:2px;background:currentColor;content:""}
+  .trading-symbol-search-close:after{transform:rotate(-45deg)}
+  .trading-symbol-search-form{display:flex;align-items:center;gap:9px;margin:0 24px;padding:0 13px;border:1px solid var(--c-slate-890);border-radius:9px;background:var(--c-neutral-1000);box-shadow:inset 0 1px 1px color-mix(in srgb, var(--c-slate-240) 3%, transparent)}
+  .trading-symbol-search-form:focus-within{border-color:var(--c-blue-650);box-shadow:0 0 0 3px color-mix(in srgb, var(--c-blue-650) 13%, transparent)}
+  .trading-symbol-search-icon{position:relative;width:20px;height:20px;flex:0 0 20px;border:2px solid var(--c-slate-550);border-radius:50%}
+  .trading-symbol-search-icon:after{position:absolute;right:-5px;bottom:-3px;width:8px;height:2px;transform:rotate(45deg);border-radius:2px;background:var(--c-slate-550);content:""}
+  .trading-symbol-search-form input{min-width:0;flex:1}
+  .trading-symbol-search-form input::placeholder{color:var(--c-slate-660)}
+  .trading-symbol-search-clear{position:relative;width:30px;height:30px;flex:0 0 30px;line-height:0}
+  .trading-symbol-search-clear:before,.trading-symbol-search-clear:after{position:absolute;top:14px;left:8px;width:14px;height:2px;transform:rotate(45deg);border-radius:2px;background:currentColor;content:""}
+  .trading-symbol-search-clear:after{transform:rotate(-45deg)}
+  .trading-symbol-search-shortcut{border-left:1px solid var(--c-neutral-960);padding:3px 0 3px 13px;color:var(--c-slate-660);font-size:11px;white-space:nowrap}
+  .trading-symbol-search-categories{display:flex;gap:8px;overflow-x:auto;padding:20px 24px 15px;background:var(--c-neutral-1000)}
+  .trading-symbol-search-categories button{border:0;border-radius:999px;background:var(--c-neutral-960);color:var(--c-neutral-270);padding:8px 15px;font-size:14px;white-space:nowrap}
+  .trading-symbol-search-categories button:hover{background:var(--c-slate-930)}
+  .trading-symbol-search-categories button.active{background:var(--c-neutral-320);color:var(--c-neutral-1000)}
+  .trading-symbol-search-results-wrap{min-height:0;overflow:auto;background:var(--c-neutral-1000)}
+  .trading-symbol-search-result-heading{display:grid;grid-template-columns:165px minmax(220px,1fr) 190px;gap:14px;padding:8px 24px;border-top:1px solid var(--c-slate-930);border-bottom:1px solid var(--c-slate-930);color:var(--c-slate-660);font-size:11px;text-transform:uppercase;letter-spacing:.07em}
+  .trading-symbol-search-results{margin:0;padding:0;list-style:none}
+  .trading-symbol-search-results li{border-bottom:1px solid var(--c-slate-930)}
+  .trading-symbol-search-results li[aria-selected=true]{background:var(--c-slate-970-2)}
+  .trading-symbol-search-results li:focus-within{position:relative;z-index:1;outline:2px solid var(--c-blue-580);outline-offset:-2px}
+  .trading-symbol-search-results li>button{width:100%;grid-template-columns:34px 112px minmax(220px,1fr) 190px;align-items:center;gap:10px;text-align:left}
+  .trading-symbol-search-formula-result{border-bottom:1px solid var(--c-slate-930);background:var(--c-neutral-1000)}
+  .trading-symbol-search-formula-result>button{width:100%;grid-template-columns:34px 112px minmax(220px,1fr) 190px;align-items:center;gap:10px;text-align:left}
+  .trading-symbol-search-formula-result>button:disabled{cursor:not-allowed;opacity:.68}
+  .trading-symbol-search-formula-result>p{margin:0;padding:0 24px 12px;color:var(--c-red-560);font-size:12px}
+  .trading-symbol-search-avatar{display:grid;place-items:center;width:29px;height:29px;border-radius:50%;background:var(--c-indigo-490);color:var(--c-neutral-1000);font-size:15px;font-weight:700}
+  .trading-symbol-search-avatar.formula{background:var(--c-blue-540);font-size:12px}
+  .trading-symbol-search-avatar.equity{background:var(--c-sky-510);font-size:13px}
+  .trading-symbol-search-symbol,.trading-symbol-search-description,.trading-symbol-search-exchange{display:grid;gap:3px;min-width:0}
+  .trading-symbol-search-symbol strong{color:var(--c-blue-540);font-size:16px;font-weight:500}
+  .trading-symbol-search-symbol small{overflow:hidden;color:var(--c-slate-630);font-size:11px;text-overflow:ellipsis;white-space:nowrap}
+  .trading-symbol-search-description strong{overflow:hidden;font-size:15px;font-weight:500;text-overflow:ellipsis;white-space:nowrap}
+  .trading-symbol-search-description small,.trading-symbol-search-exchange small{color:var(--c-slate-630);font-size:11px;text-transform:lowercase}
+  .trading-symbol-search-exchange{justify-items:end;text-align:right}
+  .trading-symbol-search-exchange strong{font-size:14px;font-weight:500}
+  .trading-symbol-search-empty{display:grid;place-items:center;padding:74px 24px;color:var(--c-slate-580);text-align:center}
+  .trading-symbol-search-empty-icon{display:grid;place-items:center;width:42px;height:42px;margin-bottom:12px;border:1px solid var(--c-slate-890);border-radius:50%;font-size:24px}
+  .trading-symbol-search-empty strong{color:var(--c-slate-330);font-size:15px}
+  .trading-symbol-search-empty p{margin:5px 0 0;font-size:12px}
+  .trading-symbol-search-footer{display:flex;justify-content:space-between;gap:10px;padding:11px 24px;border-top:1px solid var(--c-slate-930);background:var(--c-slate-970-2);color:var(--c-slate-630);font-size:11px}
+  @media(max-width:700px){.trading-symbol-search-overlay{padding:0}.trading-symbol-search-dialog{max-height:100vh;height:100vh;border:0;border-radius:0}.trading-symbol-search-header{padding:17px 16px 14px}.trading-symbol-search-form{margin:0 16px}.trading-symbol-search-categories{padding:16px 16px 12px}.trading-symbol-search-result-heading{grid-template-columns:128px minmax(150px,1fr) 96px;padding:8px 16px}.trading-symbol-search-results li>button,.trading-symbol-search-formula-result>button{grid-template-columns:30px 88px minmax(150px,1fr) 96px}.trading-symbol-search-footer{padding:10px 16px}.trading-symbol-search-footer span:last-child{display:none}.trading-symbol-search-shortcut{display:none}}
+  .trading-workspace .trading-symbol-search-categories button{border:0;background:var(--c-neutral-960);color:var(--c-neutral-270)}
+  .trading-workspace .trading-symbol-search-categories button:hover{background:var(--c-slate-930)}
+  .trading-workspace .trading-symbol-search-categories button.active{background:var(--c-neutral-320);color:var(--c-neutral-1000)}
+  /* Dark appearance: the dialog's base palette is light (TradingView's look); the trading terminal's dark surfaces here.
+     The sections go transparent so the dialog's own surface (or the liquid-glass panel) shows through. */
+  :root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-symbol-search-overlay{background:color-mix(in srgb, var(--c-slate-130) 76%, transparent)}
+  :root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-symbol-search-dialog{border-color:color-mix(in srgb, var(--c-blue-660) 22%, transparent);background:var(--c-slate-170-2);color:var(--c-slate-910)}
+  :root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) :is(.trading-symbol-search-header,.trading-symbol-search-categories,.trading-symbol-search-results-wrap,.trading-symbol-search-formula-result){background:transparent}
+  :root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-symbol-search-form{border-color:color-mix(in srgb, var(--c-blue-660) 18%, transparent);background:var(--c-slate-190);box-shadow:none}
+  :root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-symbol-search-form:focus-within{border-color:var(--c-blue-630);box-shadow:0 0 0 3px color-mix(in srgb, var(--c-blue-630) 16%, transparent)}
+  :root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-symbol-search-icon{border-color:var(--c-slate-680)}
+  :root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-symbol-search-icon:after{background:var(--c-slate-680)}
+  :root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-symbol-search-shortcut{border-left-color:color-mix(in srgb, var(--c-blue-660) 18%, transparent);color:var(--c-slate-600)}
+  :root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) :is(.trading-symbol-search-result-heading,.trading-symbol-search-results li,.trading-symbol-search-formula-result,.trading-symbol-search-footer,.trading-compare-heading,.trading-compare-selected,.trading-compare-placement){border-color:color-mix(in srgb, var(--c-blue-660) 14%, transparent)}
+  :root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) :is(.trading-symbol-search-result-heading,.trading-symbol-search-symbol small,.trading-symbol-search-description small,.trading-symbol-search-exchange small,.trading-symbol-search-empty,.trading-compare-heading,.trading-compare-selected span,.trading-compare-placement){color:var(--c-slate-600)}
+  :root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) :is(.trading-symbol-search-empty strong,.trading-compare-selected){color:var(--c-slate-910)}
+  :root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-symbol-search-empty-icon{border-color:color-mix(in srgb, var(--c-blue-660) 22%, transparent)}
+  :root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-symbol-search-symbol strong{color:var(--c-blue-770)}
+  :root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-symbol-search-results li[aria-selected=true]{background:color-mix(in srgb, var(--c-blue-630) 12%, transparent)}
+  :root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) :is(.trading-symbol-search-footer,.trading-compare-selected,.trading-compare-placement){background:color-mix(in srgb, var(--c-blue-630) 5%, transparent)}
+  :root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-compare-selected button{color:var(--c-blue-770)}
+}
+
+/* Declarations that must win over every other layer. */
+@layer overrides {
+  .trading-symbol-search-close{display:block;padding:0;border:0;background:transparent;color:var(--c-slate-240);font-size:0}
+
+  .trading-symbol-search-close:hover{color:var(--c-sky-510)}
+
+  .trading-symbol-search-form input{padding:7px 9px;border:0;outline:0;background:transparent;color:var(--c-slate-240);font-size:17px;box-shadow:none}
+
+  .trading-symbol-search-clear{display:block;padding:0;border:0;border-radius:50%;background:var(--c-slate-550);color:var(--c-neutral-1000);font-size:0}
+
+  .trading-symbol-search-results li>button{display:grid;padding:11px 24px;border:0;border-radius:0;background:transparent;color:var(--c-slate-240);box-shadow:none}
+
+  .trading-symbol-search-results li>button:hover{background:var(--c-slate-970-2)}
+
+  .trading-symbol-search-formula-result>button{display:grid;padding:14px 24px;border:0;border-radius:0;background:transparent;color:var(--c-slate-240);box-shadow:none}
+
+  .trading-symbol-search-formula-result>button:hover:not(:disabled){background:var(--c-slate-970-2)}
+
+  @media(max-width:700px){
+  .trading-symbol-search-results li>button,.trading-symbol-search-formula-result>button{padding:11px 16px}}
+
+  /* Dark appearance for the controls the themes also paint here (liquid-glass styles every input and trading-workspace button). */
+  :root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-symbol-search-close{color:var(--c-slate-680)}
+  :root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-symbol-search-close:hover{color:var(--c-blue-770)}
+  :root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-symbol-search-form input{border:0;background:transparent;color:var(--c-slate-910);box-shadow:none}
+  :root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-symbol-search-form input::placeholder{color:var(--c-slate-600)}
+  :root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-symbol-search-clear{background:var(--c-slate-600);color:var(--c-slate-170-2)}
+  :root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) :is(.trading-symbol-search-results li>button,.trading-symbol-search-formula-result>button){color:var(--c-slate-910)}
+  :root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-symbol-search-results li>button:hover,:root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-symbol-search-formula-result>button:hover:not(:disabled){background:color-mix(in srgb, var(--c-blue-630) 8%, transparent)}
+  :root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-symbol-search-dialog .trading-symbol-search-categories button{border:0;background:var(--c-indigo-190);color:var(--c-slate-910)}
+  :root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-symbol-search-dialog .trading-symbol-search-categories button:hover{background:var(--c-blue-230)}
+  :root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-symbol-search-dialog .trading-symbol-search-categories button.active{background:var(--c-blue-630);color:var(--c-neutral-960)}
+  :root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-compare-placement button{border-color:color-mix(in srgb, var(--c-blue-660) 22%, transparent);background:var(--c-slate-190);color:var(--c-slate-910)}
+  :root:is([data-omnix-appearance='dark'],:not([data-omnix-appearance])) .trading-compare-placement button:hover:not(:disabled){border-color:var(--c-blue-630);background:var(--c-blue-230)}
+}

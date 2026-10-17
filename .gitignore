@@ -1,0 +1,33 @@
+# Build cache and staged runtimes (downloaded PostgreSQL, CPython, ibapi; rebuilt by build/*.ps1)
+build/cache/
+build/stage/
+build/out/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Node / web / desktop
+node_modules/
+web/dist/
+web/test-results/
+web/playwright-report/
+desktop/out/
+desktop/dist/
+desktop/release/
+
+# Runtime data written by a development run (the desktop app writes under %LOCALAPPDATA%\MarketPulse)
+resources/data/
+resources/logs/
+resources/cache/
+
+# Editors and OS
+.vscode/
+.idea/
+*.log
+Thumbs.db
+.DS_Store

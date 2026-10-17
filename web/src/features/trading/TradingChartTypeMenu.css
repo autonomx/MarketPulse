@@ -1,0 +1,176 @@
+@layer features {
+  .trading-terminal-header:has(.trading-chart-type-trigger[aria-expanded='true']),
+  .trading-command-bar:has(.trading-chart-type-trigger[aria-expanded='true']) {
+    overflow: visible;
+  }
+
+  .trading-chart-type-picker {
+    position: relative;
+    z-index: 60;
+    flex: 0 0 auto;
+  }
+
+  .trading-chart-type-trigger {
+    place-items: center;
+    position: relative;
+    width: 43px;
+    min-width: 43px;
+    height: 29px;
+    cursor: pointer;
+  }
+
+  .trading-chart-type-trigger-caret {
+    position: absolute;
+    right: 3px;
+    bottom: 1px;
+    color: var(--c-slate-630);
+    font-size: 10px;
+    line-height: 1;
+  }
+
+  .trading-chart-type-menu {
+    position: fixed;
+    z-index: 1000;
+    display: block;
+    width: min(310px, calc(100vw - 16px));
+    max-height: min(78vh, 760px);
+    overflow: auto;
+    padding: 8px 0;
+    border: 1px solid color-mix(in srgb, var(--c-blue-660) 30%, transparent);
+    border-radius: 8px;
+    background: var(--c-indigo-190);
+    box-shadow: 0 16px 40px color-mix(in srgb, var(--c-neutral-0) 42%, transparent);
+    color: var(--c-slate-910);
+  }
+
+  .trading-chart-type-group {
+    padding: 0 8px;
+  }
+
+  .trading-chart-type-group + .trading-chart-type-group {
+    margin-top: 7px;
+    border-top: 1px solid color-mix(in srgb, var(--c-blue-660) 16%, transparent);
+    padding-top: 7px;
+  }
+
+  .trading-chart-type-row {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    border-radius: 7px;
+  }
+
+  .trading-chart-type-row.selected {
+    background: var(--c-neutral-320);
+    color: var(--c-neutral-1000);
+  }
+
+  .trading-chart-type-option {
+    align-items: center;
+    flex: 1;
+    min-width: 0;
+    min-height: 44px;
+    gap: 9px;
+    font-weight: 500;
+    text-align: left;
+  }
+
+  .trading-chart-type-option svg {
+    flex: 0 0 27px;
+  }
+
+  .trading-chart-type-favorite {
+    place-items: center;
+    flex: 0 0 38px;
+    width: 38px;
+    height: 38px;
+    line-height: 1;
+  }
+
+  .trading-chart-type-row.selected .trading-chart-type-favorite {
+    color: var(--c-neutral-1000);
+  }
+
+  @media(max-width:700px) {
+    .trading-chart-type-menu {
+      width: min(300px, calc(100vw - 16px));
+    }
+  }
+
+  :root[data-omnix-appearance='light'] .trading-chart-type-menu {
+    border-color: color-mix(in srgb, var(--c-blue-660) 28%, transparent);
+    background: var(--c-slate-980);
+    color: var(--c-neutral-220);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-chart-type-group + .trading-chart-type-group {
+    border-top-color: var(--c-neutral-910);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-chart-type-row.selected {
+    background: var(--c-neutral-320);
+    color: var(--c-neutral-1000);
+  }
+}
+
+/* Declarations that must win over every other layer. */
+@layer overrides {
+  .trading-chart-type-trigger {
+    display: grid;
+    border: 1px solid color-mix(in srgb, var(--c-blue-660) 18%, transparent);
+    border-radius: 5px;
+    background: var(--c-indigo-190);
+    padding: 0;
+    color: var(--c-slate-910);
+  }
+
+  .trading-chart-type-trigger:hover,
+  .trading-chart-type-trigger[aria-expanded='true'] {
+    border-color: color-mix(in srgb, var(--c-blue-630) 70%, transparent);
+    background: var(--c-blue-230);
+  }
+
+  .trading-chart-type-option {
+    display: flex;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    padding: 5px 7px;
+    color: inherit;
+    font-size: 15px;
+  }
+
+  .trading-chart-type-option:hover,
+  .trading-chart-type-row.selected .trading-chart-type-option:hover {
+    background: color-mix(in srgb, var(--c-blue-630) 12%, transparent);
+  }
+
+  .trading-chart-type-row.selected .trading-chart-type-option:hover {
+    background: color-mix(in srgb, var(--c-neutral-1000) 8%, transparent);
+  }
+
+  .trading-chart-type-favorite {
+    display: grid;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    padding: 0;
+    color: var(--c-slate-770);
+    font-size: 25px;
+    font-weight: 400;
+  }
+
+  .trading-chart-type-favorite:hover {
+    background: color-mix(in srgb, var(--c-blue-630) 12%, transparent);
+    color: var(--c-amber-770);
+  }
+
+  .trading-chart-type-row.selected .trading-chart-type-favorite:hover {
+    background: color-mix(in srgb, var(--c-neutral-1000) 8%, transparent);
+    color: var(--c-yellow-910-3);
+  }
+
+  :root[data-omnix-appearance='light'] .trading-chart-type-favorite {
+    color: var(--c-neutral-570);
+  }
+}

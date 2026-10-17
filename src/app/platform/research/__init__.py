@@ -1,0 +1,43 @@
+"""Assistant web research contracts and services."""
+
+from .contracts import (
+    DeepResearchResult,
+    QuickSearchResult,
+    RESEARCH_JOB_MODULE,
+    RESEARCH_JOB_TYPE,
+    RESEARCH_STAGE_IDS,
+    ResearchAnswerSection,
+    ResearchDiagnostics,
+    ResearchEvidence,
+    ResearchMessageMetadata,
+    ResearchMode,
+    ResearchModeResolution,
+    ResearchQuery,
+    ResearchResult,
+    ResearchSource,
+    ResearchSourceSnapshot,
+    ResearchWarning,
+    normalize_research_mode,
+    resolve_research_mode,
+)
+
+__all__ = [
+    "DeepResearchResult",
+    "QuickSearchResult",
+    "RESEARCH_JOB_MODULE",
+    "RESEARCH_JOB_TYPE",
+    "RESEARCH_STAGE_IDS",
+    "ResearchAnswerSection",
+    "ResearchDiagnostics",
+    "ResearchEvidence",
+    "ResearchMessageMetadata",
+    "ResearchMode",
+    "ResearchModeResolution",
+    "ResearchQuery",
+    "ResearchResult",
+    "ResearchSource",
+    "ResearchSourceSnapshot",
+    "ResearchWarning",
+    "normalize_research_mode",
+    "resolve_research_mode",
+]

@@ -1,0 +1,20 @@
+@layer features {
+  .settings-scope-badge{padding:3px 8px;border:1px solid var(--omnix-border);border-radius:999px;font-size:.68rem;text-transform:capitalize;color:var(--omnix-muted)}
+  .settings-field{display:grid;gap:7px}.settings-field-wide{grid-column:1/-1}
+  .settings-field input,.settings-field select,.settings-field textarea{width:100%;min-height:38px;border:1px solid var(--omnix-border);border-radius:7px;background:var(--omnix-control-bg);color:var(--omnix-control-text);padding:8px 10px}
+  .settings-field-help,.settings-field-error{font-size:.74rem;opacity:.72}.settings-field-error{color:var(--c-orange-580);opacity:1}
+  .settings-toggle-list{display:grid;gap:10px}.settings-toggle-list label{display:flex;align-items:center;gap:10px;padding:10px;border:1px solid var(--omnix-border);border-radius:8px}.settings-toggle-list input{width:18px;height:18px}
+  .settings-ownership-table{display:grid;gap:8px}.settings-ownership-table>div{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;padding:11px;border:1px solid var(--omnix-border);border-radius:8px}.settings-ownership-table span,.settings-ownership-table small{opacity:.72}.settings-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.settings-detail-grid dd{margin:4px 0 0}
+  .settings-status-card{margin-bottom:14px;padding:14px;border:1px solid var(--omnix-border);border-radius:11px;background:var(--omnix-panel-bg);color:var(--omnix-text)}
+  .settings-status-card h3{margin:0 0 12px}.settings-status-card p{opacity:.7}
+  .settings-status-row{display:grid;grid-template-columns:22px 1fr auto 12px;gap:8px;align-items:center;width:100%;min-height:42px;padding:8px 10px;border:1px solid var(--omnix-border);border-radius:8px;background:var(--omnix-control-bg);color:var(--omnix-text);margin-top:8px}
+  .settings-status-value{display:flex;align-items:center;gap:6px;font-size:.75rem;opacity:.76}.settings-status-value i{width:7px;height:7px;border-radius:50%;background:var(--omnix-muted)}
+  .tone-ready i{background:var(--omnix-success)}.tone-warning i{background:var(--c-amber-670)}.tone-error i{background:var(--c-orange-580)}.tone-idle i{background:var(--omnix-cyan)}
+  .settings-run-tests{width:100%}.settings-planned-state{padding:14px;border:1px dashed var(--omnix-border);border-radius:8px}.settings-planned-state p{margin:6px 0 0;opacity:.72}
+  .settings-advanced{border:1px solid var(--omnix-border);border-radius:8px}.settings-advanced summary{cursor:pointer;padding:12px}.settings-advanced-body{padding:0 12px 12px}
+}
+
+/* Declarations that must win over every other layer. */
+@layer overrides {
+  .omnix-reduce-motion *{animation-duration:.01ms;transition-duration:.01ms}
+}

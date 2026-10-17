@@ -1,0 +1,13 @@
+@layer features {
+  .trading-research-panel{display:grid;gap:10px}.trading-research-panel>header{display:flex;justify-content:space-between;gap:10px}.trading-research-panel>header div{display:grid;gap:2px}.trading-research-panel>header small,.trading-research-panel>p{color:var(--c-slate-680);font-size:10px;line-height:1.4}.trading-research-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.trading-research-form label{display:grid;gap:4px;color:var(--c-slate-680);font-size:9px;text-transform:uppercase;letter-spacing:.06em}.trading-research-form label:first-child{grid-column:1/-1}.trading-research-form textarea{min-height:72px;resize:vertical}.trading-research-form input,.trading-research-form textarea{min-width:0;padding:7px}.trading-research-form button{grid-column:1/-1}.trading-research-result{display:grid;gap:10px;padding:9px;border:1px solid color-mix(in srgb, var(--c-blue-710) 12%, transparent);border-radius:8px;background:color-mix(in srgb, var(--c-indigo-190) 75%, transparent)}.trading-research-result h4{margin:0;font-size:13px;line-height:1.45}.trading-research-result section{display:grid;gap:5px}.trading-research-result ul{display:grid;gap:4px;margin:0;padding-left:18px;color:var(--c-slate-790);font-size:10px;line-height:1.45}.trading-research-result dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin:0}.trading-research-result dl div{display:grid;gap:2px;padding:6px;border:1px solid color-mix(in srgb, var(--c-blue-710) 8%, transparent);border-radius:5px}.trading-research-result dt{color:var(--c-slate-660);font-size:8px;text-transform:uppercase;letter-spacing:.06em}.trading-research-result dd{margin:0;color:var(--c-slate-890);font-size:9px;overflow-wrap:anywhere}.trading-research-result footer{color:var(--c-amber-830);font-size:9px}.trading-research-panel[data-status=error]>header>span{color:var(--c-red-770)}@media(max-width:800px){.trading-research-form,.trading-research-result dl{grid-template-columns:1fr}}
+  .trading-side-panel .trading-research-form,
+  .trading-side-panel .trading-research-result dl {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Declarations that must win over every other layer. */
+@layer overrides {
+  @media(prefers-reduced-motion:reduce){
+  .trading-research-panel *{animation:none;transition:none;scroll-behavior:auto}}
+}

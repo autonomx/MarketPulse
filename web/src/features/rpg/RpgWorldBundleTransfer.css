@@ -1,0 +1,231 @@
+@layer features {
+  .rpg-world-library-panel.rpg-world-bundle-transfer {
+    display: grid;
+    gap: 1rem;
+    padding: 1.25rem;
+    border: 1px solid color-mix(in srgb, var(--c-yellow-770) 20%, transparent);
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--c-indigo-170) 88%, transparent);
+  }
+
+  .rpg-world-bundle-heading,
+  .rpg-world-bundle-card,
+  .rpg-world-bundle-card-heading > div {
+    min-width: 0;
+  }
+
+  .rpg-world-bundle-heading .eyebrow,
+  .rpg-world-bundle-heading h3,
+  .rpg-world-bundle-heading p,
+  .rpg-world-bundle-card h4,
+  .rpg-world-bundle-card p {
+    margin: 0;
+  }
+
+  .rpg-world-bundle-heading .eyebrow {
+    color: var(--c-violet-810);
+  }
+
+  .rpg-world-bundle-heading h3 {
+    margin-top: 0.2rem;
+    color: var(--c-slate-980);
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(1.3rem, 2vw, 1.65rem);
+  }
+
+  .rpg-world-bundle-heading > p:last-child {
+    max-width: 72rem;
+    margin-top: 0.45rem;
+    color: color-mix(in srgb, var(--c-slate-930) 84%, transparent);
+    line-height: 1.5;
+  }
+
+  .rpg-world-bundle-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .rpg-world-bundle-card {
+    display: grid;
+    grid-template-rows: auto auto 1fr auto;
+    gap: 0.85rem;
+    padding: 1rem;
+    border: 1px solid color-mix(in srgb, var(--c-yellow-770) 20%, transparent);
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--c-slate-150-2) 68%, transparent);
+  }
+
+  .rpg-world-bundle-card-heading {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.7rem;
+  }
+
+  .rpg-world-bundle-step {
+    display: grid;
+    flex: 0 0 1.8rem;
+    width: 1.8rem;
+    height: 1.8rem;
+    place-items: center;
+    border: 1px solid color-mix(in srgb, var(--c-yellow-770) 58%, transparent);
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--c-yellow-770) 13%, transparent);
+    color: var(--c-yellow-870);
+    font-size: 0.78rem;
+    font-weight: 800;
+  }
+
+  .rpg-world-bundle-card h4 {
+    color: var(--c-neutral-1000);
+    font-size: 1rem;
+  }
+
+  .rpg-world-bundle-card-heading p {
+    margin-top: 0.18rem;
+    color: color-mix(in srgb, var(--c-slate-870) 68%, transparent);
+    font-size: 0.82rem;
+    line-height: 1.4;
+  }
+
+  .rpg-world-bundle-card label {
+    display: grid;
+    gap: 0.4rem;
+    min-width: 0;
+    color: color-mix(in srgb, var(--c-slate-930) 82%, transparent);
+    font-size: 0.76rem;
+    font-weight: 800;
+  }
+
+  .rpg-world-bundle-card label small {
+    margin-left: 0.35rem;
+    color: color-mix(in srgb, var(--c-slate-870) 58%, transparent);
+    font-size: 0.67rem;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .rpg-world-bundle-card input:not([type='file']),
+  .rpg-world-bundle-card select {
+    width: 100%;
+    min-height: 40px;
+    box-sizing: border-box;
+    border: 1px solid color-mix(in srgb, var(--c-yellow-770) 22%, transparent);
+    border-radius: 5px;
+    background: color-mix(in srgb, var(--c-blue-130) 86%, transparent);
+    color: var(--c-neutral-1000);
+    padding: 0.55rem 0.7rem;
+    font: inherit;
+  }
+
+  .rpg-world-bundle-card input:not([type='file']):focus-visible,
+  .rpg-world-bundle-card select:focus-visible,
+  .rpg-world-bundle-file-picker:focus-within .rpg-world-bundle-file-control {
+    border-color: var(--c-amber-830);
+    outline: 2px solid color-mix(in srgb, var(--c-yellow-770) 16%, transparent);
+    outline-offset: 1px;
+  }
+
+  .rpg-world-bundle-load-error {
+    margin: 0;
+    color: var(--c-red-810);
+    font-size: 0.78rem;
+  }
+
+  .rpg-world-bundle-file-picker {
+    position: relative;
+    cursor: pointer;
+  }
+
+  .rpg-world-bundle-file-picker input[type='file'] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    opacity: 0;
+    white-space: nowrap;
+  }
+
+  .rpg-world-bundle-file-control {
+    display: flex;
+    align-items: center;
+    min-height: 40px;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--c-yellow-770) 22%, transparent);
+    border-radius: 5px;
+    background: color-mix(in srgb, var(--c-blue-130) 86%, transparent);
+    color: color-mix(in srgb, var(--c-slate-930) 76%, transparent);
+    font-weight: 500;
+  }
+
+  .rpg-world-bundle-file-button {
+    align-self: stretch;
+    display: inline-flex;
+    align-items: center;
+    border-right: 1px solid color-mix(in srgb, var(--c-yellow-770) 24%, transparent);
+    background: color-mix(in srgb, var(--c-yellow-770) 14%, transparent);
+    color: var(--c-yellow-960);
+    padding: 0 0.75rem;
+    font-weight: 750;
+  }
+
+  .rpg-world-bundle-file-name {
+    overflow: hidden;
+    padding: 0 0.7rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .rpg-world-bundle-card > button {
+    width: 100%;
+    min-height: 40px;
+    align-self: end;
+    border: 1px solid color-mix(in srgb, var(--c-yellow-770) 34%, transparent);
+    border-radius: 5px;
+    background: color-mix(in srgb, var(--c-yellow-770) 12%, transparent);
+    color: var(--c-slate-980);
+    cursor: pointer;
+    padding: 0.55rem 0.85rem;
+    font-size: 0.82rem;
+    font-weight: 750;
+  }
+
+  .rpg-world-bundle-card > button:not(:disabled):hover {
+    border-color: var(--c-yellow-870);
+    background: color-mix(in srgb, var(--c-yellow-770) 21%, transparent);
+  }
+
+  .rpg-world-bundle-card > button:disabled {
+    cursor: not-allowed;
+    opacity: 0.42;
+  }
+
+  .rpg-world-bundle-transfer > .rpg-world-bundle-note {
+    margin: 0;
+    padding: 0.7rem 0.8rem;
+    border-left: 2px solid color-mix(in srgb, var(--c-yellow-770) 58%, transparent);
+    border-radius: 0 5px 5px 0;
+    background: color-mix(in srgb, var(--c-yellow-770) 7%, transparent);
+    color: color-mix(in srgb, var(--c-slate-870) 72%, transparent);
+    font-size: 0.78rem;
+    line-height: 1.45;
+  }
+
+  .rpg-world-bundle-transfer > .rpg-world-library-feedback,
+  .rpg-world-bundle-transfer > .rpg-world-library-error {
+    margin: 0;
+  }
+
+  @media (max-width: 760px) {
+    .rpg-world-library-panel.rpg-world-bundle-transfer {
+      padding: 1rem;
+    }
+
+    .rpg-world-bundle-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+}

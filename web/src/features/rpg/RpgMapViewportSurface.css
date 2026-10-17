@@ -1,0 +1,76 @@
+@import './RpgMapObjectInteractions.css';
+@import './RpgMapLayerStyles.css';
+@import './RpgMapDynamicOverlay.css';
+
+@layer features {
+  .rpg-map-viewport-shell {
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  .rpg-map-viewport-controls {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    justify-content: flex-end;
+  }
+
+  .rpg-map-viewport-controls button,
+  .rpg-map-viewport-controls span {
+    align-items: center;
+    background: color-mix(in srgb, var(--c-neutral-1000) 5.5%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-neutral-1000) 10%, transparent);
+    border-radius: 0.55rem;
+    color: inherit;
+    display: inline-flex;
+    font-size: 0.78rem;
+    justify-content: center;
+    min-height: 2rem;
+    min-width: 2rem;
+    padding: 0.35rem 0.65rem;
+  }
+
+  .rpg-map-viewport-controls button:hover:not(:disabled),
+  .rpg-map-viewport-controls button:focus-visible {
+    background: color-mix(in srgb, var(--c-neutral-1000) 11%, transparent);
+    border-color: color-mix(in srgb, var(--c-yellow-870) 45%, transparent);
+    outline: 2px solid color-mix(in srgb, var(--c-yellow-870) 35%, transparent);
+    outline-offset: 1px;
+  }
+
+  .rpg-map-viewport-controls button:disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+  }
+
+  .rpg-map-canvas-frame {
+    cursor: grab;
+    outline: none;
+    touch-action: none;
+    user-select: none;
+  }
+
+  .rpg-map-canvas-frame:focus-visible {
+    box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--c-yellow-870) 70%, transparent), 0 1.4rem 3rem color-mix(in srgb, var(--c-neutral-0) 30%, transparent);
+  }
+
+  .rpg-map-canvas-dragging {
+    cursor: grabbing;
+  }
+
+  .rpg-map-canvas [data-map-viewport='true'] {
+    transform-box: fill-box;
+    transform-origin: 0 0;
+  }
+}
+
+/* Declarations that must win over every other layer. */
+@layer overrides {
+  @media (prefers-reduced-motion: reduce) {
+  .rpg-map-object,
+    .rpg-map-canvas [data-map-viewport='true'] {
+      transition: none;
+    }
+  }
+}

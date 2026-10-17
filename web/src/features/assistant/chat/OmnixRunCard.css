@@ -1,0 +1,732 @@
+@layer features {
+  .assistant-runtime-card {
+    background: var(--omnix-panel-solid);
+    border: 1px solid var(--omnix-border);
+    color: var(--omnix-text);
+    border-radius: 0.72rem;
+    display: grid;
+    gap: 0.55rem;
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+  }
+
+  .assistant-runtime-card > header {
+    align-items: center;
+    display: flex;
+    gap: 0.7rem;
+    justify-content: space-between;
+  }
+
+  .assistant-runtime-card > header span,
+  .assistant-runtime-card small {
+    color: var(--omnix-muted);
+  }
+
+  .assistant-runtime-card > header strong {
+    border: 1px solid var(--omnix-strong-border);
+    border-radius: 999px;
+    color: var(--omnix-text);
+    font-size: 0.75rem;
+    padding: 0.2rem 0.5rem;
+  }
+
+  .assistant-runtime-card > p {
+    color: var(--omnix-text);
+    margin: 0;
+  }
+
+  .assistant-runtime-metrics {
+    align-items: stretch;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .assistant-runtime-metrics > div {
+    background: var(--omnix-soft-bg);
+    border: 1px solid var(--omnix-border);
+    border-radius: 0.45rem;
+    display: grid;
+    gap: 0.12rem;
+    min-width: 7.2rem;
+    padding: 0.38rem 0.5rem;
+  }
+
+  .assistant-runtime-metrics strong {
+    color: var(--omnix-muted);
+    font-size: 0.7rem;
+    font-weight: 650;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  .assistant-runtime-metrics span {
+    color: var(--omnix-text);
+    font-size: 0.82rem;
+  }
+
+  .assistant-runtime-input-request {
+    background: var(--omnix-soft-bg);
+    border: 1px solid var(--omnix-strong-border);
+    border-radius: 0.6rem;
+    display: grid;
+    gap: 0.28rem;
+    padding: 0.65rem 0.75rem;
+  }
+
+  .assistant-runtime-input-request strong {
+    color: var(--omnix-text);
+    font-size: 0.86rem;
+  }
+
+  .assistant-runtime-input-request p,
+  .assistant-runtime-input-request small {
+    color: var(--omnix-muted);
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .assistant-runtime-stall-warning {
+    align-items: center;
+    background: var(--omnix-soft-bg);
+    border: 1px solid var(--omnix-strong-border);
+    border-radius: 0.6rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    justify-content: space-between;
+    padding: 0.65rem 0.75rem;
+  }
+
+  .assistant-runtime-stall-warning > div {
+    display: grid;
+    gap: 0.2rem;
+  }
+
+  .assistant-runtime-stall-warning strong {
+    color: var(--omnix-text);
+    font-size: 0.86rem;
+  }
+
+  .assistant-runtime-stall-warning p,
+  .assistant-runtime-stall-warning small {
+    color: var(--omnix-muted);
+    margin: 0;
+  }
+
+  .assistant-runtime-stall-warning button {
+    background: var(--omnix-control-bg);
+    border: 1px solid var(--omnix-strong-border);
+    border-radius: 0.5rem;
+    color: var(--omnix-text);
+    cursor: pointer;
+    min-height: 2rem;
+    padding: 0 0.65rem;
+  }
+
+  .assistant-runtime-stall-warning button:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+
+  .assistant-runtime-steering {
+    background: var(--omnix-soft-bg);
+    border: 1px solid var(--omnix-strong-border);
+    border-radius: 0.6rem;
+    display: grid;
+    gap: 0.45rem;
+    padding: 0.65rem 0.75rem;
+  }
+
+  .assistant-runtime-steering-heading {
+    display: grid;
+    gap: 0.15rem;
+  }
+
+  .assistant-runtime-steering-heading strong {
+    color: var(--omnix-text);
+    font-size: 0.86rem;
+  }
+
+  .assistant-runtime-steering-heading small,
+  .assistant-runtime-steering-footer small {
+    color: var(--omnix-muted);
+    overflow-wrap: anywhere;
+  }
+
+  .assistant-runtime-steering textarea {
+    background: var(--omnix-control-bg);
+    border: 1px solid var(--omnix-border);
+    border-radius: 0.45rem;
+    color: var(--omnix-text);
+    font: inherit;
+    line-height: 1.45;
+    min-height: 4.2rem;
+    padding: 0.55rem 0.6rem;
+    resize: vertical;
+    width: 100%;
+  }
+
+  .assistant-runtime-steering textarea:focus {
+    border-color: var(--omnix-strong-border);
+    outline: 2px solid color-mix(in srgb, var(--omnix-strong-border) 35%, transparent);
+    outline-offset: 1px;
+  }
+
+  .assistant-runtime-steering textarea:disabled {
+    cursor: not-allowed;
+    opacity: 0.65;
+  }
+
+  .assistant-runtime-steering-footer {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    justify-content: space-between;
+  }
+
+  .assistant-runtime-steering-footer button {
+    background: var(--omnix-control-bg);
+    border: 1px solid var(--omnix-strong-border);
+    border-radius: 0.5rem;
+    color: var(--omnix-text);
+    cursor: pointer;
+    min-height: 2rem;
+    padding: 0 0.65rem;
+  }
+
+  .assistant-runtime-steering-footer button:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+
+  .assistant-runtime-actions,
+  .assistant-runtime-approval,
+  .assistant-runtime-approval > div {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .assistant-runtime-actions button,
+  .assistant-runtime-approval button {
+    background: var(--omnix-soft-bg);
+    border: 1px solid var(--omnix-strong-border);
+    border-radius: 0.5rem;
+    color: var(--omnix-text);
+    cursor: pointer;
+    min-height: 2rem;
+    padding: 0 0.65rem;
+  }
+
+  .assistant-runtime-actions button:disabled,
+  .assistant-runtime-approval button:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+
+  .assistant-runtime-approval {
+    justify-content: space-between;
+  }
+
+  .assistant-runtime-approval-command {
+    background: var(--omnix-control-bg);
+    border: 1px solid var(--omnix-border);
+    border-radius: 0.35rem;
+    display: block;
+    margin-top: 0.3rem;
+    max-width: 42rem;
+    overflow-wrap: anywhere;
+    padding: 0.3rem 0.45rem;
+  }
+
+  .assistant-runtime-thinking {
+    border-top: 1px solid var(--omnix-border);
+    margin-top: 0.15rem;
+    padding-top: 0.15rem;
+  }
+
+  .assistant-runtime-thinking-heading {
+    align-items: center;
+    color: var(--omnix-muted);
+    display: flex;
+    gap: 0.45rem;
+    min-height: 2.15rem;
+    padding: 0.35rem 0.1rem 0.2rem;
+  }
+
+  .assistant-runtime-thinking-heading strong {
+    color: var(--omnix-text);
+    font-size: 0.82rem;
+    font-weight: 650;
+  }
+
+  .assistant-runtime-thinking-indicator {
+    background: currentColor;
+    border-radius: 999px;
+    display: inline-block;
+    height: 0.42rem;
+    opacity: 0.55;
+    width: 0.42rem;
+  }
+
+  .assistant-runtime-thinking[data-live='true'] .assistant-runtime-thinking-indicator {
+    animation: assistant-runtime-thinking-pulse 1.35s ease-in-out infinite;
+    opacity: 0.95;
+  }
+
+  @keyframes assistant-runtime-thinking-pulse {
+    0%,
+    100% {
+      box-shadow: 0 0 0 0 currentColor;
+      opacity: 0.45;
+    }
+
+    50% {
+      box-shadow: 0 0 0 0.2rem transparent;
+      opacity: 1;
+    }
+  }
+
+  .assistant-runtime-thinking-stream {
+    display: grid;
+    gap: 0.25rem;
+    padding: 0.05rem 0 0.35rem;
+  }
+
+  .assistant-runtime-thinking-message {
+    color: var(--omnix-text);
+    font-size: 0.88rem;
+    line-height: 1.55;
+    margin: 0;
+    padding: 0.4rem 0.2rem;
+    white-space: pre-wrap;
+  }
+
+  .assistant-runtime-thinking-status {
+    align-items: baseline;
+    color: var(--omnix-muted);
+    display: grid;
+    font-size: 0.8rem;
+    gap: 0.42rem;
+    grid-template-columns: 1rem minmax(0, 1fr);
+    padding: 0.28rem 0.2rem;
+  }
+
+  .assistant-runtime-thinking-status[data-tone='success'] {
+    color: var(--omnix-text);
+  }
+
+  .assistant-runtime-thinking-status[data-tone='failure'] {
+    color: var(--c-red-770);
+  }
+
+  .assistant-runtime-tool-call {
+    border-radius: 0.5rem;
+  }
+
+  .assistant-runtime-tool-call > summary {
+    align-items: center;
+    color: var(--omnix-muted);
+    cursor: pointer;
+    display: grid;
+    font-size: 0.8rem;
+    gap: 0.42rem;
+    grid-template-columns: auto minmax(0, auto) minmax(0, 1fr) auto;
+    list-style: none;
+    min-height: 2rem;
+    padding: 0.3rem 0.2rem;
+  }
+
+  .assistant-runtime-tool-call > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .assistant-runtime-tool-call > summary::after {
+    content: '›';
+    font-size: 1.05rem;
+    line-height: 1;
+    opacity: 0.65;
+    transform: rotate(0deg);
+    transition: transform 120ms ease;
+  }
+
+  .assistant-runtime-tool-call[open] > summary::after {
+    transform: rotate(90deg);
+  }
+
+  .assistant-runtime-tool-call > summary:hover {
+    background: var(--omnix-soft-bg);
+  }
+
+  .assistant-runtime-tool-call > summary > span:nth-child(2) {
+    color: var(--omnix-text);
+    font-weight: 550;
+  }
+
+  .assistant-runtime-tool-call > summary small {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .assistant-runtime-tool-call[data-tool-status='failed'] > summary > span:nth-child(2) {
+    color: var(--c-red-770);
+  }
+
+  .assistant-runtime-tool-icon {
+    align-items: center;
+    border: 1px solid var(--omnix-border);
+    border-radius: 0.3rem;
+    display: inline-flex;
+    font-size: 0.68rem;
+    height: 1.2rem;
+    justify-content: center;
+    width: 1.2rem;
+  }
+
+  .assistant-runtime-tool-body {
+    border-left: 1px solid var(--omnix-border);
+    display: grid;
+    gap: 0.5rem;
+    margin: 0.05rem 0 0.35rem 0.75rem;
+    padding: 0.3rem 0 0.25rem 0.85rem;
+  }
+
+  .assistant-runtime-tool-body > div {
+    min-width: 0;
+  }
+
+  .assistant-runtime-tool-body strong {
+    color: var(--omnix-muted);
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    margin-bottom: 0.22rem;
+  }
+
+  .assistant-runtime-tool-body pre {
+    background: var(--omnix-control-bg);
+    border: 1px solid var(--omnix-border);
+    border-radius: 0.42rem;
+    color: var(--omnix-text);
+    font-size: 0.75rem;
+    margin: 0;
+    max-height: 18rem;
+    overflow: auto;
+    padding: 0.55rem;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .assistant-runtime-tool-running {
+    color: var(--omnix-muted);
+    font-size: 0.76rem;
+    padding: 0.15rem 0;
+  }
+
+  .assistant-runtime-thinking-entry {
+    display: grid;
+    gap: 0.1rem;
+  }
+
+  .assistant-runtime-completion {
+    border-top: 1px solid var(--omnix-border);
+    display: grid;
+    gap: 0.8rem;
+    margin-top: 0.25rem;
+    padding-top: 0.7rem;
+  }
+
+  .assistant-runtime-elapsed {
+    color: var(--omnix-muted);
+    font-size: 0.8rem;
+  }
+
+  .assistant-runtime-final-summary {
+    color: var(--omnix-text);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+  }
+
+  .assistant-runtime-final-summary > :first-child {
+    margin-top: 0;
+  }
+
+  .assistant-runtime-final-summary > :last-child {
+    margin-bottom: 0;
+  }
+
+  .assistant-runtime-final-summary p,
+  .assistant-runtime-final-summary ul,
+  .assistant-runtime-final-summary ol {
+    margin: 0.45rem 0;
+  }
+
+  .assistant-runtime-final-summary code {
+    background: var(--omnix-control-bg);
+    border-radius: 0.3rem;
+    padding: 0.12rem 0.32rem;
+  }
+
+  .assistant-runtime-changed-files {
+    border: 1px solid var(--omnix-border);
+    border-radius: 0.65rem;
+    overflow: hidden;
+  }
+
+  .assistant-runtime-changed-files > header,
+  .assistant-runtime-changed-file {
+    align-items: center;
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .assistant-runtime-changed-files > header {
+    background: var(--omnix-soft-bg);
+    padding: 0.7rem 0.8rem;
+  }
+
+  .assistant-runtime-changed-files > header span,
+  .assistant-runtime-changed-file > span {
+    display: flex;
+    font-size: 0.78rem;
+    font-style: normal;
+    gap: 0.4rem;
+  }
+
+  .assistant-runtime-changed-files b {
+    color: var(--c-green-790-2);
+    font-weight: 650;
+  }
+
+  .assistant-runtime-changed-files i {
+    color: var(--c-red-770);
+    font-style: normal;
+  }
+
+  .assistant-runtime-changed-file {
+    border-top: 1px solid var(--omnix-border);
+    padding: 0.6rem 0.8rem;
+  }
+
+  .assistant-runtime-changed-file code {
+    color: var(--omnix-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .assistant-runtime-changed-files details {
+    border-top: 1px solid var(--omnix-border);
+  }
+
+  .assistant-runtime-changed-files details > summary {
+    color: var(--omnix-muted);
+    cursor: pointer;
+    font-size: 0.8rem;
+    padding: 0.55rem 0.8rem;
+  }
+
+  .assistant-runtime-tool-group {
+    border: 1px solid var(--omnix-border);
+    border-radius: 0.5rem;
+    margin: 0.05rem 0.1rem 0.35rem 0.2rem;
+    overflow: hidden;
+  }
+
+  .assistant-runtime-tool-group > summary {
+    align-items: center;
+    color: var(--omnix-muted);
+    cursor: pointer;
+    display: grid;
+    font-size: 0.8rem;
+    gap: 0.42rem;
+    grid-template-columns: auto minmax(0, auto) minmax(0, 1fr) auto;
+    list-style: none;
+    min-height: 2rem;
+    padding: 0.3rem 0.45rem;
+    user-select: none;
+  }
+
+  .assistant-runtime-tool-group > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .assistant-runtime-tool-group > summary::after {
+    content: '>';
+    font-size: 1.05rem;
+    line-height: 1;
+    opacity: 0.65;
+    transform: rotate(0deg);
+    transition: transform 120ms ease;
+  }
+
+  .assistant-runtime-tool-group[open] > summary::after {
+    transform: rotate(90deg);
+  }
+
+  .assistant-runtime-tool-group > summary:hover {
+    background: var(--omnix-soft-bg);
+  }
+
+  .assistant-runtime-tool-group > summary > span:nth-child(2),
+  .assistant-runtime-tool-call-heading > span:nth-child(2) {
+    color: var(--omnix-text);
+    font-weight: 550;
+  }
+
+  .assistant-runtime-tool-group > summary small,
+  .assistant-runtime-tool-call-heading small {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .assistant-runtime-tool-group-body {
+    border-top: 1px solid var(--omnix-border);
+    display: grid;
+    gap: 0;
+    padding: 0.1rem 0.45rem 0.25rem;
+  }
+
+  .assistant-runtime-tool-call {
+    padding: 0.35rem 0.15rem 0.45rem;
+  }
+
+  .assistant-runtime-tool-call + .assistant-runtime-tool-call {
+    border-top: 1px solid var(--omnix-border);
+  }
+
+  .assistant-runtime-tool-call-heading {
+    align-items: center;
+    color: var(--omnix-muted);
+    display: grid;
+    font-size: 0.8rem;
+    gap: 0.42rem;
+    grid-template-columns: auto minmax(0, auto) minmax(0, 1fr);
+    min-height: 2rem;
+  }
+
+  .assistant-runtime-tool-call[data-tool-status='failed'] .assistant-runtime-tool-call-heading > span:nth-child(2) {
+    color: var(--c-red-770);
+  }
+
+  .assistant-runtime-tool-call .assistant-runtime-tool-body {
+    border-left: 1px solid var(--omnix-border);
+    margin: 0.05rem 0 0.05rem 0.6rem;
+    padding: 0.25rem 0 0.1rem 0.75rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .assistant-runtime-thinking[data-live='true'] .assistant-runtime-thinking-indicator {
+      animation: none;
+    }
+
+    .assistant-runtime-thinking > summary::after,
+    .assistant-runtime-tool-call > summary::after,
+    .assistant-runtime-tool-group > summary::after {
+      transition: none;
+    }
+  }
+
+  .assistant-runtime-test-output {
+    background: var(--omnix-control-bg);
+    border: 1px solid var(--omnix-border);
+    border-radius: 0.4rem;
+    color: var(--omnix-muted);
+    margin: 0.35rem 0 0;
+    max-height: 10rem;
+    overflow: auto;
+    padding: 0.45rem;
+    white-space: pre-wrap;
+  }
+
+  .assistant-runtime-evidence {
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .assistant-runtime-evidence details {
+    border: 1px solid var(--omnix-border);
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+
+  .assistant-runtime-evidence summary {
+    color: var(--omnix-text);
+    cursor: pointer;
+    font-size: 0.82rem;
+    padding: 0.45rem 0.55rem;
+  }
+
+  .assistant-runtime-evidence pre {
+    border-top: 1px solid var(--omnix-border);
+    font-size: 0.75rem;
+    margin: 0;
+    max-height: 20rem;
+    overflow: auto;
+    padding: 0.65rem;
+    white-space: pre;
+  }
+
+  .assistant-runtime-test-list {
+    border-top: 1px solid var(--omnix-border);
+    display: grid;
+    gap: 0.4rem;
+    padding: 0.55rem;
+  }
+
+  .assistant-runtime-test-list > div {
+    align-items: baseline;
+    display: grid;
+    gap: 0.35rem;
+    grid-template-columns: 4.5rem minmax(0, 1fr);
+  }
+
+  .assistant-runtime-test-list code {
+    overflow-wrap: anywhere;
+    white-space: normal;
+  }
+
+  .assistant-runtime-policy {
+    margin-top: 0.7rem;
+  }
+
+  .assistant-runtime-policy summary {
+    color: var(--omnix-text);
+    cursor: pointer;
+    font-weight: 700;
+  }
+
+  .assistant-runtime-policy-grid {
+    display: grid;
+    gap: 0.45rem;
+    margin-top: 0.55rem;
+  }
+
+  .assistant-runtime-policy-grid > div {
+    align-items: baseline;
+    display: grid;
+    gap: 0.15rem;
+    grid-template-columns: minmax(7.5rem, 0.45fr) minmax(0, 1fr);
+  }
+
+  .assistant-runtime-policy-grid span {
+    overflow-wrap: anywhere;
+    opacity: 0.82;
+  }
+}
+
+/* Declarations that must win over every other layer. */
+@layer overrides {
+  .assistant-runtime-error {
+    color: var(--c-red-770);
+  }
+}

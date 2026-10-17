@@ -1,0 +1,48 @@
+@layer features {
+  .trading-watchlist-symbol-picker-dialog{grid-template-rows:auto auto auto minmax(0,1fr) auto}
+  .trading-watchlist-symbol-picker-heading{display:grid;grid-template-columns:150px minmax(220px,1fr) 170px 44px;gap:12px;padding:8px 24px;border-top:1px solid var(--c-slate-930);border-bottom:1px solid var(--c-slate-930);color:var(--c-slate-660);font-size:11px;text-transform:uppercase;letter-spacing:.07em}
+  .trading-watchlist-symbol-picker-results{margin:0;padding:0;list-style:none}
+  .trading-watchlist-symbol-picker-results li{display:grid;grid-template-columns:34px 104px minmax(220px,1fr) 170px 44px;align-items:center;gap:12px;padding:10px 24px;border-bottom:1px solid var(--c-slate-930);color:var(--c-slate-240)}
+  .trading-watchlist-symbol-picker-results li:hover{background:var(--c-slate-970-2)}
+  .trading-watchlist-symbol-picker-symbol,.trading-watchlist-symbol-picker-description,.trading-watchlist-symbol-picker-exchange{display:grid;gap:3px;min-width:0}
+  .trading-watchlist-symbol-picker-symbol strong{color:var(--c-blue-540);font-size:16px;font-weight:500}
+  .trading-watchlist-symbol-picker-symbol small,.trading-watchlist-symbol-picker-description small,.trading-watchlist-symbol-picker-exchange small{overflow:hidden;color:var(--c-slate-630);font-size:11px;text-overflow:ellipsis;white-space:nowrap}
+  .trading-watchlist-symbol-picker-description strong{overflow:hidden;font-size:15px;font-weight:500;text-overflow:ellipsis;white-space:nowrap}
+  .trading-watchlist-symbol-picker-exchange{justify-items:end;text-align:right}
+  .trading-watchlist-symbol-picker-exchange strong{font-size:14px;font-weight:500}
+  .trading-watchlist-symbol-picker-add{place-items:center}
+  @media(max-width:700px){.trading-watchlist-symbol-picker-heading{grid-template-columns:118px minmax(140px,1fr) 86px 36px;padding:8px 16px}.trading-watchlist-symbol-picker-results li{grid-template-columns:30px 76px minmax(140px,1fr) 86px 36px;gap:8px;padding:10px 16px}}
+
+  .trading-watchlist-symbol-picker-heading{grid-template-columns:34px 104px minmax(220px,1fr) 190px 44px;gap:10px;padding:8px 20px}
+  .trading-watchlist-symbol-picker-heading .symbol-heading{grid-column:1 / 3}
+  .trading-watchlist .trading-watchlist-symbol-picker-results li{grid-template-columns:34px 104px minmax(220px,1fr) 190px 44px;gap:10px;min-height:48px;padding:10px 20px}
+  .trading-watchlist-symbol-picker-avatar{display:grid;place-items:center;width:29px;height:29px;border:1px solid color-mix(in srgb, var(--c-slate-550) 22%, transparent);border-radius:50%;background:var(--c-neutral-960);color:var(--c-slate-310);font-size:13px;font-weight:700}
+  .trading-watchlist-symbol-picker-avatar.apple{background:var(--c-slate-260-2);color:var(--c-neutral-1000)}
+  .trading-watchlist-symbol-picker-avatar.nvidia{background:var(--c-slate-970);color:var(--c-green-560)}
+  .trading-watchlist-symbol-picker-avatar.bitcoin{background:var(--c-slate-950);color:var(--c-indigo-490)}
+  .trading-watchlist-symbol-picker-avatar.ethereum{background:var(--c-neutral-960);color:var(--c-slate-550)}
+  .trading-watchlist-symbol-picker-avatar.solana{background:var(--c-slate-970);color:var(--c-teal-520)}
+  .trading-watchlist-symbol-picker-avatar.hyperliquid{background:var(--c-neutral-960);color:var(--c-sky-510)}
+  .trading-watchlist-symbol-picker-avatar.generic{background:var(--c-neutral-960);color:var(--c-slate-500)}
+  .trading-watchlist-symbol-picker-venue{display:flex;align-items:center;justify-content:flex-end;gap:8px}
+  .trading-watchlist-symbol-picker-venue>span{display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--c-sky-640);color:var(--c-neutral-1000);font-size:10px;font-weight:700}
+  .trading-watchlist-symbol-picker-exchange small{text-transform:lowercase}
+  .trading-watchlist-symbol-picker-add{cursor:pointer}
+
+  @media(max-width:700px){
+    .trading-watchlist-symbol-picker-heading{grid-template-columns:30px 76px minmax(140px,1fr) 86px 36px;gap:8px;padding:8px 16px}
+    .trading-watchlist .trading-watchlist-symbol-picker-results li{grid-template-columns:30px 76px minmax(140px,1fr) 86px 36px;gap:8px;padding:10px 16px}
+  }
+}
+
+/* Declarations that must win over every other layer. */
+@layer overrides {
+  .trading-watchlist-symbol-picker-add{display:grid;width:34px;height:34px;min-width:34px;padding:0;border:0;border-radius:6px;background:transparent;color:var(--c-slate-260-2);font-size:25px;font-weight:300;line-height:1;box-shadow:none}
+
+  .trading-watchlist-symbol-picker-add:hover:not(:disabled){background:var(--c-neutral-960);color:var(--c-blue-510)}
+
+  .trading-watchlist-symbol-picker-add:disabled{opacity:1;color:var(--c-green-650);cursor:default}
+
+  @media(max-width:700px){
+  .trading-watchlist-symbol-picker-add{width:30px;height:30px;min-width:30px}}
+}

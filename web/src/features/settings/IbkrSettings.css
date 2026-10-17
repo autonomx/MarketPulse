@@ -1,0 +1,214 @@
+@layer features {
+  .ibkr-settings .settings-section-body {
+    display: grid;
+    gap: 14px;
+  }
+
+  /* Status summary: the connection first, then what IBKR data may do. */
+  .ibkr-status {
+    display: grid;
+    gap: 12px;
+    padding: 14px 16px;
+    border: 1px solid var(--omnix-border);
+    border-radius: 10px;
+    background: var(--omnix-soft-bg);
+  }
+
+  .ibkr-status-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px 12px;
+  }
+
+  .ibkr-status-head .settings-status-value {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+  }
+
+  .ibkr-status-head .settings-status-value i {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+  }
+
+  .ibkr-status-source {
+    color: var(--omnix-muted-text);
+    font-size: 0.8rem;
+  }
+
+  .ibkr-status-facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 8px;
+    margin: 0;
+  }
+
+  .ibkr-status-facts > div {
+    display: grid;
+    gap: 2px;
+    padding: 8px 10px;
+    border: 1px solid var(--omnix-border);
+    border-radius: 8px;
+    background: var(--omnix-control-bg);
+  }
+
+  .ibkr-status-facts dt {
+    color: var(--omnix-muted-text);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .ibkr-status-facts dd {
+    margin: 0;
+    color: var(--omnix-text);
+    font-size: 0.86rem;
+    font-weight: 600;
+  }
+
+  .ibkr-status-error {
+    margin: 0;
+    color: var(--c-orange-580);
+    font-size: 0.8rem;
+  }
+
+  /* Groups of settings. */
+  .ibkr-group {
+    display: grid;
+    gap: 10px;
+    min-width: 0;
+    margin: 0;
+    padding: 12px 14px 14px;
+    border: 1px solid var(--omnix-border);
+    border-radius: 10px;
+  }
+
+  .ibkr-group > legend {
+    padding: 0 6px;
+    color: var(--omnix-muted-text);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .ibkr-connection-fields {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+    gap: 12px;
+  }
+
+  /* An on/off setting: label and description on the left, a switch on the right. */
+  .ibkr-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 10px 12px;
+    border: 1px solid var(--omnix-border);
+    border-radius: 8px;
+    background: var(--omnix-control-bg);
+    cursor: pointer;
+  }
+
+  .ibkr-toggle-text {
+    display: grid;
+    gap: 3px;
+    min-width: 0;
+  }
+
+  .ibkr-toggle-text strong {
+    color: var(--omnix-text);
+    font-size: 0.9rem;
+  }
+
+  .ibkr-toggle-text small {
+    color: var(--omnix-muted-text);
+    font-size: 0.76rem;
+    line-height: 1.4;
+  }
+
+  .ibkr-toggle input[type='checkbox'] {
+    position: relative;
+    flex: 0 0 auto;
+    width: 38px;
+    height: 22px;
+    margin: 0;
+    border: 1px solid var(--omnix-strong-border);
+    border-radius: 999px;
+    background: var(--omnix-soft-bg);
+    cursor: pointer;
+    appearance: none;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .ibkr-toggle input[type='checkbox']::before {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--omnix-muted-text);
+    content: '';
+    transition: transform 0.15s ease, background-color 0.15s ease;
+  }
+
+  .ibkr-toggle input[type='checkbox']:checked::before {
+    background: var(--c-neutral-1000);
+    transform: translateX(16px);
+  }
+
+  .ibkr-toggle input[type='checkbox']:focus-visible {
+    outline: 2px solid var(--omnix-cyan);
+    outline-offset: 2px;
+  }
+
+  .ibkr-toggle input[type='checkbox']:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+
+  .ibkr-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .ibkr-actions .settings-inline-status {
+    margin: 0;
+  }
+
+  .ibkr-note {
+    margin: 0;
+    color: var(--omnix-muted-text);
+    font-size: 0.78rem;
+  }
+
+  @media (max-width: 720px) {
+    .ibkr-connection-fields {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+/* The themes give every input the control background and border in the overrides layer; the switch's track
+   keeps its own there (scoped to this section so nothing else changes). */
+@layer overrides {
+  .ibkr-settings .ibkr-toggle input[type='checkbox'] {
+    border-color: var(--omnix-strong-border);
+    background: var(--omnix-soft-bg);
+  }
+
+  .ibkr-settings .ibkr-toggle input[type='checkbox']:checked {
+    border-color: var(--omnix-cyan);
+    background: var(--omnix-cyan);
+  }
+}

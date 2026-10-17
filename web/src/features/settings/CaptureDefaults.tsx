@@ -1,0 +1,8 @@
+import { SettingsField, SettingsSection } from './SettingsPrimitives';
+import { useSettingsProfileContext } from './SettingsProfileContext';
+
+export function CaptureDefaults() {
+  const { state, dispatch } = useSettingsProfileContext();
+  const value = state.draft.stt;
+  return <SettingsSection title="Speech input" scope="module"><div className="settings-form-grid"><SettingsField label="Language"><input value={value.language} placeholder="Auto" onChange={(event) => dispatch({ type: 'update', path: 'stt.language', value: event.currentTarget.value })} /></SettingsField><SettingsField label="Microphone"><input value={value.microphoneDeviceId} placeholder="Browser default" onChange={(event) => dispatch({ type: 'update', path: 'stt.microphoneDeviceId', value: event.currentTarget.value })} /></SettingsField></div><div className="settings-toggle-list"><label><input type="checkbox" checked={value.alignment} onChange={(event) => dispatch({ type: 'update', path: 'stt.alignment', value: event.currentTarget.checked })} /><span>Run alignment</span></label><label><input type="checkbox" checked={value.saveTranscript} onChange={(event) => dispatch({ type: 'update', path: 'stt.saveTranscript', value: event.currentTarget.checked })} /><span>Save transcript asset</span></label><label><input type="checkbox" checked={value.noiseSuppression} onChange={(event) => dispatch({ type: 'update', path: 'stt.noiseSuppression', value: event.currentTarget.checked })} /><span>Noise suppression</span></label><label><input type="checkbox" checked={value.echoCancellation} onChange={(event) => dispatch({ type: 'update', path: 'stt.echoCancellation', value: event.currentTarget.checked })} /><span>Echo cancellation</span></label></div></SettingsSection>;
+}

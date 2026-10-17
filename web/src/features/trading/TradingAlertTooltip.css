@@ -1,0 +1,11 @@
+@layer features {
+  .trading-alert-tooltip{position:fixed;z-index:10000;display:grid;gap:5px;width:min(390px,calc(100vw - 24px));padding:15px 18px;border:1px solid color-mix(in srgb, var(--c-neutral-1000) 8%, transparent);border-radius:6px;background:var(--c-neutral-270);box-shadow:0 12px 30px color-mix(in srgb, var(--c-neutral-0) 34%, transparent);color:var(--c-neutral-910);pointer-events:none;font-size:13px;line-height:1.25}
+  .trading-alert-tooltip::after{position:absolute;top:50%;right:-9px;width:0;height:0;transform:translateY(-50%);border-top:9px solid transparent;border-bottom:9px solid transparent;border-left:9px solid var(--c-neutral-270);content:""}
+  .trading-alert-tooltip-title{overflow:hidden;color:var(--c-slate-970-2);font-size:15px;font-weight:600;text-overflow:ellipsis;white-space:nowrap}
+  .trading-alert-tooltip-meta{display:flex;align-items:center;gap:7px;color:var(--c-slate-850)}
+  .trading-alert-tooltip-meta b{font-weight:500}
+  .trading-alert-tooltip-meta i{color:var(--c-slate-660);font-style:normal}
+  .trading-alert-tooltip-meta em{font-style:normal}
+  .trading-alert-tooltip-meta .state-active{color:var(--c-teal-740)}.trading-alert-tooltip-meta .state-triggered{color:var(--c-amber-770)}.trading-alert-tooltip-meta .state-expired,.trading-alert-tooltip-meta .state-stopped{color:var(--c-red-720)}
+  .trading-alert-tooltip-detail{color:var(--c-slate-790);font-size:13px}
+}

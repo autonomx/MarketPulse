@@ -1,0 +1,585 @@
+@layer features {
+  .assistant-research-progress {
+    margin: 0.75rem 1rem 1rem;
+    padding: 1rem;
+    border: 1px solid color-mix(in srgb, var(--mantine-color-violet-5, var(--c-indigo-600)) 38%, transparent);
+    border-radius: 0.9rem;
+    background: color-mix(in srgb, var(--mantine-color-dark-7, var(--c-neutral-220)) 88%, var(--mantine-color-violet-9, var(--c-indigo-500)));
+    box-shadow: 0 12px 28px color-mix(in srgb, var(--c-neutral-0) 16%, transparent);
+  }
+
+  .assistant-research-progress > header,
+  .assistant-research-progress-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .assistant-research-header-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+
+  .assistant-research-progress h3,
+  .assistant-research-progress p,
+  .assistant-research-progress dl,
+  .assistant-research-progress ul,
+  .assistant-research-progress ol {
+    margin-top: 0;
+  }
+
+  .assistant-research-progress h3 {
+    margin-bottom: 0;
+    font-size: 1rem;
+  }
+
+  .assistant-research-status {
+    padding: 0.25rem 0.55rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--c-indigo-600) 18%, transparent);
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  .assistant-research-progress-track {
+    height: 0.35rem;
+    margin: 0.85rem 0;
+    overflow: hidden;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--c-neutral-1000) 8%, transparent);
+  }
+
+  .assistant-research-progress-track > span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--c-indigo-600), var(--c-indigo-750));
+    transition: width 240ms ease;
+  }
+
+  .assistant-research-announcement {
+    min-height: 1.4rem;
+    margin-bottom: 0.75rem;
+    color: var(--mantine-color-gray-3, var(--c-neutral-910));
+  }
+
+  .assistant-research-progress-actions button,
+  .assistant-research-close,
+  .assistant-research-job-details a {
+    min-height: 2rem;
+    padding: 0.35rem 0.7rem;
+    border: 1px solid color-mix(in srgb, var(--c-neutral-1000) 16%, transparent);
+    border-radius: 0.55rem;
+    background: color-mix(in srgb, var(--c-neutral-1000) 6%, transparent);
+    color: inherit;
+    cursor: pointer;
+  }
+
+  .assistant-research-close {
+    width: 2rem;
+    padding: 0;
+    font-size: 1.2rem;
+    line-height: 1;
+  }
+
+  .assistant-research-progress-actions button:disabled {
+    cursor: default;
+    opacity: 0.62;
+  }
+
+  .assistant-research-plan-list {
+    display: grid;
+    gap: 0.7rem;
+    margin: 1rem 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .assistant-research-plan-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+    line-height: 1.35;
+  }
+
+  .assistant-research-plan-list li.is-completed {
+    color: var(--mantine-color-gray-3, var(--c-neutral-910));
+  }
+
+  .assistant-research-plan-list i {
+    display: grid;
+    flex: 0 0 auto;
+    place-items: center;
+    width: 1.1rem;
+    height: 1.1rem;
+    margin-top: 0.1rem;
+    border: 1px solid color-mix(in srgb, var(--c-violet-810) 64%, transparent);
+    border-radius: 999px;
+    color: var(--c-violet-810);
+  }
+
+  .assistant-research-plan-list i::after {
+    width: 0.35rem;
+    height: 0.35rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--c-violet-810) 72%, transparent);
+    content: '';
+  }
+
+  .assistant-research-plan-list li.is-completed i {
+    border-color: var(--c-green-790-2);
+    background: color-mix(in srgb, var(--c-green-790-2) 16%, transparent);
+    color: var(--c-green-900);
+    font-size: 0.75rem;
+    font-style: normal;
+    font-weight: 800;
+  }
+
+  .assistant-research-plan-list li.is-completed i::after {
+    display: none;
+  }
+
+  .assistant-research-plan-controls {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.6rem 0.85rem;
+    padding: 0.7rem;
+    border: 1px solid color-mix(in srgb, var(--c-neutral-1000) 10%, transparent);
+    border-radius: 0.65rem;
+    background: color-mix(in srgb, var(--c-neutral-1000) 4%, transparent);
+  }
+
+  .assistant-research-plan-controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.8rem;
+    font-weight: 750;
+  }
+
+  .assistant-research-plan-controls input {
+    width: 3.3rem;
+    min-height: 2rem;
+    border: 1px solid color-mix(in srgb, var(--c-violet-810) 34%, transparent);
+    border-radius: 0.45rem;
+    background: color-mix(in srgb, var(--c-slate-150-2) 58%, transparent);
+    color: inherit;
+    font: inherit;
+    font-weight: 800;
+    padding: 0 0.45rem;
+  }
+
+  .assistant-research-plan-controls input[readonly] {
+    border-color: color-mix(in srgb, var(--c-neutral-1000) 16%, transparent);
+    cursor: default;
+    opacity: 0.8;
+  }
+
+  .assistant-research-plan-intro {
+    margin-bottom: 0.8rem;
+    color: var(--mantine-color-gray-3, var(--c-neutral-910));
+  }
+
+  .status-plan-review {
+    max-width: 48rem;
+  }
+
+  .status-plan-progress {
+    max-width: 48rem;
+  }
+
+  .status-plan-progress .assistant-research-status {
+    background: color-mix(in srgb, var(--c-indigo-600) 18%, transparent);
+    color: var(--c-violet-810);
+  }
+
+  .status-plan-review > header {
+    align-items: flex-start;
+  }
+
+  .status-plan-review .assistant-research-status {
+    background: color-mix(in srgb, var(--c-green-790-2) 12%, transparent);
+    color: var(--c-teal-900);
+  }
+
+  .assistant-research-plan-controls small {
+    color: var(--mantine-color-gray-5, var(--c-slate-770));
+    font-size: 0.74rem;
+  }
+
+  .assistant-research-plan-actions {
+    margin-top: 0.85rem;
+  }
+
+  .assistant-research-plan-actions > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  [data-omnix-research-plan-error] {
+    color: var(--c-red-810);
+    font-size: 0.78rem;
+  }
+
+  .assistant-research-job-details,
+  .assistant-research-message-details {
+    margin-top: 0.75rem;
+    border-top: 1px solid color-mix(in srgb, var(--c-neutral-1000) 9%, transparent);
+    padding-top: 0.65rem;
+  }
+
+  .assistant-research-job-details > summary,
+  .assistant-research-message-details > summary {
+    cursor: pointer;
+    font-weight: 700;
+  }
+
+  .assistant-research-job-details dl,
+  .assistant-research-message-details dl {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+    gap: 0.5rem;
+    margin: 0.75rem 0;
+  }
+
+  .assistant-research-job-details dl > div,
+  .assistant-research-message-details dl > div {
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    background: color-mix(in srgb, var(--c-neutral-1000) 4%, transparent);
+  }
+
+  .assistant-research-job-details dt,
+  .assistant-research-message-details dt {
+    color: var(--mantine-color-gray-5, var(--c-slate-770));
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .assistant-research-job-details dd,
+  .assistant-research-message-details dd {
+    margin: 0.15rem 0 0;
+  }
+
+  .assistant-research-source-list {
+    display: grid;
+    gap: 0.55rem;
+    padding-left: 1.3rem;
+  }
+
+  .assistant-research-source-list li {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.25rem 0.75rem;
+  }
+
+  .assistant-research-source-list small {
+    grid-column: 1 / -1;
+    color: var(--mantine-color-gray-5, var(--c-slate-770));
+  }
+
+  .omnix-research-injected-message .assistant-chat-bubble > p,
+  .omnix-research-injected-message .assistant-message-content {
+    white-space: pre-wrap;
+  }
+
+  .assistant-research-report {
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--c-blue-660) 28%, transparent);
+    border-radius: 0.95rem;
+    background: linear-gradient(180deg, color-mix(in srgb, var(--c-indigo-260-3) 98%, transparent), color-mix(in srgb, var(--c-indigo-210) 98%, transparent));
+    box-shadow: 0 16px 34px color-mix(in srgb, var(--c-neutral-0) 20%, transparent);
+  }
+
+  .assistant-research-report-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--c-blue-660) 20%, transparent);
+  }
+
+  .assistant-research-report-heading {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    min-width: 0;
+  }
+
+  .assistant-research-report-icon {
+    display: grid;
+    flex: 0 0 auto;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.55rem;
+    background: linear-gradient(135deg, var(--c-indigo-600), var(--c-sky-800));
+    color: var(--c-neutral-1000);
+    font-size: 1.05rem;
+    font-weight: 900;
+  }
+
+  .assistant-research-report-kicker {
+    display: block;
+    color: var(--c-sky-870);
+    font-size: 0.68rem;
+    font-weight: 850;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .assistant-research-report-heading h3 {
+    margin: 0.12rem 0 0;
+    color: var(--c-neutral-1000);
+    font-size: 1rem;
+  }
+
+  .assistant-research-report-tools {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .assistant-research-report-tools button {
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    border: 0;
+    border-radius: 0.45rem;
+    background: transparent;
+    color: var(--mantine-color-gray-5, var(--c-slate-770));
+    cursor: pointer;
+    font: inherit;
+    font-size: 1.05rem;
+  }
+
+  .assistant-research-report-tools button:hover,
+  .assistant-research-report-tools button:focus-visible {
+    background: color-mix(in srgb, var(--c-neutral-1000) 8%, transparent);
+    color: var(--c-neutral-1000);
+    outline: none;
+  }
+
+  .assistant-research-report-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--c-blue-660) 14%, transparent);
+    color: var(--c-slate-810);
+    font-size: 0.78rem;
+  }
+
+  .assistant-research-report-status {
+    padding: 0.22rem 0.5rem;
+    border: 1px solid color-mix(in srgb, var(--c-yellow-840) 28%, transparent);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--c-yellow-840) 10%, transparent);
+    color: var(--c-yellow-920-2);
+    font-weight: 750;
+  }
+
+  .assistant-research-report-status.complete {
+    border-color: color-mix(in srgb, var(--c-green-790-2) 28%, transparent);
+    background: color-mix(in srgb, var(--c-green-790-2) 10%, transparent);
+    color: var(--c-teal-900);
+  }
+
+  .assistant-research-report-body {
+    padding: 1.15rem 1.25rem 1.3rem;
+    color: var(--c-neutral-960);
+    font-size: 0.95rem;
+    line-height: 1.65;
+  }
+
+  .assistant-research-report-body h1,
+  .assistant-research-report-body h2,
+  .assistant-research-report-body h3,
+  .assistant-research-report-body h4,
+  .assistant-research-report-body h5,
+  .assistant-research-report-body h6 {
+    color: var(--c-neutral-1000);
+    line-height: 1.25;
+  }
+
+  .assistant-research-report-body h1 { font-size: 1.55rem; }
+  .assistant-research-report-body h2 { font-size: 1.22rem; margin-top: 1.45rem; }
+  .assistant-research-report-body p { margin-bottom: 1rem; }
+  .assistant-research-report-body strong { color: var(--c-neutral-1000); font-weight: 800; }
+  .assistant-research-report-body ul,
+  .assistant-research-report-body ol { padding-left: 1.45rem; }
+
+  .assistant-chat-message.assistant.assistant-chat-message-report-expanded {
+    width: min(72rem, 96%);
+    max-width: min(72rem, 96%);
+  }
+
+  .assistant-research-report.is-expanded {
+    max-height: calc(100vh - 4rem);
+    overflow: auto;
+  }
+
+  @media (max-width: 620px) {
+    .assistant-research-report-header,
+    .assistant-research-report-meta {
+      align-items: flex-start;
+    }
+
+    .assistant-research-report-body {
+      padding: 1rem;
+    }
+  }
+
+  @media (max-width: 620px) {
+    .assistant-research-progress > header,
+    .assistant-research-progress-actions {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .assistant-research-plan-actions > span {
+      width: 100%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .assistant-research-progress-track > span {
+      transition: none;
+    }
+  }
+
+
+  /* Omnix light appearance: research surfaces */
+}
+
+/* Declarations that must win over every other layer. */
+@layer overrides {
+  .assistant-research-start {
+    border-color: color-mix(in srgb, var(--c-violet-810) 70%, transparent);
+    background: linear-gradient(135deg, var(--c-indigo-600), var(--c-violet-710));
+    color: var(--c-neutral-1000);
+  }
+
+  :root[data-omnix-appearance='light'] .assistant-research-progress {
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--c-neutral-1000) 72%, transparent), color-mix(in srgb, var(--c-slate-930) 44%, transparent)),
+      var(--omnix-panel-bg, color-mix(in srgb, var(--c-slate-970-2) 72%, transparent));
+    border-color: var(--omnix-border, color-mix(in srgb, var(--c-slate-510) 22%, transparent));
+    box-shadow: inset 0 1px 0 color-mix(in srgb, var(--c-neutral-1000) 78%, transparent), 0 .65rem 1.4rem color-mix(in srgb, var(--c-blue-390) 8%, transparent);
+    color: var(--omnix-text, var(--c-blue-310));
+  }
+
+  :root[data-omnix-appearance='light'] .assistant-research-progress :where(h3,strong,dd,.assistant-research-plan-list,.assistant-research-progress-actions) {
+    color: var(--omnix-text, var(--c-blue-310));
+  }
+
+  :root[data-omnix-appearance='light'] .assistant-research-progress :where(.assistant-research-announcement,.assistant-research-plan-intro,.assistant-research-progress-actions small,.assistant-research-plan-controls small,.assistant-research-job-details dt,.assistant-research-message-details dt,.assistant-research-source-list small) {
+    color: var(--omnix-muted, var(--c-blue-560));
+  }
+
+  :root[data-omnix-appearance='light'] .assistant-research-progress-track {
+    background: color-mix(in srgb, var(--c-blue-490) 12%, transparent);
+  }
+
+  :root[data-omnix-appearance='light'] .assistant-research-plan-controls,
+  :root[data-omnix-appearance='light'] .assistant-research-job-details dl > div,
+  :root[data-omnix-appearance='light'] .assistant-research-message-details dl > div {
+    background: color-mix(in srgb, var(--c-neutral-1000) 42%, transparent);
+    border-color: color-mix(in srgb, var(--c-blue-560) 18%, transparent);
+  }
+
+  :root[data-omnix-appearance='light'] .assistant-research-plan-controls input,
+  :root[data-omnix-appearance='light'] .assistant-research-progress-actions button,
+  :root[data-omnix-appearance='light'] .assistant-research-close,
+  :root[data-omnix-appearance='light'] .assistant-research-job-details a {
+    background: color-mix(in srgb, var(--c-neutral-1000) 74%, transparent);
+    border-color: color-mix(in srgb, var(--c-blue-560) 22%, transparent);
+    color: var(--omnix-text, var(--c-blue-310));
+  }
+
+  :root[data-omnix-appearance='light'] .assistant-research-report {
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--c-neutral-1000) 78%, transparent), color-mix(in srgb, var(--c-slate-930) 48%, transparent)),
+      var(--omnix-panel-bg, color-mix(in srgb, var(--c-slate-970-2) 72%, transparent));
+    border-color: var(--omnix-border, color-mix(in srgb, var(--c-blue-560) 22%, transparent));
+    box-shadow: inset 0 1px 0 color-mix(in srgb, var(--c-neutral-1000) 86%, transparent), 0 .75rem 1.5rem color-mix(in srgb, var(--c-blue-390) 9%, transparent);
+    color: var(--omnix-text, var(--c-blue-310));
+  }
+
+  :root[data-omnix-appearance='light'] .assistant-research-report-header,
+  :root[data-omnix-appearance='light'] .assistant-research-report-meta {
+    border-color: color-mix(in srgb, var(--c-blue-560) 18%, transparent);
+  }
+
+  :root[data-omnix-appearance='light'] .assistant-research-report-heading h3,
+  :root[data-omnix-appearance='light'] .assistant-research-report-body,
+  :root[data-omnix-appearance='light'] .assistant-research-report-body :where(h1,h2,h3,h4,h5,h6,strong,li,td,th) {
+    color: var(--omnix-text, var(--c-blue-310));
+  }
+
+  :root[data-omnix-appearance='light'] .assistant-research-report-kicker {
+    color: var(--omnix-cyan, var(--c-blue-560));
+  }
+
+  :root[data-omnix-appearance='light'] .assistant-research-report-meta,
+  :root[data-omnix-appearance='light'] .assistant-research-report-tools button {
+    color: var(--omnix-muted, var(--c-blue-560));
+  }
+
+  :root[data-omnix-appearance='light'] .assistant-research-report-tools button:hover,
+  :root[data-omnix-appearance='light'] .assistant-research-report-tools button:focus-visible {
+    background: color-mix(in srgb, var(--c-blue-560) 10%, transparent);
+    color: var(--omnix-text, var(--c-blue-310));
+  }
+
+  :root[data-omnix-appearance='light'] .assistant-research-report-body :where(p,ul,ol,blockquote,h1,h2,h3,h4,h5,h6) {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    color: var(--omnix-text, var(--c-blue-310));
+  }
+
+  :root[data-omnix-appearance='light'] .assistant-research-report-body p {
+    padding: 0;
+  }
+
+  :root[data-omnix-appearance='light'] .assistant-research-report-body blockquote {
+    border-left: 3px solid color-mix(in srgb, var(--c-blue-560) 32%, transparent);
+    color: var(--omnix-muted, var(--c-blue-560));
+    padding-left: .85rem;
+  }
+
+  :root[data-omnix-appearance='light'] .assistant-research-report-body :where(pre,code) {
+    background: color-mix(in srgb, var(--c-slate-820) 20%, transparent);
+    border-color: color-mix(in srgb, var(--c-blue-560) 16%, transparent);
+    color: var(--c-blue-350);
+  }
+
+  :root[data-omnix-appearance='light'] .assistant-research-citation,
+  :root[data-omnix-appearance='light'] .assistant-research-report-body a {
+    color: var(--c-sky-510);
+  }
+
+  :root[data-omnix-appearance='light'] .assistant-research-report-status {
+    background: color-mix(in srgb, var(--c-yellow-720) 10%, transparent);
+    border-color: color-mix(in srgb, var(--c-amber-620) 24%, transparent);
+    color: var(--c-yellow-530);
+  }
+
+  :root[data-omnix-appearance='light'] .assistant-research-report-status.complete {
+    background: color-mix(in srgb, var(--c-teal-600) 10%, transparent);
+    border-color: color-mix(in srgb, var(--c-teal-600) 23%, transparent);
+    color: var(--c-teal-520);
+  }
+}

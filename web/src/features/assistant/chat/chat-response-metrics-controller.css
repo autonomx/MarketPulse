@@ -1,0 +1,36 @@
+@layer features {
+  .assistant-response-metrics {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+    margin: 0.65rem 0 0.15rem;
+    color: color-mix(in srgb, currentColor 68%, transparent);
+    font-size: 0.72rem;
+    line-height: 1;
+  }
+
+  .assistant-response-metric {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.28rem;
+    min-height: 1.65rem;
+    padding: 0.28rem 0.52rem;
+    border: 1px solid color-mix(in srgb, currentColor 9%, transparent);
+    border-radius: 999px;
+    background: color-mix(in srgb, currentColor 5%, transparent);
+    white-space: nowrap;
+  }
+
+  .assistant-response-metric-icon {
+    display: inline-grid;
+    place-items: center;
+    min-width: 0.8rem;
+    font-size: 0.78rem;
+    opacity: 0.9;
+  }
+
+  .assistant-response-metric-icon:empty {
+    display: none;
+  }
+}

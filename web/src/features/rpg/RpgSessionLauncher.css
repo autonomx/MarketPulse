@@ -1,0 +1,325 @@
+@layer features {
+  .rpg-session-launcher {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    align-items: center;
+    margin: 0 0 0.75rem;
+    padding: 0.55rem 0.75rem;
+    border: 1px solid color-mix(in srgb, var(--c-violet-710) 20%, transparent);
+    border-radius: 14px;
+    background: color-mix(in srgb, var(--c-indigo-210) 82%, transparent);
+    box-shadow: 0 10px 30px color-mix(in srgb, var(--c-neutral-0) 18%, transparent), inset 0 1px 0 color-mix(in srgb, var(--c-neutral-1000) 5%, transparent);
+    backdrop-filter: blur(14px);
+  }
+
+  .rpg-session-launcher-summary,
+  .rpg-session-launcher-status,
+  .rpg-session-launcher-error {
+    font-size: 0.84rem;
+    line-height: 1.35;
+  }
+
+  .rpg-session-launcher-summary {
+    color: var(--omnix-muted, var(--c-slate-730));
+  }
+
+  .rpg-session-launcher-status {
+    color: var(--c-violet-810);
+  }
+
+  .rpg-session-launcher-error {
+    color: var(--c-red-810);
+  }
+
+  /*
+   * Theme presets put backdrop-filter on .workspace-card. That makes the card a
+   * containing block for fixed descendants, so the campaign dialog is centered
+   * against the full, scrollable RPG card and can land far below the viewport.
+   * Drop that effect only while the launcher is open so the modal is fixed to
+   * the browser viewport as intended.
+   */
+  :root[data-omnix-theme] .workspace-card:has(.rpg-launcher-modal) {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .rpg-launcher-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    isolation: isolate;
+    display: grid;
+    place-items: center;
+    padding: clamp(1rem, 3vw, 2rem);
+  }
+
+  .rpg-launcher-backdrop {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    border: 0;
+    background: color-mix(in srgb, var(--c-blue-130) 74%, transparent);
+    backdrop-filter: blur(8px);
+    cursor: pointer;
+  }
+
+  .rpg-launcher-dialog {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: 1rem;
+    width: min(1040px, 100%);
+    max-height: min(86vh, 920px);
+    overflow: auto;
+    padding: clamp(1rem, 2vw, 1.35rem);
+    border: 1px solid color-mix(in srgb, var(--c-violet-810) 28%, transparent);
+    border-radius: 24px;
+    background: linear-gradient(135deg, color-mix(in srgb, var(--c-violet-230) 96%, transparent), color-mix(in srgb, var(--c-indigo-170) 98%, transparent));
+    box-shadow: 0 28px 80px color-mix(in srgb, var(--c-neutral-0) 46%, transparent), inset 0 1px 0 color-mix(in srgb, var(--c-neutral-1000) 7%, transparent);
+  }
+
+  .rpg-launcher-dialog h3,
+  .rpg-launcher-dialog h4,
+  .rpg-launcher-dialog p {
+    margin: 0;
+  }
+
+  .rpg-launcher-home-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  .rpg-launcher-card {
+    display: grid;
+    align-content: start;
+    gap: 0.45rem;
+    min-height: 116px;
+    padding: 0.95rem;
+    border: 1px solid color-mix(in srgb, var(--c-violet-710) 22%, transparent);
+    border-radius: 16px;
+    background: color-mix(in srgb, var(--c-indigo-210) 62%, transparent);
+    color: var(--c-neutral-1000);
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .rpg-launcher-card:hover:not(:disabled) {
+    border-color: color-mix(in srgb, var(--c-violet-810) 50%, transparent);
+    background: color-mix(in srgb, var(--c-violet-380-2) 34%, transparent);
+  }
+
+  .rpg-launcher-card:disabled {
+    cursor: not-allowed;
+    opacity: 0.52;
+  }
+
+  .rpg-launcher-card strong {
+    font-size: 1rem;
+  }
+
+  .rpg-launcher-card span,
+  .rpg-settings-note,
+  .rpg-launcher-build-note {
+    color: var(--omnix-muted, var(--c-slate-730));
+    font-size: 0.86rem;
+    line-height: 1.45;
+  }
+
+  .rpg-launcher-panel {
+    display: grid;
+    gap: 0.9rem;
+    padding: 1rem;
+    border: 1px solid color-mix(in srgb, var(--c-violet-810) 20%, transparent);
+    border-radius: 16px;
+    background: color-mix(in srgb, var(--c-indigo-210) 58%, transparent);
+  }
+
+  .rpg-launcher-panel-heading,
+  .rpg-launcher-section-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .rpg-launcher-form-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  .rpg-launcher-form-grid > label,
+  .rpg-launcher-choice-panel,
+  .rpg-launcher-toggle-grid label {
+    display: grid;
+    gap: 0.35rem;
+    color: color-mix(in srgb, var(--c-slate-940) 92%, transparent);
+    font-size: 0.82rem;
+    font-weight: 700;
+  }
+
+  .rpg-unified-header .rpg-session-launcher {
+    position: static;
+    flex-wrap: nowrap;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+  }
+
+  .rpg-launcher-dialog-wide {
+    width: min(1600px, 100%);
+  }
+
+  .rpg-launcher-form-grid > label input,
+  .rpg-launcher-form-grid > label select {
+    width: 100%;
+    border: 1px solid color-mix(in srgb, var(--c-violet-710) 24%, transparent);
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--c-indigo-210) 88%, transparent);
+    color: var(--c-neutral-1000);
+    padding: 0.65rem 0.75rem;
+  }
+
+  .rpg-launcher-choice-panel {
+    grid-column: span 2;
+    padding: 0.7rem 0.8rem;
+    border: 1px solid color-mix(in srgb, var(--c-violet-710) 18%, transparent);
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--c-blue-280-2) 36%, transparent);
+  }
+
+  .rpg-launcher-choice-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.4rem 0.65rem;
+  }
+
+  .rpg-launcher-choice-grid label {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 0.45rem;
+    min-height: 28px;
+    color: color-mix(in srgb, var(--c-slate-940) 86%, transparent);
+    font-weight: 600;
+  }
+
+  .rpg-launcher-toggle-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.65rem;
+  }
+
+  .rpg-launcher-toggle-grid label {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    padding: 0.65rem 0.75rem;
+    border: 1px solid color-mix(in srgb, var(--c-violet-710) 18%, transparent);
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--c-blue-280-2) 44%, transparent);
+  }
+
+  .rpg-launcher-panel-actions {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .rpg-load-game-list {
+    display: grid;
+    gap: 0.65rem;
+  }
+
+  .rpg-load-game-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.75rem;
+    align-items: center;
+    border: 1px solid color-mix(in srgb, var(--c-violet-710) 20%, transparent);
+    border-radius: 14px;
+    background: color-mix(in srgb, var(--c-blue-280-2) 52%, transparent);
+    padding: 0.25rem;
+  }
+
+  .rpg-load-game-main {
+    display: grid;
+    gap: 0.3rem;
+    width: 100%;
+    text-align: left;
+    border: 0;
+    border-radius: 12px;
+    background: transparent;
+    color: var(--c-neutral-1000);
+    padding: 0.7rem 0.85rem;
+    cursor: pointer;
+  }
+
+  .rpg-load-game-card:hover {
+    border-color: color-mix(in srgb, var(--c-violet-810) 45%, transparent);
+    background: color-mix(in srgb, var(--c-blue-390) 68%, transparent);
+  }
+
+  .rpg-load-game-main:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  .rpg-load-game-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.4rem;
+    padding-right: 0.5rem;
+  }
+
+  .rpg-load-game-list span,
+  .rpg-load-game-list small {
+    color: var(--omnix-muted, var(--c-slate-730));
+  }
+
+  @media (max-width: 1100px) {
+    .rpg-launcher-home-grid,
+    .rpg-launcher-form-grid,
+    .rpg-launcher-toggle-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 860px) {
+    .rpg-load-game-card {
+      grid-template-columns: 1fr;
+    }
+
+    .rpg-launcher-panel-actions,
+    .rpg-load-game-actions {
+      justify-content: flex-start;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .rpg-session-launcher,
+    .rpg-launcher-form-grid,
+    .rpg-launcher-home-grid,
+    .rpg-launcher-toggle-grid,
+    .rpg-launcher-choice-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .rpg-launcher-choice-panel {
+      grid-column: span 1;
+    }
+
+    .rpg-launcher-panel-heading,
+    .rpg-launcher-section-heading {
+      display: grid;
+    }
+  }
+}

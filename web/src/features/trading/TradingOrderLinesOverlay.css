@@ -1,0 +1,6 @@
+@layer features {
+  .trading-order-lines{position:absolute;z-index:8;inset:0;overflow:hidden;pointer-events:none}
+  .trading-order-lines-error{position:absolute;right:18%;bottom:12px;display:flex;align-items:center;gap:8px;border:1px solid color-mix(in srgb, var(--c-red-560) 55%, transparent);border-radius:4px;background:var(--c-indigo-190);padding:5px 8px;color:var(--c-neutral-960);font-size:12px;pointer-events:auto}
+  .trading-order-lines-error button{border:0;background:transparent;color:inherit;cursor:pointer}
+  :root[data-omnix-appearance='light'] .trading-order-lines-error{background:var(--c-neutral-1000);color:var(--c-slate-260-2)}
+}

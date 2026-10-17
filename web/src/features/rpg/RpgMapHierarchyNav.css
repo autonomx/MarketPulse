@@ -1,0 +1,56 @@
+@layer features {
+  .rpg-map-breadcrumbs {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .rpg-map-breadcrumbs button {
+    background: transparent;
+    border: 0;
+    border-radius: 0.4rem;
+    color: var(--c-yellow-870);
+    cursor: pointer;
+    font: inherit;
+    padding: 0.25rem 0.35rem;
+  }
+
+  .rpg-map-breadcrumbs button:hover,
+  .rpg-map-breadcrumbs button:focus-visible {
+    background: color-mix(in srgb, var(--c-yellow-870) 10%, transparent);
+    outline: 1px solid color-mix(in srgb, var(--c-yellow-870) 35%, transparent);
+  }
+
+  .rpg-map-breadcrumbs span {
+    color: var(--mantine-color-dimmed, var(--c-neutral-730));
+    font-size: 0.78rem;
+  }
+
+  .rpg-map-breadcrumbs [aria-current='page'] {
+    color: inherit;
+    font-weight: 700;
+  }
+
+  .rpg-map-child-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+  }
+
+  .rpg-map-capability-list button {
+    background: color-mix(in srgb, var(--c-neutral-1000) 5.5%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-neutral-1000) 9%, transparent);
+    border-radius: 999px;
+    color: inherit;
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.72rem;
+    padding: 0.3rem 0.58rem;
+  }
+
+  .rpg-map-capability-list button:disabled {
+    cursor: not-allowed;
+    opacity: 0.65;
+  }
+}

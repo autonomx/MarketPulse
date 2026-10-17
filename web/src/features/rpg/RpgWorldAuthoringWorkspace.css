@@ -1,0 +1,257 @@
+@layer features {
+  .rpg-authoring-library,
+  .rpg-authoring-campaign-setup,
+  .rpg-authoring-editor {
+    min-height: 100%;
+    color: var(--c-neutral-1000);
+  }
+
+  .rpg-authoring-heading,
+  .rpg-authoring-editor-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .rpg-authoring-heading h2,
+  .rpg-authoring-heading p {
+    margin: 0;
+  }
+
+  .rpg-authoring-heading > div:last-child,
+  .rpg-authoring-editor-header > div {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+  }
+
+  .rpg-authoring-toolbar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(180px, 260px);
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .rpg-authoring-toolbar input,
+  .rpg-authoring-toolbar select,
+  .rpg-authoring-modal input,
+  .rpg-authoring-modal textarea {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid color-mix(in srgb, var(--c-violet-710) 24%, transparent);
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--c-indigo-170) 88%, transparent);
+    color: var(--c-neutral-1000);
+    padding: 0.75rem 0.85rem;
+  }
+
+  .rpg-authoring-feedback {
+    padding: 0.7rem 0.85rem;
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--c-teal-700) 12%, transparent);
+    color: var(--c-teal-900);
+  }
+
+  .rpg-world-card-more {
+    border-top: 1px solid color-mix(in srgb, var(--c-violet-710) 16%, transparent);
+    padding-top: 0.65rem;
+  }
+
+  .rpg-world-card-more summary {
+    cursor: pointer;
+    color: var(--c-violet-810);
+    font-weight: 700;
+  }
+
+  .rpg-world-card-more button {
+    width: 100%;
+    margin-top: 0.55rem;
+  }
+
+  .rpg-authoring-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1200;
+    display: grid;
+    place-items: center;
+    padding: 1rem;
+    background: color-mix(in srgb, var(--c-blue-130) 78%, transparent);
+    backdrop-filter: blur(8px);
+  }
+
+  .rpg-authoring-modal form {
+    display: grid;
+    width: min(560px, 100%);
+    gap: 0.85rem;
+    padding: 1.25rem;
+    border: 1px solid color-mix(in srgb, var(--c-violet-710) 28%, transparent);
+    border-radius: 18px;
+    background: var(--c-indigo-190);
+    box-shadow: 0 24px 80px color-mix(in srgb, var(--c-neutral-0) 45%, transparent);
+  }
+
+  .rpg-authoring-modal label {
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .rpg-authoring-modal form > div:last-child {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.65rem;
+  }
+
+  .rpg-authoring-two-column {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .rpg-authoring-two-column > section,
+  .rpg-authoring-two-column article,
+  .rpg-authoring-page,
+  .rpg-authoring-empty {
+    border: 1px solid color-mix(in srgb, var(--c-violet-710) 20%, transparent);
+    border-radius: 16px;
+    background: color-mix(in srgb, var(--c-slate-150-2) 76%, transparent);
+  }
+
+  .rpg-authoring-two-column > section {
+    padding: 1rem;
+  }
+
+  .rpg-authoring-two-column article {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 0.75rem;
+    padding: 0.85rem;
+  }
+
+  .rpg-authoring-two-column article p {
+    margin: 0.2rem 0 0;
+    color: var(--omnix-muted, var(--c-slate-730));
+  }
+
+  .rpg-authoring-editor-header {
+    align-items: center;
+    padding-bottom: 0.85rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--c-violet-710) 20%, transparent);
+  }
+
+  .rpg-authoring-editor-layout {
+    display: grid;
+    grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
+    min-height: 70vh;
+    gap: 1rem;
+  }
+
+  .rpg-authoring-editor-layout > nav {
+    max-height: 76vh;
+    overflow: auto;
+    padding-right: 0.45rem;
+  }
+
+  .rpg-authoring-editor-layout nav section {
+    display: grid;
+    gap: 0.3rem;
+    margin-bottom: 1rem;
+  }
+
+  .rpg-authoring-editor-layout nav h4 {
+    margin: 0 0 0.3rem;
+    color: var(--c-violet-710);
+    font-size: 0.73rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .rpg-authoring-editor-layout nav button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.65rem;
+    width: 100%;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--c-slate-930);
+    padding: 0.58rem 0.65rem;
+    text-align: left;
+  }
+
+  .rpg-authoring-editor-layout nav button:hover,
+  .rpg-authoring-editor-layout nav button.is-active {
+    border-color: color-mix(in srgb, var(--c-violet-710) 24%, transparent);
+    background: color-mix(in srgb, var(--c-violet-380) 30%, transparent);
+  }
+
+  .rpg-authoring-editor-layout nav small {
+    color: var(--omnix-muted, var(--c-slate-730));
+    font-size: 0.67rem;
+  }
+
+  .rpg-authoring-page {
+    min-height: 60vh;
+    padding: 1.2rem;
+  }
+
+  .rpg-authoring-page h2 {
+    margin-top: 0;
+  }
+
+  .rpg-authoring-page pre {
+    max-height: 56vh;
+    overflow: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .rpg-authoring-empty {
+    padding: 1rem;
+  }
+
+  .rpg-authoring-empty dl {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.65rem;
+  }
+
+  .rpg-authoring-empty dl div {
+    padding: 0.75rem;
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--c-indigo-210) 68%, transparent);
+  }
+
+  .rpg-authoring-empty dt {
+    color: var(--omnix-muted, var(--c-slate-730));
+    font-size: 0.75rem;
+  }
+
+  .rpg-authoring-empty dd {
+    margin: 0.25rem 0 0;
+  }
+
+  @media (max-width: 900px) {
+    .rpg-authoring-editor-layout,
+    .rpg-authoring-two-column {
+      grid-template-columns: 1fr;
+    }
+
+    .rpg-authoring-editor-layout > nav {
+      max-height: none;
+    }
+  }
+
+  @media (max-width: 680px) {
+    .rpg-authoring-heading,
+    .rpg-authoring-editor-header,
+    .rpg-authoring-toolbar {
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+  }
+}

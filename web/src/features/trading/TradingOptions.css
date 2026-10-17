@@ -1,0 +1,31 @@
+@layer features {
+  .trading-options{display:flex;flex-direction:column;gap:8px;padding:8px 10px;font-size:12px;min-height:0;height:100%;overflow:auto}
+  .trading-options header{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+  .trading-options header span{margin-left:auto;color:var(--c-slate-630);font-size:11px}
+  .trading-options [role=tablist] button[aria-selected=true]{border-color:var(--c-blue-630);background:color-mix(in srgb, var(--c-blue-630) 14%, transparent)}
+  .trading-options-body{display:grid;grid-template-columns:minmax(0,3fr) minmax(320px,2fr);gap:12px;min-height:0}
+  .trading-options-chain{min-width:0;overflow:auto}
+  .trading-option-chain{width:100%;border-collapse:collapse;font-size:11px}
+  .trading-option-chain th,.trading-option-chain td{padding:2px 5px;border-bottom:1px solid var(--c-neutral-910);text-align:right;white-space:nowrap}
+  .trading-option-chain th[scope=row]{text-align:center;background:color-mix(in srgb, var(--c-blue-660) 8%, transparent)}
+  .trading-option-chain td button{border:0;background:transparent;padding:0 2px;font:inherit;color:var(--c-blue-660);cursor:pointer}
+  .trading-option-chain tr.is-atm th[scope=row]{background:color-mix(in srgb, var(--c-blue-630) 25%, transparent)}
+  .trading-option-chain tr.is-call-itm td:nth-child(-n+6),.trading-option-chain tr.is-put-itm td:nth-last-child(-n+6){background:color-mix(in srgb, var(--c-yellow-840) 6%, transparent)}
+  .trading-option-smile svg,.trading-option-pnl{width:100%;height:auto}
+  .trading-option-smile text,.trading-option-pnl text{fill:var(--c-slate-630);font-size:10px}
+  .trading-option-smile .calls,.trading-option-pnl .expiry{stroke:var(--c-blue-540);stroke-width:2;color:var(--c-blue-540)}
+  .trading-option-smile .puts{stroke:var(--c-amber-770);stroke-width:2;color:var(--c-amber-770)}
+  .trading-option-pnl .dated{stroke:var(--c-purple-500);stroke-width:1.5;stroke-dasharray:4 3}
+  .trading-option-smile .spot,.trading-option-pnl .spot{stroke:var(--c-slate-630);stroke-dasharray:3 3}
+  .trading-option-pnl .zero{stroke:var(--c-neutral-910)}
+  .trading-option-builder{display:flex;flex-direction:column;gap:8px}
+  .trading-option-builder table{width:100%;border-collapse:collapse}
+  .trading-option-builder td,.trading-option-builder th{padding:2px 5px;border-bottom:1px solid var(--c-neutral-910);text-align:left}
+  .trading-option-builder input[type=number]{width:52px}
+  .trading-option-summary{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:6px;margin:0}
+  .trading-option-summary div{padding:4px 6px;border:1px solid var(--c-neutral-910);border-radius:4px}
+  .trading-option-summary dt{color:var(--c-slate-630);font-size:10px}
+  .trading-option-summary dd{margin:0;font-weight:600}
+  .trading-option-whatif{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+  .trading-option-builder small,.trading-option-builder-empty,.trading-options footer{color:var(--c-slate-630);font-size:10px}
+}

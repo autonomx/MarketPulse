@@ -1,0 +1,50 @@
+@layer features {
+  .workspace-card.assistant-chat-page.assistant-chat-page-fullscreen {
+    position: fixed;
+    z-index: 1500;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    max-width: none;
+    min-height: 100vh;
+    min-height: 100dvh;
+    margin: 0;
+    overflow: hidden;
+    padding: 1rem;
+    border: 0;
+    border-radius: 0;
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--c-indigo-600) 34%, transparent), 0 1.5rem 4rem color-mix(in srgb, var(--c-neutral-0) 42%, transparent);
+  }
+
+  .assistant-chat-page-fullscreen .assistant-chat-layout {
+    display: block;
+    height: 100%;
+    min-height: 0;
+  }
+
+  .assistant-chat-page-fullscreen .assistant-chat-sidebar,
+  .assistant-chat-page-fullscreen .assistant-chat-side {
+    display: none;
+  }
+
+  .assistant-chat-page-fullscreen .assistant-chat-main {
+    height: 100%;
+    min-height: 0;
+    border-radius: 0.8rem;
+  }
+
+  .assistant-chat-page-fullscreen .assistant-chat-messages {
+    min-height: 0;
+  }
+
+  @media (max-width: 700px) {
+    .workspace-card.assistant-chat-page.assistant-chat-page-fullscreen {
+      padding: 0;
+    }
+
+    .assistant-chat-page-fullscreen .assistant-chat-main {
+      border-radius: 0;
+    }
+  }
+}

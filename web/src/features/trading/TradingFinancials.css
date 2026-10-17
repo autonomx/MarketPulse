@@ -1,0 +1,26 @@
+@layer features {
+  .trading-financials{display:flex;flex-direction:column;gap:8px;padding:8px 10px;font-size:12px;min-height:0;height:100%}
+  .trading-financials header{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+  .trading-financials header span{color:var(--c-slate-630)}
+  .trading-financials header label{display:flex;gap:4px;align-items:center;margin-left:auto}
+  .trading-financials nav{display:flex;gap:2px;border-bottom:1px solid var(--c-neutral-910)}
+  .trading-financials [role='tab'][aria-selected='true']{font-weight:700;box-shadow:inset 0 -2px 0 currentColor}
+  .trading-financials-ratios{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin:0}
+  .trading-financials-ratios div{display:grid;gap:2px}
+  .trading-financials-ratios dt{color:var(--c-slate-630);font-size:10px}
+  .trading-financials-ratios dd{margin:0;font-size:14px;font-weight:600}
+  .trading-financials-bars{display:flex;align-items:flex-end;gap:10px;height:140px;padding-top:8px}
+  .trading-financials-bar-group{display:flex;flex:1;flex-direction:column;align-items:center;gap:4px;height:100%}
+  .trading-financials-bar-pair{display:flex;flex:1;align-items:flex-end;gap:2px;width:100%;justify-content:center}
+  .trading-financials-bar-pair i{display:block;width:40%;max-width:22px;border-radius:2px 2px 0 0}
+  .trading-financials-bar-pair .is-revenue{background:var(--c-blue-540)}
+  .trading-financials-bar-pair .is-income{background:var(--c-teal-600)}
+  .trading-financials-bar-pair .is-loss{background:var(--c-red-640)}
+  .trading-financials-bar-group small{color:var(--c-slate-630);font-size:10px;white-space:nowrap}
+  .trading-financials-table{flex:1;overflow:auto}
+  .trading-financials-table table{width:100%;border-collapse:collapse}
+  .trading-financials-table :is(th,td){padding:4px 8px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--c-neutral-910)}
+  .trading-financials-table th[scope='row']{text-align:left;font-weight:500}
+  .trading-financials-table .is-negative{color:var(--c-red-640)}
+  .trading-financials footer{color:var(--c-slate-630);font-size:10px}
+}

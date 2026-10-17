@@ -1,0 +1,162 @@
+@layer features {
+  .rpg-map-object-hitbox {
+    cursor: pointer;
+    fill: transparent;
+    pointer-events: all;
+    stroke: transparent;
+    stroke-width: 16;
+  }
+
+  .rpg-map-object-footprint {
+    fill: color-mix(in srgb, var(--c-yellow-220) 8%, transparent);
+    pointer-events: none;
+    stroke: color-mix(in srgb, var(--c-yellow-220) 12%, transparent);
+    stroke-width: 8;
+  }
+
+  .rpg-map-object-vector-fallback {
+    opacity: 0.5;
+  }
+
+  .rpg-map-object-sprite,
+  .rpg-map-background-asset {
+    pointer-events: none;
+  }
+
+  .rpg-map-object-sprite {
+    filter: drop-shadow(0 18px 12px color-mix(in srgb, var(--c-slate-190-4) 26%, transparent));
+    overflow: visible;
+  }
+
+  .rpg-map-background-asset {
+    opacity: 0.96;
+  }
+
+  .rpg-map-object-active > g .rpg-map-object-vector-fallback rect,
+  .rpg-map-object:focus-visible > g .rpg-map-object-vector-fallback rect {
+    stroke: var(--c-yellow-840);
+    stroke-width: 28;
+  }
+
+  .rpg-map-object-active .rpg-map-object-sprite,
+  .rpg-map-object:focus-visible .rpg-map-object-sprite {
+    filter: drop-shadow(0 0 24px color-mix(in srgb, var(--c-yellow-840) 80%, transparent));
+  }
+
+  .rpg-map-object-selected .rpg-map-object-vector-fallback rect,
+  .rpg-map-object-selected .rpg-map-object-vector-fallback path {
+    filter: brightness(1.2);
+    stroke: var(--c-yellow-950);
+  }
+
+  .rpg-map-object-selected .rpg-map-object-sprite {
+    filter: brightness(1.12) drop-shadow(0 0 28px color-mix(in srgb, var(--c-yellow-950) 78%, transparent));
+  }
+
+  .rpg-map-object:focus-visible {
+    outline: none;
+  }
+
+  .rpg-map-object-tooltip {
+    background: color-mix(in srgb, var(--c-neutral-180) 96%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-yellow-870) 45%, transparent);
+    border-radius: 0.65rem;
+    box-shadow: 0 0.8rem 2rem color-mix(in srgb, var(--c-neutral-0) 38%, transparent);
+    display: grid;
+    gap: 0.18rem;
+    left: var(--rpg-map-tooltip-left);
+    max-width: min(18rem, 72%);
+    padding: 0.65rem 0.75rem;
+    pointer-events: none;
+    position: absolute;
+    top: var(--rpg-map-tooltip-top);
+    transform: translate(-50%, calc(-100% - 0.55rem));
+    z-index: 5;
+  }
+
+  .rpg-map-object-tooltip span,
+  .rpg-map-object-tooltip small {
+    color: var(--mantine-color-dimmed, var(--c-neutral-730));
+  }
+
+  .rpg-map-selected-panel {
+    align-items: flex-start;
+    background: color-mix(in srgb, var(--c-neutral-1000) 3.5%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-yellow-870) 20%, transparent);
+    border-radius: 0.9rem;
+    display: grid;
+    gap: 0.75rem;
+    padding: 0.9rem 1rem;
+  }
+
+  .rpg-map-selected-panel h3,
+  .rpg-map-selected-panel p {
+    margin: 0.12rem 0;
+  }
+
+  .rpg-map-selected-panel small {
+    color: var(--mantine-color-dimmed, var(--c-neutral-730));
+  }
+
+  .rpg-map-object-tags,
+  .rpg-map-capability-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  .rpg-map-object-tags span,
+  .rpg-map-capability-list span {
+    background: color-mix(in srgb, var(--c-neutral-1000) 5.5%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-neutral-1000) 9%, transparent);
+    border-radius: 999px;
+    font-size: 0.72rem;
+    padding: 0.25rem 0.5rem;
+  }
+
+  .rpg-map-capability-disabled {
+    color: var(--mantine-color-dimmed, var(--c-neutral-730));
+    opacity: 0.72;
+  }
+
+  .rpg-map-accessible-list ul {
+    list-style: none;
+    padding-left: 0;
+  }
+
+  .rpg-map-accessible-list button {
+    background: transparent;
+    border: 0;
+    border-radius: 0.4rem;
+    color: var(--mantine-color-dimmed, var(--c-neutral-730));
+    cursor: pointer;
+    font: inherit;
+    padding: 0.18rem 0.28rem;
+    text-align: left;
+  }
+
+  .rpg-map-accessible-list button:hover,
+  .rpg-map-accessible-list button:focus-visible,
+  .rpg-map-object-list-active {
+    outline: 1px solid color-mix(in srgb, var(--c-yellow-870) 35%, transparent);
+  }
+
+  .rpg-map-accessible-list button[aria-pressed='true'] {
+    color: var(--c-yellow-870);
+    font-weight: 700;
+  }
+}
+
+/* Declarations that must win over every other layer. */
+@layer overrides {
+  .rpg-map-capability-enabled {
+    border-color: color-mix(in srgb, var(--c-green-790-2) 35%, transparent);
+  }
+
+  .rpg-map-accessible-list button:hover,
+  .rpg-map-accessible-list button:focus-visible,
+  .rpg-map-object-list-active {
+    background: color-mix(in srgb, var(--c-yellow-870) 10%, transparent);
+    color: inherit;
+  }
+}

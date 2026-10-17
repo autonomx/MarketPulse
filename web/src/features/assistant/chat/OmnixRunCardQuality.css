@@ -1,0 +1,52 @@
+@layer features {
+  .assistant-runtime-quality {
+    margin: 0 0 10px;
+    padding: 10px 12px;
+    border: 1px solid color-mix(in srgb, currentColor 16%, transparent);
+    border-radius: 12px;
+    background: color-mix(in srgb, currentColor 4%, transparent);
+  }
+
+  .assistant-runtime-quality-heading {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .assistant-runtime-quality-heading strong {
+    font-size: 0.84rem;
+  }
+
+  .assistant-runtime-quality-heading span {
+    opacity: 0.65;
+    font-size: 0.72rem;
+  }
+
+  .assistant-runtime-quality-steps {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .assistant-runtime-quality-steps li {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.74rem;
+    opacity: 0.5;
+  }
+
+  .assistant-runtime-quality-steps li[data-state='complete'] {
+    opacity: 0.72;
+  }
+
+  .assistant-runtime-quality-steps li[data-state='active'] {
+    opacity: 1;
+    font-weight: 600;
+  }
+}

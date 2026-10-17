@@ -1,0 +1,10 @@
+@layer features {
+  .trading-drawing-overlay .trading-measurement-area{pointer-events:all;cursor:pointer}
+  .trading-drawing-overlay .trading-measurement-edge,.trading-drawing-overlay .trading-measurement-axis,.trading-drawing-overlay .trading-measurement-arrow{fill:none;stroke-width:2;vector-effect:non-scaling-stroke}
+  .trading-drawing-overlay .trading-measurement-axis{stroke-width:2.25}
+  .trading-drawing-overlay .trading-measurement-arrow{stroke-linecap:round;stroke-linejoin:round}
+  .trading-drawing-overlay .trading-measurement-label-box{fill:var(--c-neutral-1000);stroke:color-mix(in srgb, var(--c-slate-500) 28%, transparent);stroke-width:1;vector-effect:non-scaling-stroke;filter:drop-shadow(0 2px 3px color-mix(in srgb, var(--c-neutral-0) 20%, transparent))}
+  .trading-drawing-overlay .trading-measurement-label-text{fill:var(--c-neutral-250);stroke:none;font-size:13px;font-weight:500;paint-order:normal}
+  .trading-drawing-overlay:not(.tool-cursor) .trading-measurement-label-box,.trading-drawing-overlay:not(.tool-cursor) .trading-measurement-label-text{pointer-events:none}
+  .trading-drawing-overlay .trading-measurement-handle{fill:var(--c-neutral-1000);stroke:var(--c-blue-540);stroke-width:2;vector-effect:non-scaling-stroke;cursor:grab;pointer-events:auto}
+}

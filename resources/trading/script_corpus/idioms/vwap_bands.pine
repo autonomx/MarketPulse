@@ -1,0 +1,26 @@
+//@version=5
+indicator("Session VWAP with bands", overlay=true)
+src = input.source(hlc3, "Source")
+mult1 = input.float(1.0, "Band 1 multiplier")
+mult2 = input.float(2.0, "Band 2 multiplier")
+newSession = timeframe.change("D")
+var float sumPV = 0.0
+var float sumV = 0.0
+var float sumP2V = 0.0
+if newSession
+    sumPV := 0.0
+    sumV := 0.0
+    sumP2V := 0.0
+sumPV += src * volume
+sumV += volume
+sumP2V += src * src * volume
+vwapValue = sumV == 0 ? src : sumPV / sumV
+variance = sumV == 0 ? 0 : sumP2V / sumV - vwapValue * vwapValue
+stdev = math.sqrt(math.max(variance, 0))
+plot(vwapValue, "VWAP", color=#2962FF, linewidth=2)
+plot(ta.vwap(src), "Built-in VWAP", color=color.new(#2962FF, 70))
+u1 = plot(vwapValue + stdev * mult1, "Upper 1", color=color.green)
+l1 = plot(vwapValue - stdev * mult1, "Lower 1", color=color.green)
+u2 = plot(vwapValue + stdev * mult2, "Upper 2", color=color.olive)
+l2 = plot(vwapValue - stdev * mult2, "Lower 2", color=color.olive)
+fill(u1, l1, color=color.new(color.green, 95))

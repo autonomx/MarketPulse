@@ -1,0 +1,11 @@
+//@version=5
+indicator("Heikin Ashi candles (idiom)", overlay=false)
+haClose = (open + high + low + close) / 4
+var float haOpen = na
+haOpen := na(haOpen[1]) ? (open + close) / 2 : (haOpen[1] + haClose[1]) / 2
+haHigh = math.max(high, math.max(haOpen, haClose))
+haLow = math.min(low, math.min(haOpen, haClose))
+candleColor = haClose >= haOpen ? color.teal : color.red
+plotcandle(haOpen, haHigh, haLow, haClose, title="Heikin Ashi", color=candleColor, wickcolor=candleColor, bordercolor=candleColor)
+sar = ta.sar(0.02, 0.02, 0.2)
+plot(sar, "SAR", style=plot.style_cross, color=color.orange)

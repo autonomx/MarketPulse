@@ -1,0 +1,15 @@
+@layer features {
+  .trading-price-scale-trigger{top:auto;right:4px;bottom:5px;width:24px;height:24px;border-radius:4px;box-shadow:none;padding:0;color:transparent;font-size:0}
+  .trading-price-scale-trigger::before{position:absolute;inset:3px;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);background:var(--c-blue-710);content:""}
+  .trading-price-scale-trigger::after{position:absolute;inset:6px;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);background:radial-gradient(circle at center,var(--c-slate-170-2) 0 1.5px,var(--c-blue-710) 1.5px 2.5px,var(--c-slate-170-2) 2.5px 4px,transparent 4px),var(--c-slate-170-2);content:""}
+  .trading-price-scale-trigger:hover::before,.trading-price-scale-trigger[aria-expanded=true]::before{background:var(--c-blue-930)}
+  .trading-price-scale-trigger:hover::after,.trading-price-scale-trigger[aria-expanded=true]::after{background:radial-gradient(circle at center,var(--c-slate-170-2) 0 2px,var(--c-blue-930) 2px 3px,var(--c-slate-170-2) 3px 5px,transparent 5px),var(--c-slate-170-2)}
+  .trading-price-scale-menu{top:auto;right:31px;bottom:7px}
+}
+
+/* Declarations that must win over every other layer. */
+@layer overrides {
+  .trading-price-scale-trigger{border:0;background:transparent}
+
+  .trading-price-scale-trigger:hover,.trading-price-scale-trigger[aria-expanded=true]{background:transparent}
+}

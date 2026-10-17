@@ -1,0 +1,218 @@
+@layer features {
+  .rpg-dossier-quality-panel {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1.2rem;
+    padding: 1.2rem;
+    border: 1px solid color-mix(in srgb, var(--c-violet-710) 20%, transparent);
+    border-radius: 18px;
+    background: linear-gradient(145deg, color-mix(in srgb, var(--c-indigo-210) 70%, transparent), color-mix(in srgb, var(--c-slate-150-2) 90%, transparent));
+  }
+
+  .rpg-dossier-quality-panel > header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .rpg-dossier-quality-panel > header h3,
+  .rpg-dossier-quality-panel > header p {
+    margin-top: 0;
+  }
+
+  .rpg-dossier-quality-panel > header p:last-child {
+    margin-bottom: 0;
+    color: color-mix(in srgb, var(--c-slate-870) 78%, transparent);
+  }
+
+  .rpg-dossier-quality-panel > header > strong {
+    color: var(--c-yellow-920-2);
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 2.4rem;
+  }
+
+  .rpg-dossier-quality-meter {
+    height: 8px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--c-blue-130) 85%, transparent);
+  }
+
+  .rpg-dossier-quality-meter i {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--c-violet-540), var(--c-yellow-770));
+  }
+
+  .rpg-dossier-quality-metrics {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 0.7rem;
+  }
+
+  .rpg-dossier-quality-metrics article {
+    display: grid;
+    gap: 0.25rem;
+    padding: 0.8rem;
+    border: 1px solid color-mix(in srgb, var(--c-violet-710) 14%, transparent);
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--c-blue-130) 50%, transparent);
+  }
+
+  .rpg-dossier-quality-metrics small {
+    color: color-mix(in srgb, var(--c-violet-810) 82%, transparent);
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .rpg-dossier-quality-metrics strong {
+    color: var(--c-neutral-1000);
+    font-size: 1.3rem;
+  }
+
+  .rpg-dossier-quality-topics {
+    border: 1px solid color-mix(in srgb, var(--c-violet-710) 16%, transparent);
+    border-radius: 12px;
+    padding: 0.8rem;
+  }
+
+  .rpg-dossier-quality-topics summary {
+    cursor: pointer;
+    color: var(--c-indigo-900);
+    font-weight: 800;
+  }
+
+  .rpg-dossier-quality-topics > div {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.55rem;
+    padding-top: 0.75rem;
+  }
+
+  .rpg-dossier-quality-topics article {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.15rem 0.6rem;
+    padding: 0.65rem;
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--c-blue-130) 42%, transparent);
+  }
+
+  .rpg-dossier-quality-topics strong {
+    text-transform: capitalize;
+  }
+
+  .rpg-dossier-quality-topics span {
+    color: var(--c-yellow-920-2);
+    font-weight: 900;
+  }
+
+  .rpg-dossier-quality-topics small {
+    grid-column: 1 / -1;
+    color: color-mix(in srgb, var(--c-slate-870) 70%, transparent);
+  }
+
+  .rpg-dossier-quality-actions {
+    display: flex;
+    align-items: end;
+    justify-content: flex-end;
+    gap: 0.7rem;
+  }
+
+  .rpg-dossier-quality-actions label {
+    display: grid;
+    gap: 0.3rem;
+  }
+
+  .rpg-dossier-quality-actions label span {
+    color: var(--c-violet-810);
+    font-size: 0.68rem;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  .rpg-dossier-quality-actions select {
+    border: 1px solid color-mix(in srgb, var(--c-violet-710) 25%, transparent);
+    border-radius: 9px;
+    background: color-mix(in srgb, var(--c-blue-130) 80%, transparent);
+    color: var(--c-neutral-1000);
+    padding: 0.65rem;
+  }
+
+  .rpg-dossier-enrichment-plan {
+    display: grid;
+    gap: 0.8rem;
+    padding: 1rem;
+    border: 1px solid color-mix(in srgb, var(--c-yellow-880) 25%, transparent);
+    border-radius: 14px;
+    background: color-mix(in srgb, var(--c-violet-380) 18%, transparent);
+  }
+
+  .rpg-dossier-enrichment-plan > header,
+  .rpg-dossier-enrichment-plan > footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.7rem;
+  }
+
+  .rpg-dossier-enrichment-plan h4,
+  .rpg-dossier-enrichment-plan p {
+    margin: 0;
+  }
+
+  .rpg-dossier-enrichment-plan > p {
+    color: color-mix(in srgb, var(--c-slate-930) 82%, transparent);
+    line-height: 1.55;
+  }
+
+  .rpg-dossier-enrichment-plan > div {
+    display: grid;
+    gap: 0.45rem;
+    max-height: 360px;
+    overflow: auto;
+  }
+
+  .rpg-dossier-enrichment-plan article {
+    display: grid;
+    gap: 0.25rem;
+    padding: 0.7rem;
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--c-blue-130) 50%, transparent);
+  }
+
+  .rpg-dossier-enrichment-plan article small,
+  .rpg-dossier-enrichment-plan article p {
+    color: color-mix(in srgb, var(--c-slate-870) 70%, transparent);
+    font-size: 0.76rem;
+  }
+
+  .rpg-dossier-enrichment-plan > footer {
+    justify-content: flex-end;
+  }
+
+  @media (max-width: 1000px) {
+    .rpg-dossier-quality-metrics {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 650px) {
+    .rpg-dossier-quality-panel > header,
+    .rpg-dossier-quality-actions,
+    .rpg-dossier-enrichment-plan > header,
+    .rpg-dossier-enrichment-plan > footer {
+      align-items: stretch;
+      flex-direction: column;
+    }
+
+    .rpg-dossier-quality-metrics,
+    .rpg-dossier-quality-topics > div {
+      grid-template-columns: 1fr;
+    }
+  }
+}

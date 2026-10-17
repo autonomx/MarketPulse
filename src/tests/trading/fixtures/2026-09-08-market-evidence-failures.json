@@ -1,0 +1,39 @@
+{
+  "fixture_version": "market-evidence-v2-sep8-failures-v1",
+  "session_date": "2026-09-08",
+  "evaluation_time_utc": "2026-09-08T13:15:10+00:00",
+  "source_candidate_symbols": ["GOOD", "MISS"],
+  "good_candidate": {
+    "instrument_id": "equity:GOOD",
+    "previous_close": "4.00",
+    "premarket_price": "5.20",
+    "gap_pct": "30.0",
+    "premarket_volume": "600000",
+    "premarket_dollar_volume": "3120000",
+    "tod_rvol": "6.0",
+    "baseline_session_count": 5,
+    "premarket_bar_count": 315,
+    "nonzero_volume_bar_count": 210
+  },
+  "failed_source_member": {
+    "symbol": "MISS",
+    "source_rank": 2,
+    "status": "enrichment_failed",
+    "reason_codes": ["YAHOO_CHART_PROVIDERDATAUNAVAILABLEERROR"]
+  },
+  "bar_failure": {
+    "observed_at_utc": "2026-09-08T13:36:30+00:00",
+    "missing_regular_minute_utc": "2026-09-08T13:32:00+00:00"
+  },
+  "execution_failure": {
+    "provider": "alpaca_iex",
+    "exception_text": "Alpaca IEX credentials are not configured"
+  },
+  "expected": {
+    "session_status": "partial_data",
+    "qualification_eligible": false,
+    "authorization_reason": "SESSION_NOT_EVALUABLE",
+    "provider_readiness": "NOT_CONFIGURED",
+    "bar_reason": "CURRENT_SESSION_1M_GAPS"
+  }
+}

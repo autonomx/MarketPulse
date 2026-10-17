@@ -1,0 +1,91 @@
+@layer features {
+  .rpg-authoring-timeline-list {
+    position: relative;
+    display: grid;
+    gap: 1.15rem;
+    margin: 1rem 0 0;
+    padding: 0 0 0 8.5rem;
+    list-style: none;
+  }
+
+  .rpg-authoring-timeline-list::before {
+    content: '';
+    position: absolute;
+    top: 0.6rem;
+    bottom: 0.6rem;
+    left: 6.7rem;
+    width: 2px;
+    border-radius: 999px;
+    background: linear-gradient(var(--c-yellow-900), color-mix(in srgb, var(--c-indigo-600) 72%, transparent), color-mix(in srgb, var(--c-indigo-600) 16%, transparent));
+  }
+
+  .rpg-authoring-timeline-list > li {
+    position: relative;
+    min-width: 0;
+  }
+
+  .rpg-authoring-timeline-list > li::before {
+    content: '';
+    position: absolute;
+    top: 1.35rem;
+    left: -2.2rem;
+    z-index: 2;
+    width: 0.8rem;
+    height: 0.8rem;
+    border: 2px solid var(--c-yellow-950);
+    border-radius: 50%;
+    background: var(--c-violet-430);
+    box-shadow: 0 0 0 5px color-mix(in srgb, var(--c-violet-430) 20%, transparent);
+  }
+
+  .rpg-authoring-timeline-marker {
+    position: absolute;
+    top: 0.95rem;
+    right: calc(100% + 2.85rem);
+    width: 5.2rem;
+    text-align: right;
+  }
+
+  .rpg-authoring-timeline-marker span {
+    display: inline-block;
+    max-width: 100%;
+    color: var(--c-yellow-900);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.74rem;
+    font-weight: 800;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+    text-transform: uppercase;
+  }
+
+  .rpg-authoring-timeline-list .rpg-authoring-record-card {
+    border-color: color-mix(in srgb, var(--c-yellow-770) 22%, transparent);
+    background: linear-gradient(145deg, color-mix(in srgb, var(--c-indigo-220) 94%, transparent), color-mix(in srgb, var(--c-indigo-170) 96%, transparent));
+  }
+
+  .rpg-authoring-timeline-list .rpg-authoring-record-statement p {
+    max-width: 78ch;
+    line-height: 1.72;
+  }
+
+  @media (max-width: 760px) {
+    .rpg-authoring-timeline-list {
+      padding-left: 2.2rem;
+    }
+
+    .rpg-authoring-timeline-list::before {
+      left: 0.45rem;
+    }
+
+    .rpg-authoring-timeline-list > li::before {
+      left: -2.05rem;
+    }
+
+    .rpg-authoring-timeline-marker {
+      position: static;
+      width: auto;
+      margin: 0 0 0.45rem;
+      text-align: left;
+    }
+  }
+}

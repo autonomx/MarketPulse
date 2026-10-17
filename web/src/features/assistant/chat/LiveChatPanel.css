@@ -1,0 +1,338 @@
+@layer features {
+  /* Live Chat is a Chat view; its panel scrolls inside the chat column. */
+  .assistant-chat-main > .live-chat-panel {
+    box-sizing: border-box;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+  }
+
+  .live-chat-panel {
+    display: grid;
+    gap: 1rem;
+    min-height: min-content;
+    padding-bottom: 1rem;
+  }
+
+  .live-chat-page-header,
+  .live-chat-card > header {
+    align-items: flex-start;
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+  }
+
+  .live-chat-page-header h2,
+  .live-chat-card h3 {
+    margin: 0.15rem 0 0.35rem;
+  }
+
+  .live-chat-page-header p,
+  .live-chat-card p {
+    color: var(--omnix-text-muted, var(--c-indigo-780));
+    margin: 0;
+  }
+
+  .live-chat-status,
+  .live-chat-profile-source {
+    background: color-mix(in srgb, var(--c-indigo-540) 16%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-indigo-600) 42%, transparent);
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 0.55rem 0.85rem;
+    white-space: nowrap;
+  }
+
+  .live-chat-status.active {
+    background: color-mix(in srgb, var(--c-teal-700) 16%, transparent);
+    border-color: color-mix(in srgb, var(--c-teal-700) 46%, transparent);
+  }
+
+  .live-chat-card {
+    background: color-mix(in srgb, var(--c-indigo-190) 54%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-violet-570) 24%, transparent);
+    border-radius: 14px;
+    padding: 1rem;
+  }
+
+  .live-chat-card button {
+    background: linear-gradient(135deg, var(--c-indigo-540), var(--c-indigo-600));
+    border: 0;
+    border-radius: 10px;
+    color: var(--c-neutral-1000);
+    cursor: pointer;
+    font-weight: 800;
+    padding: 0.7rem 1rem;
+  }
+
+  .live-chat-card button:disabled {
+    cursor: not-allowed;
+    opacity: 0.58;
+  }
+
+  .live-chat-card button.live-chat-secondary-action {
+    background: color-mix(in srgb, var(--c-violet-570) 14%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-violet-570) 34%, transparent);
+  }
+
+  .live-chat-mode-profiles {
+    border-bottom: 1px solid color-mix(in srgb, var(--c-violet-570) 18%, transparent);
+    margin-top: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  .live-chat-mode-profile-heading {
+    align-items: flex-end;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: space-between;
+  }
+
+  .live-chat-mode-profile-heading > div {
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  .live-chat-mode-profile-heading span,
+  .live-chat-mode-profile-heading small {
+    color: var(--omnix-text-muted, var(--c-indigo-780));
+    font-size: 0.8rem;
+  }
+
+  .live-chat-mode-profile-grid {
+    display: grid;
+    gap: 0.65rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-top: 0.75rem;
+  }
+
+  .live-chat-card button.live-chat-mode-profile {
+    align-items: flex-start;
+    background: color-mix(in srgb, var(--c-slate-150-2) 72%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-violet-570) 28%, transparent);
+    display: grid;
+    gap: 0.35rem;
+    min-height: 5.4rem;
+    padding: 0.75rem;
+    text-align: left;
+  }
+
+  .live-chat-card button.live-chat-mode-profile[aria-pressed='true'] {
+    background: color-mix(in srgb, var(--c-indigo-540) 20%, transparent);
+    border-color: var(--c-indigo-600);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--c-indigo-600) 24%, transparent);
+  }
+
+  .live-chat-mode-profile span {
+    color: var(--omnix-text-muted, var(--c-indigo-780));
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1.35;
+  }
+
+  .live-chat-control-grid {
+    display: grid;
+    gap: 0.85rem;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin-top: 1rem;
+  }
+
+  .live-chat-control-grid label {
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .live-chat-control-grid label > span {
+    color: var(--omnix-text-muted, var(--c-indigo-780));
+    font-size: 0.82rem;
+    font-weight: 700;
+  }
+
+  .live-chat-control-grid select,
+  .live-chat-control-grid input[type='text'],
+  .live-chat-control-grid input[type='number'],
+  .live-chat-control-grid input:not([type]) {
+    background: color-mix(in srgb, var(--c-slate-150-2) 86%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-violet-570) 34%, transparent);
+    border-radius: 10px;
+    color: inherit;
+    min-height: 2.8rem;
+    padding: 0 0.75rem;
+  }
+
+  .live-chat-control-grid input[type='range'] {
+    accent-color: var(--c-indigo-600);
+    min-height: 2.8rem;
+    width: 100%;
+  }
+
+  .live-chat-control-grid label > strong {
+    font-size: 0.78rem;
+  }
+
+  .live-chat-advanced-toggle {
+    margin-top: 1rem;
+  }
+
+  .live-chat-advanced-controls {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .live-chat-profile-actions {
+    align-items: center;
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
+    margin-top: 1rem;
+  }
+
+  .live-chat-profile-actions small {
+    color: var(--omnix-text-muted, var(--c-indigo-780));
+  }
+
+  .live-chat-metrics {
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin: 1rem 0 0;
+  }
+
+  .live-chat-metrics > div {
+    background: color-mix(in srgb, var(--c-slate-150-2) 60%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-violet-570) 18%, transparent);
+    border-radius: 10px;
+    padding: 0.8rem;
+  }
+
+  .live-chat-metrics dt {
+    color: var(--omnix-text-muted, var(--c-indigo-780));
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  .live-chat-metrics dd {
+    font-weight: 700;
+    margin: 0.25rem 0 0;
+  }
+
+  .live-chat-pronunciation-form {
+    align-items: end;
+    grid-template-columns: 1fr 1fr auto;
+  }
+
+  .live-chat-pronunciation-list {
+    display: grid;
+    gap: 0.55rem;
+    margin-top: 1rem;
+  }
+
+  .live-chat-pronunciation-list > div {
+    align-items: center;
+    background: color-mix(in srgb, var(--c-slate-150-2) 54%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-violet-570) 18%, transparent);
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    padding: 0.65rem 0.8rem;
+  }
+
+  .live-chat-pronunciation-list span {
+    display: grid;
+    gap: 0.2rem;
+  }
+
+  .live-chat-pronunciation-list small {
+    color: var(--omnix-text-muted, var(--c-indigo-780));
+  }
+
+  .live-chat-evaluation-grid {
+    display: grid;
+    gap: 0.7rem;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin-top: 1rem;
+  }
+
+  .live-chat-evaluation-grid article {
+    background: color-mix(in srgb, var(--c-slate-150-2) 62%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-violet-570) 18%, transparent);
+    border-radius: 11px;
+    display: grid;
+    gap: 0.28rem;
+    min-height: 5.6rem;
+    padding: 0.8rem;
+  }
+
+  .live-chat-evaluation-grid article > span,
+  .live-chat-evaluation-grid article > small {
+    color: var(--omnix-text-muted, var(--c-indigo-780));
+    font-size: 0.74rem;
+  }
+
+  .live-chat-evaluation-grid article > strong {
+    font-size: 1.05rem;
+  }
+
+  .live-chat-evaluation-survey {
+    align-items: end;
+    display: grid;
+    gap: 0.8rem;
+    grid-template-columns: 1fr 1fr auto;
+    margin-top: 1rem;
+  }
+
+  .live-chat-evaluation-survey label {
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .live-chat-evaluation-survey input[type='range'] {
+    accent-color: var(--c-indigo-600);
+    width: 100%;
+  }
+
+  .live-chat-evaluation-survey > div {
+    display: flex;
+    gap: 0.55rem;
+  }
+
+  @media (max-width: 1100px) {
+    .live-chat-mode-profile-grid,
+    .live-chat-control-grid,
+    .live-chat-evaluation-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 900px) {
+    .live-chat-mode-profile-grid,
+    .live-chat-control-grid,
+    .live-chat-metrics,
+    .live-chat-evaluation-grid,
+    .live-chat-evaluation-survey,
+    .live-chat-pronunciation-form {
+      grid-template-columns: 1fr;
+    }
+
+    .live-chat-page-header,
+    .live-chat-card > header,
+    .live-chat-mode-profile-heading {
+      align-items: stretch;
+      flex-direction: column;
+    }
+
+    .live-chat-evaluation-survey > div {
+      flex-wrap: wrap;
+    }
+  }
+}
+
+/* Declarations that must win over every other layer. */
+@layer overrides {
+  .live-chat-note {
+    margin-top: 0.85rem;
+  }
+}

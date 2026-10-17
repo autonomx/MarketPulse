@@ -1,0 +1,366 @@
+@layer features {
+  .assistant-live-visual-stage {
+    align-items: center;
+    display: grid;
+    justify-items: center;
+    min-height: 17rem;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .assistant-live-visual-stage > .assistant-voice-orb,
+  .assistant-live-visual-stage > .assistant-live-character-avatar {
+    grid-area: 1 / 1;
+  }
+
+  .assistant-live2d-zoom-control {
+    align-items: center;
+    background: color-mix(in srgb, var(--c-slate-150-2) 78%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-violet-660) 28%, transparent);
+    border-radius: 999px;
+    color: var(--c-slate-940);
+    display: flex;
+    gap: 0.45rem;
+    padding: 0.4rem 0.65rem;
+    position: relative;
+    z-index: 3;
+  }
+
+  .assistant-live-card > .assistant-live2d-zoom-control {
+    justify-self: center;
+    margin: 0.65rem auto 0;
+    width: max-content;
+  }
+
+  .assistant-live2d-zoom-control > label {
+    align-items: center;
+    display: flex;
+    gap: 0.45rem;
+  }
+
+  .assistant-live2d-zoom-control span,
+  .assistant-live2d-zoom-control output,
+  .assistant-live2d-framing button {
+    font-size: 0.68rem;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+
+  .assistant-live2d-zoom-control input {
+    accent-color: var(--c-indigo-750);
+    cursor: pointer;
+    width: 5.5rem;
+  }
+
+  .assistant-live2d-framing {
+    display: flex;
+    gap: 0.18rem;
+  }
+
+  .assistant-live2d-framing button {
+    background: transparent;
+    border: 0;
+    border-radius: 999px;
+    color: var(--c-slate-830);
+    cursor: pointer;
+    padding: 0.32rem 0.55rem;
+  }
+
+  .assistant-live2d-framing button[aria-pressed='true'] {
+    background: color-mix(in srgb, var(--c-indigo-600) 34%, transparent);
+    color: var(--c-neutral-1000);
+  }
+
+  .assistant-live-visual-stage[data-has-character-avatar='true'] {
+    min-height: 23rem;
+  }
+
+  .assistant-live-character-avatar {
+    position: relative;
+    width: min(100%, 22rem);
+    aspect-ratio: 4 / 5;
+    margin: 0 auto;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--accent, var(--c-blue-630)) 34%, transparent);
+    border-radius: 1.25rem;
+    min-height: 22rem;
+    background: radial-gradient(circle at 50% 42%, color-mix(in srgb, var(--c-indigo-490) 24%, transparent), color-mix(in srgb, var(--c-slate-150-2) 94%, transparent));
+    background-position: center;
+    background-size: cover;
+    box-shadow: 0 1rem 3rem color-mix(in srgb, var(--c-neutral-0) 28%, transparent);
+    isolation: isolate;
+    transition: border-color 180ms ease, box-shadow 180ms ease;
+  }
+
+  .assistant-live-character-avatar::after {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: inherit;
+    box-shadow: inset 0 -5rem 5rem color-mix(in srgb, var(--c-blue-130) 28%, transparent);
+    content: '';
+    pointer-events: none;
+  }
+
+  .assistant-live-character-avatar img {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    opacity: 1;
+    transform: none;
+    filter: none;
+    pointer-events: none;
+    transition: opacity 34ms linear;
+    will-change: opacity;
+  }
+
+  .assistant-live-character-avatar img[data-avatar-layer='previous'] {
+    opacity: 0;
+  }
+
+  .assistant-live-character-avatar img[data-avatar-layer='current'].is-entering {
+    opacity: 0;
+  }
+
+  .assistant-live-character-avatar img[data-avatar-layer='previous'].is-visible {
+    opacity: 1;
+  }
+
+  .assistant-live-character-live2d-canvas {
+    display: block;
+    height: 100%;
+    inset: 0;
+    position: absolute;
+    width: 100%;
+    z-index: 0;
+  }
+
+  .assistant-live-character-live2d-status {
+    background: color-mix(in srgb, var(--c-slate-150-2) 76%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-violet-660) 22%, transparent);
+    border-radius: 0.65rem;
+    color: var(--c-slate-810);
+    font-size: 0.68rem;
+    left: 50%;
+    max-width: calc(100% - 2rem);
+    padding: 0.55rem 0.7rem;
+    position: absolute;
+    text-align: center;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+  }
+
+  .assistant-live-character-live2d-status[data-state='error'] {
+    border-color: color-mix(in srgb, var(--c-red-720) 38%, transparent);
+    color: var(--c-red-890);
+  }
+
+  .assistant-live-character-avatar[data-renderer='live2d']::after {
+    box-shadow: inset 0 -3.5rem 4rem color-mix(in srgb, var(--c-blue-130) 22%, transparent);
+  }
+
+  .assistant-live-character-avatar[data-voice-mode='speaking'] {
+    border-color: color-mix(in srgb, var(--accent, var(--c-blue-630)) 62%, transparent);
+    box-shadow:
+      0 1rem 3rem color-mix(in srgb, var(--c-neutral-0) 28%, transparent),
+      0 0 0 1px color-mix(in srgb, var(--accent, var(--c-blue-630)) 20%, transparent),
+      0 0 2rem color-mix(in srgb, var(--accent, var(--c-blue-630)) 18%, transparent);
+  }
+
+  .assistant-live-character-avatar[data-voice-mode='listening'] {
+    border-color: color-mix(in srgb, var(--c-teal-860) 52%, transparent);
+    box-shadow:
+      0 1rem 3rem color-mix(in srgb, var(--c-neutral-0) 28%, transparent),
+      0 0 1.5rem color-mix(in srgb, var(--c-teal-860) 12%, transparent);
+  }
+
+  .assistant-live-character-avatar[data-voice-mode='thinking'] {
+    border-color: color-mix(in srgb, var(--c-indigo-750) 48%, transparent);
+    box-shadow:
+      0 1rem 3rem color-mix(in srgb, var(--c-neutral-0) 28%, transparent),
+      0 0 1.5rem color-mix(in srgb, var(--c-indigo-750) 10%, transparent);
+  }
+
+  .assistant-live-character-avatar[data-voice-mode='error'] {
+    border-color: color-mix(in srgb, var(--c-red-720) 56%, transparent);
+    box-shadow:
+      0 1rem 3rem color-mix(in srgb, var(--c-neutral-0) 28%, transparent),
+      0 0 1.5rem color-mix(in srgb, var(--c-red-720) 12%, transparent);
+  }
+
+  .assistant-live-character-avatar figcaption {
+    position: absolute;
+    left: 50%;
+    bottom: 0.75rem;
+    z-index: 2;
+    transform: translateX(-50%);
+    max-width: calc(100% - 1.5rem);
+    padding: 0.4rem 0.75rem;
+    overflow: hidden;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--c-slate-150-2) 76%, transparent);
+    color: var(--c-slate-970-2);
+    font-size: 0.75rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    backdrop-filter: blur(8px);
+  }
+
+  .assistant-live-card .assistant-voice-transcript {
+    background: color-mix(in srgb, var(--c-slate-170-2) 72%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-blue-660) 22%, transparent);
+    border-radius: 0.8rem;
+    min-height: 20rem;
+    max-height: 32rem;
+    overflow: auto;
+    padding: 0.85rem;
+    scrollbar-gutter: stable;
+  }
+
+  .assistant-live-card .assistant-voice-transcript-header {
+    align-items: center;
+    background: color-mix(in srgb, var(--c-slate-170-2) 94%, transparent);
+    display: flex;
+    justify-content: space-between;
+    margin: -0.85rem -0.85rem 0.75rem;
+    padding: 0.75rem 0.85rem;
+    position: sticky;
+    top: -0.85rem;
+    z-index: 2;
+  }
+
+  .assistant-live-card .assistant-voice-transcript-header h3 {
+    margin: 0;
+  }
+
+  .assistant-live-card .assistant-voice-transcript-header button {
+    min-height: 2rem;
+    padding: 0 0.7rem;
+  }
+
+  @media (max-width: 760px) {
+    .assistant-live-visual-stage,
+    .assistant-live-visual-stage[data-has-character-avatar='true'] {
+      min-height: 18rem;
+    }
+
+    .assistant-live-character-avatar {
+      min-height: 17rem;
+      width: min(100%, 18rem);
+    }
+
+    .assistant-live-card .assistant-voice-transcript {
+      min-height: 16rem;
+      max-height: 26rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .assistant-live-character-avatar,
+    .assistant-live-character-avatar img {
+      transition: none;
+    }
+  }
+
+
+  /* Omnix light appearance: Live Voice bridge */
+  :root[data-omnix-appearance='light'] .assistant-live-character-avatar figcaption {
+    border: 1px solid color-mix(in srgb, var(--c-blue-560) 18%, transparent);
+  }
+  :root[data-omnix-appearance='light'] .assistant-live-card .assistant-voice-transcript-header {
+    border-bottom: 1px solid color-mix(in srgb, var(--c-blue-560) 18%, transparent);
+  }
+  :root[data-omnix-appearance='light'] .assistant-live-card .assistant-voice-transcript p {
+    border-radius: .55rem;
+  }
+}
+
+/* Declarations that must win over every other layer. */
+@layer overrides {
+  .assistant-live-visual-stage > .assistant-voice-orb[hidden] {
+    display: none;
+  }
+
+  :root[data-omnix-appearance='light'] .assistant-live2d-zoom-control,
+  :root[data-omnix-appearance='light'] .assistant-live-character-live2d-status {
+    background: color-mix(in srgb, var(--c-slate-970-2) 82%, transparent);
+    border-color: color-mix(in srgb, var(--c-blue-560) 22%, transparent);
+    color: var(--omnix-text, var(--c-blue-310));
+    box-shadow: inset 0 1px 0 color-mix(in srgb, var(--c-neutral-1000) 82%, transparent), 0 .35rem .8rem color-mix(in srgb, var(--c-blue-390) 6%, transparent);
+  }
+
+  :root[data-omnix-appearance='light'] .assistant-live2d-zoom-control :where(span,output),
+  :root[data-omnix-appearance='light'] .assistant-live2d-framing button {
+    color: var(--omnix-muted, var(--c-blue-560));
+  }
+
+  :root[data-omnix-appearance='light'] .assistant-live2d-framing button[aria-pressed='true'] {
+    background: color-mix(in srgb, var(--c-blue-560) 18%, transparent);
+    color: var(--omnix-text, var(--c-blue-310));
+  }
+
+  :root[data-omnix-appearance='light'] .assistant-live-character-avatar {
+    background:
+      radial-gradient(circle at 50% 42%, color-mix(in srgb, var(--c-neutral-1000) 72%, transparent), color-mix(in srgb, var(--c-indigo-780) 34%, transparent)),
+      color-mix(in srgb, var(--c-slate-930) 50%, transparent);
+    border-color: color-mix(in srgb, var(--c-blue-560) 24%, transparent);
+    box-shadow: inset 0 1px 0 color-mix(in srgb, var(--c-neutral-1000) 72%, transparent), 0 .75rem 1.5rem color-mix(in srgb, var(--c-blue-390) 9%, transparent);
+  }
+
+  :root[data-omnix-appearance='light'] .assistant-live-character-avatar::after {
+    box-shadow: inset 0 -4rem 5rem color-mix(in srgb, var(--c-blue-440) 8%, transparent);
+  }
+
+  :root[data-omnix-appearance='light'] .assistant-live-character-avatar figcaption {
+    background: color-mix(in srgb, var(--c-slate-970-2) 88%, transparent);
+    color: var(--omnix-text, var(--c-blue-310));
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  :root[data-omnix-appearance='light'] .assistant-live-card .assistant-voice-transcript {
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--c-neutral-1000) 58%, transparent), color-mix(in srgb, var(--c-slate-930) 34%, transparent)),
+      color-mix(in srgb, var(--c-slate-970-2) 56%, transparent);
+    border-color: color-mix(in srgb, var(--c-blue-560) 20%, transparent);
+    box-shadow: inset 0 1px 0 color-mix(in srgb, var(--c-neutral-1000) 80%, transparent), 0 .5rem 1rem color-mix(in srgb, var(--c-blue-390) 6%, transparent);
+    color: var(--omnix-text, var(--c-blue-310));
+  }
+
+  :root[data-omnix-appearance='light'] .assistant-live-card .assistant-voice-transcript-header {
+    background: color-mix(in srgb, var(--c-slate-970-2) 96%, transparent);
+    color: var(--omnix-text, var(--c-blue-310));
+  }
+
+  :root[data-omnix-appearance='light'] .assistant-live-card .assistant-voice-transcript-header h3 {
+    color: var(--omnix-text, var(--c-blue-310));
+  }
+
+  :root[data-omnix-appearance='light'] .assistant-live-card .assistant-voice-transcript-header button {
+    background: transparent;
+    color: var(--c-blue-560);
+  }
+
+  :root[data-omnix-appearance='light'] .assistant-live-card .assistant-voice-transcript p {
+    background: color-mix(in srgb, var(--c-neutral-1000) 42%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-blue-560) 14%, transparent);
+    border-left: 3px solid color-mix(in srgb, var(--c-violet-570) 48%, transparent);
+    box-shadow: none;
+    color: var(--c-blue-390);
+    padding: .58rem .65rem;
+  }
+
+  :root[data-omnix-appearance='light'] .assistant-live-card .assistant-voice-transcript p.assistant {
+    border-left-color: color-mix(in srgb, var(--c-sky-610) 50%, transparent);
+  }
+
+  :root[data-omnix-appearance='light'] .assistant-live-card .assistant-voice-transcript p time,
+  :root[data-omnix-appearance='light'] .assistant-live-card .assistant-voice-transcript .muted {
+    color: var(--omnix-muted, var(--c-blue-560));
+  }
+}

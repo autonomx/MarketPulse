@@ -1,0 +1,82 @@
+@layer features {
+  .storyteller-library nav button {
+    align-items: center;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 0.5rem;
+    color: var(--c-slate-890);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    padding: 0.65rem 0.7rem;
+    text-align: left;
+    width: 100%;
+  }
+
+  .storyteller-library nav button.active,
+  .storyteller-library nav button:hover,
+  .storyteller-library nav button:focus-visible,
+  .storyteller-trash.active {
+    background: color-mix(in srgb, var(--c-violet-540) 18%, transparent);
+    border-color: color-mix(in srgb, var(--c-violet-660) 34%, transparent);
+    outline: none;
+  }
+
+  .storyteller-library-section {
+    display: grid;
+    gap: 0.65rem;
+  }
+
+  .storyteller-recent-list button,
+  .storyteller-library-section article {
+    align-items: center;
+    background: color-mix(in srgb, var(--c-slate-130) 52%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-violet-660) 12%, transparent);
+    border-radius: 0.5rem;
+    color: var(--c-slate-970-2);
+    display: grid;
+    gap: 0.65rem;
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+    padding: 0.55rem;
+    text-align: left;
+    width: 100%;
+  }
+
+  .storyteller-recent-list button {
+    cursor: pointer;
+  }
+
+  .storyteller-recent-list button.active,
+  .storyteller-recent-list button:hover,
+  .storyteller-recent-list button:focus-visible {
+    background: linear-gradient(135deg, color-mix(in srgb, var(--c-violet-540) 28%, transparent), color-mix(in srgb, var(--c-cyan-720) 12%, transparent));
+    border-color: color-mix(in srgb, var(--c-sky-800) 46%, transparent);
+    outline: none;
+  }
+
+  .storyteller-library-empty strong,
+  .storyteller-library-empty small {
+    overflow: visible;
+    text-overflow: initial;
+    white-space: normal;
+  }
+
+  .storyteller-library-empty button {
+    background: color-mix(in srgb, var(--c-neutral-1000) 3.5%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-violet-660) 18%, transparent);
+    border-radius: 0.5rem;
+    color: var(--c-slate-970-2);
+    cursor: pointer;
+    margin-top: 0.35rem;
+    padding: 0.55rem 0.65rem;
+    text-align: left;
+  }
+}
+
+/* Declarations that must win over every other layer. */
+@layer overrides {
+  .storyteller-library-empty {
+    align-items: start;
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

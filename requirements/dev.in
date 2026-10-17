@@ -1,0 +1,16 @@
+-r tracing.in
+pytest
+pytest-cov
+pytest-xdist
+pytest-playwright
+playwright
+aiohttp
+mypy
+ruff
+pip-tools
+pip-audit
+Pillow
+PyYAML
+psutil
+pytest-base-url
+anyio

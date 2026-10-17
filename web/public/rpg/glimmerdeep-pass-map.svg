@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 380" role="img" aria-labelledby="title desc">
+  <title id="title">Glimmerdeep Pass travel map</title>
+  <desc id="desc">Top-down snowy mountain travel map with paths and a purple location pin.</desc>
+  <defs>
+    <linearGradient id="mapBg" x1="0" x2="980" y1="0" y2="380" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0b1222"/>
+      <stop offset="0.45" stop-color="#17243b"/>
+      <stop offset="1" stop-color="#080913"/>
+    </linearGradient>
+    <radialGradient id="mapGlow" cx="64%" cy="42%" r="38%">
+      <stop stop-color="#8b5cf6" stop-opacity="0.42"/>
+      <stop offset="1" stop-color="#8b5cf6" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="pinShadow" x="-60%" y="-60%" width="220%" height="220%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#000" flood-opacity="0.65"/>
+    </filter>
+  </defs>
+  <rect width="980" height="380" fill="url(#mapBg)"/>
+  <rect width="980" height="380" fill="url(#mapGlow)"/>
+  <g opacity="0.22" stroke="#dbeafe" stroke-width="1">
+    <path d="M-20 80h1040M-20 140h1040M-20 200h1040M-20 260h1040M80-20v430M160-20v430M240-20v430M320-20v430M400-20v430M480-20v430M560-20v430M640-20v430M720-20v430M800-20v430M880-20v430"/>
+  </g>
+  <g fill="#273452" opacity="0.92">
+    <path d="M0 256 89 104l76 106 45-78 92 144Z"/>
+    <path d="M176 317 312 74l80 122 70-102 158 235Z"/>
+    <path d="M566 299 694 62l72 119 50-74 164 204v69H566Z"/>
+  </g>
+  <g fill="#cbd5e1" opacity="0.7">
+    <path d="M90 104 165 210l-50-22-43 59-31-11Z"/>
+    <path d="M312 74 392 196l-52-31-65 96-43-13Z"/>
+    <path d="M694 62 766 181l-53-28-66 99-41-14Z"/>
+  </g>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M56 309c101-39 166-36 240-8 74 27 124 21 189-27 79-59 151-72 242-22 71 39 129 45 211 11" stroke="#e5e7eb" stroke-width="18" opacity="0.36"/>
+    <path d="M56 309c101-39 166-36 240-8 74 27 124 21 189-27 79-59 151-72 242-22 71 39 129 45 211 11" stroke="#6b7280" stroke-width="6" opacity="0.72"/>
+    <path d="M303 300c34-60 68-101 137-124 56-19 87-50 96-105" stroke="#c4b5fd" stroke-width="4" opacity="0.62" stroke-dasharray="10 12"/>
+    <path d="M485 275c12-52 35-82 72-95 52-17 96-42 143-93" stroke="#93c5fd" stroke-width="4" opacity="0.5" stroke-dasharray="8 11"/>
+  </g>
+  <g opacity="0.56" fill="#edf4ff">
+    <circle cx="116" cy="278" r="5"/><circle cx="250" cy="291" r="4"/><circle cx="392" cy="285" r="5"/><circle cx="560" cy="215" r="4"/><circle cx="762" cy="252" r="5"/><circle cx="872" cy="270" r="4"/>
+  </g>
+  <g filter="url(#pinShadow)">
+    <path d="M622 116c-29 0-52 23-52 52 0 39 52 91 52 91s52-52 52-91c0-29-23-52-52-52Z" fill="#8b5cf6"/>
+    <path d="M622 133c-19 0-35 16-35 35 0 26 35 60 35 60s35-34 35-60c0-19-16-35-35-35Z" fill="#a78bfa"/>
+    <circle cx="622" cy="168" r="17" fill="#f8fafc"/>
+  </g>
+  <g fill="#22d3ee" opacity="0.24">
+    <circle cx="622" cy="168" r="78" fill="none" stroke="#22d3ee" stroke-width="4"/>
+    <circle cx="622" cy="168" r="117" fill="none" stroke="#22d3ee" stroke-width="2"/>
+  </g>
+  <g fill="#e0e7ff" opacity="0.18">
+    <path d="M23 39h202v18H23zM754 39h160v18H754zM719 328h196v15H719z"/>
+  </g>
+</svg>

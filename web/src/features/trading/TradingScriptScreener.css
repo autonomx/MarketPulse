@@ -1,0 +1,15 @@
+@layer features {
+  .trading-script-screener{display:flex;flex-direction:column;gap:8px;padding:8px 10px;font-size:12px;min-height:0;height:100%;overflow:auto}
+  .trading-script-screener header{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+  .trading-script-screener header span{color:var(--c-slate-630);font-size:11px}
+  .trading-script-screener-filters{display:flex;flex-wrap:wrap;align-items:flex-start;gap:8px}
+  .trading-script-screener-filters ul{display:grid;gap:4px;margin:0;padding:0;list-style:none}
+  .trading-script-screener-filters li{display:flex;gap:4px;align-items:center}
+  .trading-script-screener-filters input{width:90px}
+  .trading-script-screener-filters span{margin-left:auto;color:var(--c-slate-630)}
+  .trading-script-screener table{width:100%;border-collapse:collapse}
+  .trading-script-screener th,.trading-script-screener td{padding:3px 6px;border-bottom:1px solid var(--c-neutral-910);text-align:right;white-space:nowrap}
+  .trading-script-screener th:first-child,.trading-script-screener td:first-child{text-align:left}
+  .trading-script-screener th button{border:0;background:transparent;padding:0;font-weight:600}
+  .trading-script-screener footer{color:var(--c-slate-630);font-size:10px}
+}

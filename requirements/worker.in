@@ -1,0 +1,2 @@
+-r gateway.in
+# Add worker-only execution dependencies here; keep GPU stacks isolated.
