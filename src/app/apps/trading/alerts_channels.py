@@ -14,12 +14,12 @@ whether a secret is set.
 
 from __future__ import annotations
 
-import sys
 from collections.abc import Iterable
 from typing import Protocol
 from urllib.parse import quote, urlsplit
 
 from app.security.provider_secret_store import (
+    os_credential_store_available,
     delete_alert_webhooks,
     load_alert_webhook,
     save_alert_webhook,
@@ -69,7 +69,7 @@ class ProtectedAlertWebhookStore:
 
     def available(self) -> bool:
         # The store is DPAPI-backed; elsewhere saving a webhook fails closed.
-        return sys.platform == "win32"
+        return os_credential_store_available()
 
     def load(self, ref: str) -> dict[str, str] | None:
         return load_alert_webhook(ref)

@@ -155,7 +155,29 @@ def _input_blob(value: bytes) -> tuple[_DataBlob, Any]:
     return blob, buffer
 
 
+def os_credential_store_available() -> bool:
+    """Whether credentials can be kept protected here: DPAPI on Windows, the login Keychain on macOS (S-8)."""
+    if sys.platform == "win32":
+        return True
+    if sys.platform == "darwin":
+        from app.security.keychain import keychain_available
+
+        return keychain_available()
+    return False
+
+
+def credential_store_label() -> str:
+    """How the settings pages name the store that keeps user-entered credentials."""
+    if sys.platform == "win32":
+        return "Windows DPAPI user store"
+    return "macOS Keychain" if os_credential_store_available() else "environment only"
+
+
 def _protect(value: bytes) -> bytes:
+    if sys.platform == "darwin" and os_credential_store_available():
+        from app.security import keychain
+
+        return keychain.protect(value)
     if sys.platform != "win32":
         raise LegacyPersistenceRetired("provider-key editing requires an operating-system credential store")
     source, source_buffer = _input_blob(value)
@@ -180,6 +202,10 @@ def _protect(value: bytes) -> bytes:
 
 
 def _unprotect(value: bytes) -> bytes:
+    if sys.platform == "darwin" and os_credential_store_available():
+        from app.security import keychain
+
+        return keychain.unprotect(value)
     if sys.platform != "win32":
         raise LegacyPersistenceRetired("provider-key editing requires an operating-system credential store")
     source, source_buffer = _input_blob(value)
@@ -429,7 +455,7 @@ def research_provider_credential_editable(provider: str) -> bool:
     if provider not in _RESEARCH_ENVIRONMENT_KEYS:
         raise ValueError("unsupported_research_provider")
     source = research_provider_credential_source(provider)
-    return sys.platform == "win32" and source not in {"environment", "legacy_environment"}
+    return os_credential_store_available() and source not in {"environment", "legacy_environment"}
 
 
 def load_trading_provider_secrets() -> dict[str, dict[str, str]]:
@@ -482,7 +508,7 @@ def save_provider_secrets(payload: dict[str, Any]) -> None:
     """Patch provider API keys: ``{"api_keys": {provider: key}}``; "" deletes, absent keeps."""
     incoming = payload.get("api_keys") if isinstance(payload, dict) else None
     incoming = incoming if isinstance(incoming, dict) else {}
-    if sys.platform != "win32":
+    if not os_credential_store_available():
         _save_environment_owned_marker(incoming)
         return
 
@@ -518,7 +544,7 @@ def save_research_provider_secret(provider: str, value: str | None) -> None:
     )
     if _research_environment_value(provider) or legacy_owned:
         return
-    if sys.platform != "win32":
+    if not os_credential_store_available():
         if requested:
             raise LegacyPersistenceRetired(
                 "research credential editing requires an operating-system credential store"
@@ -562,7 +588,7 @@ def save_alert_webhook(ref: str, url: str, secret: str) -> None:
     Webhook URLs and secrets are credentials and never go to PostgreSQL.
     Without an operating-system credential store this fails closed.
     """
-    if sys.platform != "win32":
+    if not os_credential_store_available():
         raise LegacyPersistenceRetired("alert webhooks require an operating-system credential store")
     stored_payload = _stored_payload_strict()
     entries = _alert_webhooks(stored_payload)
@@ -574,7 +600,7 @@ def save_alert_webhook(ref: str, url: str, secret: str) -> None:
 @_serialized
 def delete_alert_webhooks(refs: Iterable[str] = (), *, prefix: str | None = None, keep: str | None = None) -> None:
     """Remove the given references, and with ``prefix`` every reference under it except ``keep``."""
-    if sys.platform != "win32":
+    if not os_credential_store_available():
         return
     stored_payload = _stored_payload_strict()
     entries = _alert_webhooks(stored_payload)
@@ -608,7 +634,7 @@ def load_alert_notification_secret(name: str) -> str | None:
 @_serialized
 def save_alert_notification_secret(name: str, value: str) -> None:
     """Store an alert delivery credential; never in PostgreSQL. Fails closed without an OS credential store."""
-    if sys.platform != "win32":
+    if not os_credential_store_available():
         raise LegacyPersistenceRetired("alert delivery credentials require an operating-system credential store")
     stored_payload = _stored_payload_strict()
     entries = _alert_notification_secrets(stored_payload)
@@ -619,7 +645,7 @@ def save_alert_notification_secret(name: str, value: str) -> None:
 
 @_serialized
 def delete_alert_notification_secret(name: str) -> None:
-    if sys.platform != "win32":
+    if not os_credential_store_available():
         return
     stored_payload = _stored_payload_strict()
     entries = _alert_notification_secrets(stored_payload)
@@ -647,7 +673,7 @@ def save_trading_provider_secrets(
     if unknown:
         raise ValueError(f"unsupported_trading_credential_field:{sorted(unknown)[0]}")
 
-    if sys.platform != "win32":
+    if not os_credential_store_available():
         for field, value in updates.items():
             requested = str(value or "").strip()
             environment_value = _first_environment_value(

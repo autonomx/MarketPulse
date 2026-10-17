@@ -3,7 +3,6 @@ from __future__ import annotations
 """API for the machine-readable prospective-gap experiment authority."""
 
 import shutil
-import sys
 from datetime import date, datetime, timezone
 from typing import Any, Callable, Literal, cast
 
@@ -12,7 +11,11 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from app.errors import LegacyPersistenceRetired
 from app.security.permissions import requires
-from app.security.provider_secret_store import save_trading_provider_secrets, trading_provider_credential_sources
+from app.security.provider_secret_store import (
+    os_credential_store_available,
+    save_trading_provider_secrets,
+    trading_provider_credential_sources,
+)
 
 from .prospective_gap_repository import ProspectiveGapSessionLedger
 from .prospective_gap_runtime import (
@@ -84,7 +87,7 @@ def _github_credential_status() -> ResearchRepositoryCredentialStatus:
         token_configured=bool(token),
         token_masked=f"***{token[-4:]}" if len(token) > 4 else ("****" if token else ""),
         token_source=cast(Any, source),
-        token_editable=sys.platform == "win32" and source != "environment",
+        token_editable=os_credential_store_available() and source != "environment",
     )
 
 

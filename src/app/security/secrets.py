@@ -22,7 +22,6 @@ from __future__ import annotations
 import json
 import os
 import re
-import sys
 import threading
 from pathlib import Path
 from typing import Protocol
@@ -99,8 +98,10 @@ class DpapiSecretStore:
     _lock: threading.Lock
 
     def __init__(self, path: Path | None = None) -> None:
-        if sys.platform != "win32":
-            raise SecretStoreUnavailable("DPAPI is only available on Windows")
+        from app.security.provider_secret_store import os_credential_store_available
+
+        if not os_credential_store_available():
+            raise SecretStoreUnavailable("a protected file store needs DPAPI (Windows) or the Keychain (macOS)")
         self.path = path or default_dpapi_path()
         self._lock = threading.Lock()
 
@@ -202,7 +203,10 @@ def create_secret_store(kind: str | None = None) -> SecretStore:
         return KeyringSecretStore()
     if selected != "auto":
         raise ValueError("OMNIX_SECRET_STORE must be auto, env, dpapi or keyring")
-    if sys.platform == "win32":
+    from app.security.provider_secret_store import os_credential_store_available
+
+    # The protected file store: DPAPI on Windows, Keychain-held key on macOS (S-8).
+    if os_credential_store_available():
         return DpapiSecretStore()
     try:
         return KeyringSecretStore()

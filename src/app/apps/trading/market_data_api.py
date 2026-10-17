@@ -1,7 +1,7 @@
 from __future__ import annotations
 
+import sys  # noqa: F401  tests set sys.platform through this module
 import asyncio
-import sys
 from datetime import date
 from typing import Any, Literal, cast
 
@@ -9,6 +9,8 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, ConfigDict, Field
 
 from app.security.provider_secret_store import (
+    credential_store_label,
+    os_credential_store_available,
     load_trading_provider_secrets,
     save_trading_provider_secrets,
     trading_provider_credential_sources,
@@ -132,8 +134,8 @@ def _credential_status() -> CoinMarketCapCredentialStatus:
         configured=bool(api_key),
         api_key_masked=_mask_key(api_key),
         api_key_source=cast(Any, sources["api_key"]),
-        api_key_editable=sys.platform == "win32" and sources["api_key"] != "environment",
-        storage="Windows DPAPI user store" if sys.platform == "win32" else "environment only",
+        api_key_editable=os_credential_store_available() and sources["api_key"] != "environment",
+        storage=credential_store_label(),
     )
 
 
@@ -146,8 +148,8 @@ def _key_status(provider: str) -> ProviderKeyStatus:
         configured=bool(api_key),
         api_key_masked=_mask_key(api_key),
         api_key_source=cast(Any, sources["api_key"]),
-        api_key_editable=sys.platform == "win32" and sources["api_key"] != "environment",
-        storage="Windows DPAPI user store" if sys.platform == "win32" else "environment only",
+        api_key_editable=os_credential_store_available() and sources["api_key"] != "environment",
+        storage=credential_store_label(),
     )
 
 

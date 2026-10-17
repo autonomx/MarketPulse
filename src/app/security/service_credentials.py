@@ -23,6 +23,11 @@ def _windows() -> bool:
     return sys.platform == "win32"
 
 
+def _protected() -> bool:
+    """Credential files are OS-protected (DPAPI, or the Keychain on macOS, S-8) and live by the provider keys."""
+    return provider_secret_store.os_credential_store_available()
+
+
 def _validate(token: str) -> str:
     if not re.fullmatch(r"[A-Za-z0-9_-]{43,}", token):
         raise ServiceCredentialError("invalid_service_token_configuration")
@@ -32,6 +37,8 @@ def _validate(token: str) -> str:
 def service_credential_path() -> Path:
     if _windows():
         return provider_secret_store.provider_secret_path().with_name("service-token.dpapi")
+    if _protected():
+        return provider_secret_store.provider_secret_path().with_name("service-token.protected")
     return Path(__file__).resolve().parents[3] / "resources/data/secure/service-token"
 
 
@@ -51,7 +58,7 @@ def _read(path: Path) -> str:
         value = os.read(descriptor, 65537)
         if len(value) > 65536:
             raise ServiceCredentialError("service_credential_too_large")
-        if _windows():
+        if _protected():
             if not value.startswith(_WINDOWS_PREFIX):
                 raise ServiceCredentialError("service_credential_format_invalid")
             value = provider_secret_store._unprotect(value[len(_WINDOWS_PREFIX):])
@@ -65,7 +72,7 @@ def _read(path: Path) -> str:
 def install_credential_path() -> Path:
     """Protected plaintext of the local-auth install credential (WP-4.1)."""
     return service_credential_path().with_name(
-        "install-credential.dpapi" if _windows() else "install-credential"
+        "install-credential.dpapi" if _windows() else "install-credential.protected" if _protected() else "install-credential"
     )
 
 
@@ -86,7 +93,7 @@ def load_or_create_protected_token(target: Path) -> str:
     target.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
     token = secrets.token_urlsafe(32)
     value = token.encode("ascii")
-    if _windows():
+    if _protected():
         value = _WINDOWS_PREFIX + provider_secret_store._protect(value)
     descriptor, temporary_name = tempfile.mkstemp(prefix=".protected-token-", dir=target.parent)
     temporary = Path(temporary_name)
@@ -110,7 +117,7 @@ def replace_protected_token(target: Path) -> str:
     target.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
     token = secrets.token_urlsafe(32)
     value = token.encode("ascii")
-    if _windows():
+    if _protected():
         value = _WINDOWS_PREFIX + provider_secret_store._protect(value)
     descriptor, temporary_name = tempfile.mkstemp(prefix=".protected-token-", dir=target.parent)
     temporary = Path(temporary_name)
@@ -127,7 +134,9 @@ def replace_protected_token(target: Path) -> str:
 
 def run_token_key_path() -> Path:
     """Protected run-token signing key, separate from the service token (WP-4.6)."""
-    return service_credential_path().with_name("run-token-key.dpapi" if _windows() else "run-token-key")
+    return service_credential_path().with_name(
+        "run-token-key.dpapi" if _windows() else "run-token-key.protected" if _protected() else "run-token-key"
+    )
 
 
 def initialize_run_token_key() -> str:

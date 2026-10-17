@@ -30,6 +30,7 @@ from pydantic import BaseModel, Field, field_validator, model_validator
 from app.persistence.tenant_scope import system_scope
 from app.persistence.unit_of_work import unit_of_work
 from app.security.provider_secret_store import (
+    os_credential_store_available,
     delete_alert_notification_secret,
     load_alert_notification_secret,
     save_alert_notification_secret,
@@ -65,9 +66,8 @@ class ProtectedNotificationSecretStore:
     """Delivery credentials in the user's OS-protected provider secret store (DPAPI), like webhooks."""
 
     def available(self) -> bool:
-        import sys
 
-        return sys.platform == "win32"
+        return os_credential_store_available()
 
     def load(self, name: str) -> str | None:
         return load_alert_notification_secret(name)

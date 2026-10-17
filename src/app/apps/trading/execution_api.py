@@ -1,14 +1,16 @@
 from __future__ import annotations
 
+import sys  # noqa: F401  tests set sys.platform through this module
 import asyncio
 import logging
-import sys
 from typing import Any, Literal, cast
 
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel, ConfigDict, Field
 
 from app.security.provider_secret_store import (
+    credential_store_label,
+    os_credential_store_available,
     load_trading_provider_secrets,
     save_trading_provider_secrets,
     trading_provider_credential_sources,
@@ -57,7 +59,7 @@ def _alpaca_credential_status() -> AlpacaIexCredentialStatus:
     sources = trading_provider_credential_sources("alpaca_iex")
     api_key = str(credentials.get("api_key_id") or "")
     secret = str(credentials.get("secret_key") or "")
-    windows_store = sys.platform == "win32"
+    windows_store = os_credential_store_available()
     return AlpacaIexCredentialStatus(
         configured=bool(api_key and secret),
         api_key_id_masked=_mask_key(api_key),
@@ -65,7 +67,7 @@ def _alpaca_credential_status() -> AlpacaIexCredentialStatus:
         secret_key_source=cast(Any, sources["secret_key"]),
         api_key_editable=windows_store and sources["api_key_id"] != "environment",
         secret_key_editable=windows_store and sources["secret_key"] != "environment",
-        storage="Windows DPAPI user store" if windows_store else "environment only",
+        storage=credential_store_label(),
     )
 
 
