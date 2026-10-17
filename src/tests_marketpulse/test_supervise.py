@@ -17,6 +17,9 @@ from marketpulse.supervise import Supervisor, SupervisorError, keep_newest, port
 
 ROOT = Path(__file__).resolve().parents[2]
 STAGE = ROOT / "build" / "stage"
+# The staged interpreter and client per platform (Windows, or macOS with python/bin).
+STAGED_PYTHON = STAGE / "python" / ("python.exe" if sys.platform == "win32" else "bin/python3")
+PSQL = STAGE / "postgres" / "bin" / ("psql.exe" if sys.platform == "win32" else "psql")
 SECRETS = {"MARKETPULSE_DB_OWNER_PASSWORD": "owner-pw", "MARKETPULSE_DB_APP_PASSWORD": "app-pw",
            "MARKETPULSE_NOTIFY_SECRET": "notify"}
 
@@ -182,7 +185,7 @@ def test_serve_children_get_the_secrets_and_the_gateway_environment(tmp_path, se
     assert "MARKETPULSE_DB_OWNER_PASSWORD" not in supervisor.env
 
 
-staged = pytest.mark.skipif(not (STAGE / "python" / "python.exe").is_file() or not (STAGE / "postgres" / "bin").is_dir(),
+staged = pytest.mark.skipif(not STAGED_PYTHON.is_file() or not (STAGE / "postgres" / "bin").is_dir(),
                             reason="run `python build/stage.py all` first")
 
 
@@ -190,7 +193,7 @@ staged = pytest.mark.skipif(not (STAGE / "python" / "python.exe").is_file() or n
 def test_the_staged_interpreter_writes_bytecode_to_the_data_folder(tmp_path):
     # python311._pth ignores PYTHONPATH and PYTHONHOME; the bytecode cache prefix still applies, so nothing is written
     # into the install folder (where NSIS could not remove long __pycache__ paths).
-    result = subprocess.run([str(STAGE / "python" / "python.exe"), "-c", "import sys; print(sys.pycache_prefix)"],
+    result = subprocess.run([str(STAGED_PYTHON), "-c", "import sys; print(sys.pycache_prefix)"],
                             env={"SystemRoot": os.environ.get("SystemRoot", r"C:\Windows"),
                                  "PYTHONPYCACHEPREFIX": str(tmp_path / "pycache")},
                             capture_output=True, text=True, check=True)
@@ -215,7 +218,7 @@ def test_a_user_script_runs_in_a_worker_of_the_staged_runtime(tmp_path):
     """Phase 5 gate: scripts_service starts its worker with the bundled interpreter and gets a result."""
     check = tmp_path / "user_script_check.py"
     check.write_text(USER_SCRIPT_CHECK, encoding="utf-8")
-    result = subprocess.run([str(STAGE / "python" / "python.exe"), str(check)], cwd=str(STAGE), capture_output=True,
+    result = subprocess.run([str(STAGED_PYTHON), str(check)], cwd=str(STAGE), capture_output=True,
                             text=True, timeout=120, env={"SystemRoot": os.environ.get("SystemRoot", r"C:\Windows"),
                                                         "OMNIX_FEATURES": "trading"})
 
@@ -235,7 +238,7 @@ def test_the_staged_runtime_starts_from_nothing_and_stops_cleanly(tmp_path):
         "postgres_bin": str(STAGE / "postgres" / "bin"),
     }), encoding="utf-8")
     env = {**{k: v for k, v in os.environ.items() if not k.startswith(("PYTHON", "OMNIX_"))}, **SECRETS}
-    process = subprocess.Popen([str(STAGE / "python" / "python.exe"), "-m", "marketpulse.supervise", "--config", str(launch)],
+    process = subprocess.Popen([str(STAGED_PYTHON), "-m", "marketpulse.supervise", "--config", str(launch)],
                                stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=env, cwd=str(tmp_path))
     events: list[dict] = []
     done = threading.Event()
@@ -254,7 +257,7 @@ def test_the_staged_runtime_starts_from_nothing_and_stops_cleanly(tmp_path):
         assert [event["step"] for event in events if event["event"] == "step"] == [
             "initdb", "postgres", "database", "migrate", "gateway"]
         # No password: the cluster refuses a connection without one.
-        refused = subprocess.run([str(STAGE / "postgres" / "bin" / "psql.exe"), "-h", "127.0.0.1", "-p", str(config.pg_port),
+        refused = subprocess.run([str(PSQL), "-h", "127.0.0.1", "-p", str(config.pg_port),
                                   "-U", "marketpulse_owner", "-d", "postgres", "-w", "-c", "select 1"],
                                  capture_output=True, text=True, env={k: v for k, v in env.items() if k != "PGPASSWORD"})
         assert refused.returncode != 0 and "password" in refused.stderr

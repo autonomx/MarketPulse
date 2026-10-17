@@ -8,32 +8,43 @@ const DESKTOP = resolve(__dirname, '..');
 const STAGE = resolve(DESKTOP, '..', 'build', 'stage');
 const PASSWORD = 'a long first passphrase';
 
-function backendProcesses(dataDir: string): string[] {
+interface ProcessRow { pid: number; ppid: number; command: string }
+
+/** Every process with its parent and command line (PowerShell on Windows, ps on macOS). */
+function processes(): ProcessRow[] {
+  if (process.platform !== 'win32') {
+    return execFileSync('ps', ['-axo', 'pid=,ppid=,command='], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 })
+      .split('\n').map((line) => line.trim().match(/^(\d+)\s+(\d+)\s+(.*)$/)).filter((match) => match !== null)
+      .map((match) => ({ pid: Number(match![1]), ppid: Number(match![2]), command: match![3] }));
+  }
   const out = execFileSync('powershell', ['-NoProfile', '-Command',
-    "Get-CimInstance Win32_Process -Filter \"Name='postgres.exe' or Name='python.exe'\" | ForEach-Object { $_.CommandLine }"],
-  { encoding: 'utf8' });
+    'Get-CimInstance Win32_Process | Select-Object ProcessId, ParentProcessId, CommandLine | ConvertTo-Json -Compress'],
+  { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+  return (JSON.parse(out) as { ProcessId: number; ParentProcessId: number; CommandLine: string | null }[])
+    .map((row) => ({ pid: row.ProcessId, ppid: row.ParentProcessId, command: row.CommandLine ?? '' }));
+}
+
+function mentions(row: ProcessRow, dataDir: string): boolean {
+  const line = row.command.toLowerCase();
   const needle = dataDir.toLowerCase();
-  return out.split(/\r?\n/).filter((line) => line.toLowerCase().includes(needle) || line.toLowerCase().includes(needle.replaceAll('\\', '/')));
+  return line.includes(needle) || line.includes(needle.replaceAll('\\', '/'));
+}
+
+/** The backend's python and postgres processes started for this data folder. */
+function backendProcesses(dataDir: string): string[] {
+  return processes().filter((row) => /python|postgres/i.test(row.command) && mentions(row, dataDir)).map((row) => row.command);
 }
 
 /** The backend's process tree for this data folder: its python and postgres processes and their children. */
 function backendTree(dataDir: string): number[] {
-  const out = execFileSync('powershell', ['-NoProfile', '-Command',
-    'Get-CimInstance Win32_Process | Select-Object ProcessId, ParentProcessId, CommandLine | ConvertTo-Json -Compress'],
-  { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
-  const rows = JSON.parse(out) as { ProcessId: number; ParentProcessId: number; CommandLine: string | null }[];
-  const needle = dataDir.toLowerCase();
-  const roots = rows.filter((row) => {
-    const line = (row.CommandLine ?? '').toLowerCase();
-    return line.includes(needle) || line.includes(needle.replaceAll('\\', '/'));
-  }).map((row) => row.ProcessId);
-  const tree = new Set(roots);
+  const rows = processes();
+  const tree = new Set(rows.filter((row) => mentions(row, dataDir)).map((row) => row.pid));
   let grew = true;
   while (grew) {
     grew = false;
     for (const row of rows) {
-      if (tree.has(row.ParentProcessId) && !tree.has(row.ProcessId)) {
-        tree.add(row.ProcessId);
+      if (tree.has(row.ppid) && !tree.has(row.pid)) {
+        tree.add(row.pid);
         grew = true;
       }
     }
@@ -41,14 +52,24 @@ function backendTree(dataDir: string): number[] {
   return [...tree];
 }
 
-/** Pauses or resumes processes as a laptop's sleep would (NtSuspendProcess, through the staged Python). */
+/** Pauses or resumes processes as a laptop's sleep would (SIGSTOP/SIGCONT; NtSuspendProcess on Windows). */
 function setSuspended(pids: number[], suspended: boolean): void {
+  if (process.platform !== 'win32') {
+    for (const pid of pids) {
+      try {
+        process.kill(pid, suspended ? 'SIGSTOP' : 'SIGCONT');
+      } catch {
+        // Already gone.
+      }
+    }
+    return;
+  }
   const call = suspended ? 'NtSuspendProcess' : 'NtResumeProcess';
   const script = [
     'import ctypes, sys',
     'k = ctypes.WinDLL("kernel32"); n = ctypes.WinDLL("ntdll")',
     'k.OpenProcess.restype = ctypes.c_void_p',
-    `for pid in map(int, sys.argv[1:]):`,
+    'for pid in map(int, sys.argv[1:]):',
     '    h = k.OpenProcess(0x0800, False, pid)',
     `    if h: n.${call}(ctypes.c_void_p(h)); k.CloseHandle(ctypes.c_void_p(h))`,
   ].join('\n');
