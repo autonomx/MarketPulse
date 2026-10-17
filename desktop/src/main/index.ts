@@ -293,6 +293,8 @@ async function main(): Promise<void> {
  */
 function googleClient(): { clientId: string; clientSecret: string } | null {
   const candidates = [join(process.resourcesPath ?? '', 'google-oauth.json'), join(__dirname, '..', 'config', 'google-oauth.json')];
+  // Development and tests may name another file; an installed app reads only its own.
+  if (!app.isPackaged && process.env.MARKETPULSE_GOOGLE_OAUTH) candidates.unshift(process.env.MARKETPULSE_GOOGLE_OAUTH);
   for (const candidate of candidates) {
     if (!existsSync(candidate)) continue;
     try {
