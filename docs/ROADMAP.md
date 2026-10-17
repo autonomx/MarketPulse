@@ -850,7 +850,7 @@ Q-4 (data repo name, logo) is open and blocks nothing.
 ## 11. Implementation status (2026-10-17)
 
 Written for the owner and for whoever builds MarketPulse next. MarketPulse branch `implementation` (not pushed);
-Omnix seams on branch `marketpulse-seams` (16 commits on `main`, not merged: merging is the owner's call).
+Omnix seams on branch `marketpulse-seams` (17 commits on `main`, not merged: merging is the owner's call).
 
 ### Status by phase
 
@@ -858,7 +858,7 @@ Omnix seams on branch `marketpulse-seams` (16 commits on `main`, not merged: mer
 |-------|--------|----------|
 | 0 Bootstrap | Done | Repo, licences, brand from the supplied logo (`brand/`, `build/render_brand.py`). |
 | 1 Omnix seams | Done except S-11 | S-1, S-2, S-3, S-5, S-6, S-7, S-8, S-10 and W-1 to W-4 are committed on `marketpulse-seams`, each with tests. S-4 was dropped in revision 3. S-11 waits for the data repository (owner). |
-| 2 Mirror and sync | Done | `sync/sync_from_omnix.py`; mirror at Omnix `1d51102844`, 4572 files, `check` clean. |
+| 2 Mirror and sync | Done | `sync/sync_from_omnix.py`; mirror at Omnix `5eb3f34459`, 4572 files, `check` clean. |
 | 3 Headless server | Done | Full schema migrates on PostgreSQL 17.11; trading-only `/ready`; `src/tests_marketpulse` env tests. |
 | 4 Web app | Done | MarketPulse build (trading only), 15 Playwright e2e tests, own screenshot baselines. |
 | 5 Embedded runtime | Done | Staged-runtime gate: ready from nothing, password-only PostgreSQL, user-script worker, no process left 0.6 s after a killed supervisor. |
@@ -902,8 +902,9 @@ Omnix seams on branch `marketpulse-seams` (16 commits on `main`, not merged: mer
 - **Provider status reads are open to guests** (Omnix's design): they show "configured" and a masked key, never the
   key. Writes and the research token are owner-only, and a test pins this behaviour.
 - **Node 22.12 or newer** is recommended. 22.9 needs `--experimental-require-module`, which the `dist` script passes.
-- **A test-isolation bug in Omnix** (a five-minute window in the margin-call email test) is fixed on
-  `marketpulse-seams` (`1d51102844`).
+- **Two test-isolation bugs in Omnix** are fixed on `marketpulse-seams`. The margin-call email test used a
+  five-minute window and left pending deliveries behind; another test's delivery monitor then claimed those first
+  (`1d51102844`, `5eb3f34459`).
 
 ### Versions and sizes
 
@@ -918,8 +919,7 @@ ibapi 10.50.2.
 
 ### Verification at the last commit
 
-- Trading test set: 2148 tests in 275 files.
-- `src/tests_marketpulse`: 36 tests.
+- Trading test set plus `src/tests_marketpulse`: 2184 tests (2148 + 36) in one run, none failed, 2 skipped.
 - Electron: 19 tests (12 smoke, 7 unit).
 - Web: both typechecks clean; vitest 1348 tests in 192 files; 15 Playwright e2e tests.
 - Installer: install, boot and uninstall in a scratch folder.
