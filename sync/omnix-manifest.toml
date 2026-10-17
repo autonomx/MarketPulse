@@ -36,11 +36,11 @@ include = [
   "src/tests/utils/**",
   "src/tests/fixtures/**",
   "src/tests/trading/**",
+  "src/tests/persistence/conftest.py",
   "src/tests/persistence/test_trading*.py",
   "src/tests/persistence/test_auth*.py",
   "src/tests/persistence/test_provider_secret_store_unit.py",
   "src/tests/security/test_auth*.py",
-  "src/tests/security/test_request_guard*.py",
   "src/tests/app/test_writable_resources_root.py",
   # Trading test fixtures (read-only, bundled); not the research inbox or state.
   "resources/trading/indicator_goldens/**",
@@ -50,14 +50,17 @@ include = [
   "web/src/**",
   "web/public/**",
   "web/index.html",
-  "web/vite.config.ts",
-  "web/vitest.config.ts",
+  "web/*.ts",
+  "web/*.js",
   "web/tsconfig.json",
   "web/tsconfig.*.json",
   "web/eslint.config.js",
   "web/scripts/generate-api-types.mjs",
   "web/tests/e2e/trading-terminal.spec.ts",
   "web/tests/e2e/support/**",
+  # Trading architecture records that trading tests read.
+  "docs/architecture/ADR-0004-omnix-trading-terminal.md",
+  "docs/architecture/OMNIX_TRADING_*.md",
   # Licences of what Omnix includes.
   "THIRD_PARTY_NOTICES.md",
 ]

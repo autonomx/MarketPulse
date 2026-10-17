@@ -6,6 +6,12 @@
  },
  "files": {
   "THIRD_PARTY_NOTICES.md": "09bd236a9c62aad511901fae3036e331d01f5ed820a5b88785a24426c6c30295",
+  "docs/architecture/ADR-0004-omnix-trading-terminal.md": "4c77032b2a5b959fb0d2f780cb57a231c054edf362f4218404e30aebe403b735",
+  "docs/architecture/OMNIX_TRADING_OPERATIONS.md": "6215ce12dcbf4274a6be773482c4e81067868f5c9ef2dbb6d88f2be8cf519e85",
+  "docs/architecture/OMNIX_TRADING_PROTOTYPE_MIGRATION_INVENTORY.md": "e5266762b899c0998e939859600b920d52cd49dd77039d93e5bd8c6e9b423a5b",
+  "docs/architecture/OMNIX_TRADING_RELEASE_CERTIFICATION.md": "f6a95afd8d54f8976abb0097e3818c6e3bba7befc627c08a40c295f82fab1b14",
+  "docs/architecture/OMNIX_TRADING_SECURITY_LEGAL.md": "70c815a850fe922dd8e95e90e7f6614f54f0cfd1b411c899fa33f6d9f60736d7",
+  "docs/architecture/OMNIX_TRADING_SPIKE_BENCHMARK.md": "d2d2b994d5121b48a4a0493be8866bbd3d5bf28b49d08805f93417541d18c59f",
   "requirements/README.md": "f91a00d54c2887d6ca34fa7ec07a87bb1e0f66fb0961008c2541703002b64763",
   "requirements/dev.in": "28d9202b9753ffcff0f74d9ef553dff281a568947d438a944c2106418f80d7cc",
   "requirements/dev.lock.txt": "41bbac4c40a5e8179892b0f2190284914d04bf9d0b77a53c10d41b65848be0e6",
@@ -2698,6 +2704,7 @@
   "src/tests/pages/sidebar_page.py": "085e07a082737041b11236f62a6e65b5bf1f750cda6278a5323a80da11c0318f",
   "src/tests/pages/voice_clone_page.py": "2d0458f3f5d511662c07f4d39d0b656a0d98b7322bda14fb3739aa75a5280604",
   "src/tests/pages/voice_studio_page.py": "701ee644ec765da2456f4451119e52dedc618501d5e72f27e666bd28fcdc9297",
+  "src/tests/persistence/conftest.py": "87a91342d0e822b1c8ed0089897263ca835d91a9a2a3198a1695dd3abd540cae",
   "src/tests/persistence/test_auth_accounts_integration.py": "4d99c49abb175a71b566f431bc2ab24cf97c651133f4cb989f6299693e7f81dd",
   "src/tests/persistence/test_auth_desktop_google_integration.py": "28c86301aeea23845ec10dc4de1f04fb578732933c106bdb5f500fabd67ec1b9",
   "src/tests/persistence/test_auth_launcher_first_password_integration.py": "4e3a4239e89025e7c5adc416dd221b5116ef70bbcc3b6becc0907aea07f62117",
@@ -2728,7 +2735,6 @@
   "src/tests/security/test_auth_middleware.py": "5ea6ea8d65a36a8da9cce7109be8ee49c08ba49f792ca45ddf36ef803053ddc3",
   "src/tests/security/test_auth_oidc.py": "1cf98f392f8643f0468d1be0d5c33269e6210b0393dee40bc575a89ad30cdfae",
   "src/tests/security/test_auth_settings.py": "1cef053fa8b3d5baaa77326f6096fb9642d226f12ba7970047f4f0947a18edf3",
-  "src/tests/security/test_request_guard.py": "9a831160331af3913f963daa8556e18b39542ba5b82595abfc5e9785e329b464",
   "src/tests/support/assistant_memory_settings.py": "c221efc8125910eea405756dbe02b8b78fb28b4f69bcdb6c2c3df03c188a2cea",
   "src/tests/support/auth.py": "561b67e41f04be6aefd883acfdf1c238463740751a56f341aad2324b65c23d05",
   "src/tests/support/database.py": "c3a21350d1a1656c5ac1e909448ff87dfa1b44a399cd30125ae2235a4fed25ec",
@@ -2992,7 +2998,11 @@
   "src/tests/utils/__init__.py": "146032eab1cc387e8cf2b3b6508c5161221d9b490656e059e52a3cb41465bd64",
   "src/tests/utils/helpers.py": "1e612efc44c89d78dc4d104f01e7b343ce6218bd91d37f8ded7354f0a42c8225",
   "web/eslint.config.js": "1543aa99994ac7452744b523d994d048059cbb584f344d2ff8a8d114d6e79b96",
+  "web/gateway-routing.ts": "c2ee874a17c8471559a494f1de8f63b252cc1efeedc83c0faec37652cbecaea0",
   "web/index.html": "d1b800441452b616473166a4af4f8d0e4ed368a763a54459c6a7616c1a46396d",
+  "web/listener-policy.test.ts": "4a70120c49311961450147021be7e1fe27f6e35163d6addc4c49d62cb6794381",
+  "web/listener-policy.ts": "7aa52706754926ecba56f62cc1372b46f507fd9959788655b62e1ac3459c989e",
+  "web/playwright.config.ts": "b63e3583881ea3c90eaa9b04b0211a4744f6822fe07b35780bce7903815c7bee",
   "web/public/icons/omnix-trading-192.png": "ba049431ec0e35ff8f7badd0466ae1801ee7dc53b73ba93b8c2eb1218bcc4d52",
   "web/public/icons/omnix-trading-512.png": "8fbed58349ac01086c3b35075b8b9157866e862bdc4584d598744dc0c9130f3d",
   "web/public/icons/omnix-trading-maskable-512.png": "12310f95c5fe8bf7d854cc056aae88677cdaad0602900305c216acc8611624e2",
@@ -4561,8 +4571,9 @@
   "web/tsconfig.json": "c0080e4172118c5641f30b61d0074d2eab0d47f3e35e7a6154fdd1b090829111",
   "web/tsconfig.trading.json": "1956a007fa7c72f32e1a89000ff22108a896439ded8e8816508e30ef8cbf3469",
   "web/vite.config.ts": "c5bab0eb1a59aa213cd4f9df2113e965f088e6eea24aeb554056830763c48ed6",
-  "web/vitest.config.ts": "bd452297db016a700f6521ea48d4dd2603f518f00d3fb96ec818aa0d7939b9af"
+  "web/vitest.config.ts": "bd452297db016a700f6521ea48d4dd2603f518f00d3fb96ec818aa0d7939b9af",
+  "web/vitest.workspace.config.ts": "f1f2382afdf7550337092061b966ac32b22fb2286174c89b691bc35703795507"
  },
  "source": "F:/LLM/omnix",
- "synced_at": "2026-10-17T04:04:04+00:00"
+ "synced_at": "2026-10-17T04:20:59+00:00"
 }

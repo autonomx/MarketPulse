@@ -28,7 +28,6 @@ src/tests/persistence/test_trading_watchlist_alerts_integration.py
 src/tests/security/test_auth_middleware.py
 src/tests/security/test_auth_oidc.py
 src/tests/security/test_auth_settings.py
-src/tests/security/test_request_guard.py
 src/tests/trading/test_ai_shadow_circuit_persistence.py
 src/tests/trading/test_ai_shadow_v3_iex_book.py
 src/tests/trading/test_alpaca_sip_provider.py
