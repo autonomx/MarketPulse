@@ -872,9 +872,8 @@ Q-4 (data repo name, logo) is open and blocks nothing.
 ## 11. Implementation status (2026-10-17)
 
 Written for the owner and for whoever builds MarketPulse next. MarketPulse: pushed to `autonomx/MarketPulse` `main`
-(public), latest release `v0.1.2`. Omnix: the seam commits on `marketpulse-seams` are fast-forwarded into the local
-`main`; that `main` is **not pushed** to `autonomx/omnix` yet, so the mirror's Omnix commit (`148212c788`) exists
-only on this machine until it is.
+(public), latest release `v0.1.2`. Omnix: the seam commits on `marketpulse-seams` are fast-forwarded into `main` and
+pushed to `autonomx/omnix` (2026-10-17), so the mirror's Omnix commit (`148212c788`) is public.
 
 ### Status by phase
 
