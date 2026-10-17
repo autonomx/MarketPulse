@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="110 110 840 840" role="img" aria-label="MarketPulse">
+  <!-- The macOS menu-bar template: the logo's candles and sweep in black on transparency (macOS tints it). -->
+  <g fill="#000">
+    <rect x="215" y="548" width="36" height="214" rx="18"/>
+    <rect x="195" y="590" width="76" height="128" rx="12"/>
+    <rect x="327" y="452" width="36" height="250" rx="18"/>
+    <rect x="307" y="496" width="76" height="158" rx="12"/>
+    <rect x="439" y="356" width="36" height="276" rx="18"/>
+    <rect x="419" y="400" width="76" height="180" rx="12"/>
+    <rect x="551" y="262" width="36" height="292" rx="18"/>
+    <rect x="531" y="306" width="76" height="196" rx="12"/>
+    <rect x="663" y="176" width="36" height="296" rx="18"/>
+    <rect x="643" y="220" width="76" height="206" rx="12"/>
+    <path d="M128 884 C 468 856 704 708 846 360 L 776 336 C 652 668 446 822 128 884 Z"/>
+    <path d="M884 136 L 926 396 L 700 318 Z"/>
+  </g>
+</svg>

@@ -65,6 +65,8 @@ export class BackendSupervisor extends EventEmitter {
       if (value) env[name] = value;
     }
     Object.assign(env, this.secrets);
+    // Bytecode caches go to the data folder, never into the install folder (a signed bundle on macOS).
+    env.PYTHONPYCACHEPREFIX = join(this.paths.data, 'pycache');
     const args = ['-m', 'marketpulse.supervise', '--config', this.launchConfigPath(), ...(options.restoreSnapshot ? ['--restore-snapshot'] : [])];
     const child = spawn(this.paths.python, args, {
       cwd: this.paths.data,

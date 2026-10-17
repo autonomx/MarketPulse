@@ -125,6 +125,8 @@ def child_environment(config: LaunchConfig, inherited: Mapping[str, str] | None 
         # macOS: MarketPulse's own Keychain item for its file key, apart from Omnix's (S-8).
         "OMNIX_KEYCHAIN_SERVICE": "MarketPulse",
         "OMNIX_LOG_FORMAT": "json",
+        # Bytecode caches go to the data folder: the install folder (a signed bundle on macOS) is never written.
+        "PYTHONPYCACHEPREFIX": str(data / "pycache"),
         # Desktop notifications go to the supervisor's loopback listener (S-6).
         "OMNIX_TRADING_DESKTOP_NOTIFY_URL": f"http://127.0.0.1:{config.notify_port}/notify",
         "OMNIX_TRADING_DESKTOP_NOTIFY_SECRET": source["MARKETPULSE_NOTIFY_SECRET"],

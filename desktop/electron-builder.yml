@@ -1,4 +1,4 @@
-# The MarketPulse Windows installer (roadmap MP-9.1). Run: npm --prefix desktop run dist
+# The MarketPulse installers: Windows (roadmap MP-9.1) and macOS (MP-11.2). Run: npm --prefix desktop run dist
 appId: com.autonomx.marketpulse
 productName: MarketPulse
 copyright: Copyright (c) 2026 Autonomx
@@ -44,6 +44,26 @@ nsis:
   installerIcon: ../brand/out/icon.ico
   uninstallerIcon: ../brand/out/icon.ico
   license: ../LICENSE
+mac:
+  # The macOS app (roadmap MP-11.2). dist.mjs builds the architecture of the staged runtime (build-info.json) and
+  # turns notarization on when Apple credentials are in the environment.
+  target:
+    - dmg
+    # electron-updater on macOS updates from the zip.
+    - zip
+  icon: ../brand/out/icon-1024.png
+  category: public.app-category.finance
+  hardenedRuntime: true
+  gatekeeperAssess: false
+  entitlements: build-resources/entitlements.mac.plist
+  entitlementsInherit: build-resources/entitlements.mac.plist
+  notarize: false
+  minimumSystemVersion: "12.0"
+  extendInfo:
+    NSUserNotificationAlertStyle: alert
+dmg:
+  sign: false
+  title: MarketPulse
 publish:
   # A public releases feed, so no token ships in the app (MP-9.3). Owner creates autonomx/marketpulse-releases.
   provider: github

@@ -21,6 +21,9 @@ app.setAppUserModelId('com.autonomx.marketpulse');
 
 if (!app.requestSingleInstanceLock()) {
   app.quit();
+} else if (process.argv.includes('--quit')) {
+  // `MarketPulse --quit` (the installer's shutdown request) with no MarketPulse running: nothing to stop.
+  app.exit(0);
 } else {
   void main();
 }
@@ -43,8 +46,12 @@ async function main(): Promise<void> {
 
   hardenSession();
 
-  // Single instance: a second launch shows the running app.
-  app.on('second-instance', () => windows.focusMain());
+  // Single instance: a second launch shows the running app; `--quit` (the installer, before it replaces the files)
+  // quits it cleanly, stopping the backend and PostgreSQL first.
+  app.on('second-instance', (_event, argv) => {
+    if (argv.includes('--quit')) app.quit();
+    else windows.focusMain();
+  });
 
   const sendStatus = (status: unknown) => {
     lastStatus = status;
@@ -216,6 +223,11 @@ async function main(): Promise<void> {
 
   // Tray, menu, start at login and the optional keep-awake (roadmap Phase 8).
   const tray: Tray | null = createTray(() => windows.focusMain(), () => app.quit());
+  if (process.platform === 'darwin') {
+    // The Dock: its menu reopens the window; a development run shows the brand icon (packaged, the .icns does).
+    app.dock?.setMenu(Menu.buildFromTemplate([{ label: 'Show MarketPulse', click: () => windows.focusMain() }]));
+    if (!app.isPackaged) app.dock?.setIcon(join(paths.icons, 'icon-256.png'));
+  }
   Menu.setApplicationMenu(buildMenu(() => origin, windows, paths.logs));
   // Only an installed app registers itself to start at login; a development or test run never touches the OS setting.
   if (app.isPackaged && !process.env.MARKETPULSE_DATA_DIR) {
@@ -282,7 +294,10 @@ function hardenSession(): void {
 
 function createTray(show: () => void, quit: () => void): Tray | null {
   try {
-    const icon = nativeImage.createFromPath(join(__dirname, 'icons', process.platform === 'win32' ? 'icon-32.png' : 'icon-16.png'));
+    // macOS: a black-on-transparent template (with @2x) that the menu bar tints for light and dark.
+    const name = process.platform === 'darwin' ? 'trayTemplate.png' : process.platform === 'win32' ? 'icon-32.png' : 'icon-16.png';
+    const icon = nativeImage.createFromPath(join(__dirname, 'icons', name));
+    if (process.platform === 'darwin') icon.setTemplateImage(true);
     const tray = new Tray(icon);
     tray.setToolTip('MarketPulse');
     tray.setContextMenu(Menu.buildFromTemplate([

@@ -16,7 +16,7 @@ await build({ ...common, platform: 'browser', format: 'iife', entryPoints: [join
 
 cpSync(join(root, 'pages'), join(out, 'pages'), { recursive: true });
 mkdirSync(join(out, 'icons'), { recursive: true });
-for (const name of ['icon.ico', 'icon.png', 'icon-16.png', 'icon-32.png', 'icon-64.png', 'icon-128.png', 'icon-256.png']) {
+for (const name of ['icon.ico', 'icon.png', 'icon-16.png', 'icon-32.png', 'icon-64.png', 'icon-128.png', 'icon-256.png', 'trayTemplate.png', 'trayTemplate@2x.png']) {
   cpSync(join(root, '..', 'brand', 'out', name), join(out, 'icons', name));
 }
 console.log('built desktop into out/');

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Hardened-runtime entitlements for MarketPulse and every binary it ships (roadmap MP-11.2), applied to the app and,
+  as entitlementsInherit, to the bundled Python and PostgreSQL. No App Sandbox: the backend writes its own data dir.
+  - allow-jit: Electron's V8.
+  - allow-unsigned-executable-memory: Python's ctypes and cffi callbacks (libffi trampolines).
+  - disable-library-validation: Python loads its extension modules and wheels' dylibs at run time.
+-->
+<plist version="1.0">
+<dict>
+  <key>com.apple.security.cs.allow-jit</key>
+  <true/>
+  <key>com.apple.security.cs.allow-unsigned-executable-memory</key>
+  <true/>
+  <key>com.apple.security.cs.disable-library-validation</key>
+  <true/>
+</dict>
+</plist>

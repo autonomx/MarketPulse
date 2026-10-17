@@ -104,6 +104,18 @@ staged = pytest.mark.skipif(not (STAGE / "python" / "python.exe").is_file() or n
 
 
 @staged
+def test_the_staged_interpreter_writes_bytecode_to_the_data_folder(tmp_path):
+    # python311._pth ignores PYTHONPATH and PYTHONHOME; the bytecode cache prefix still applies, so nothing is written
+    # into the install folder (where NSIS could not remove long __pycache__ paths).
+    result = subprocess.run([str(STAGE / "python" / "python.exe"), "-c", "import sys; print(sys.pycache_prefix)"],
+                            env={"SystemRoot": os.environ.get("SystemRoot", r"C:\Windows"),
+                                 "PYTHONPYCACHEPREFIX": str(tmp_path / "pycache")},
+                            capture_output=True, text=True, check=True)
+
+    assert result.stdout.strip() == str(tmp_path / "pycache")
+
+
+@staged
 @pytest.mark.postgres
 def test_the_staged_runtime_starts_from_nothing_and_stops_cleanly(tmp_path):
     """Phase 5 gate: initdb, database, migrations and the gateway from an empty folder, then a clean stop."""

@@ -68,7 +68,7 @@ def test_sets_the_whole_marketpulse_environment(config):
 def test_every_writable_and_secret_path_is_under_the_marketpulse_data_folder(config):
     env = child_environment(config, _inherited())
 
-    for key in ("OMNIX_RESOURCES_DIR", "OMNIX_PROVIDER_SECRETS_PATH", "OMNIX_SECRET_STORE_PATH"):
+    for key in ("OMNIX_RESOURCES_DIR", "OMNIX_PROVIDER_SECRETS_PATH", "OMNIX_SECRET_STORE_PATH", "PYTHONPYCACHEPREFIX"):
         assert Path(env[key]).is_relative_to(config.data_dir), key
     assert not any("\\Omnix\\" in value or "/Omnix/" in value for value in env.values())
 

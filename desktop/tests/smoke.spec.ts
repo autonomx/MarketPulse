@@ -1,5 +1,5 @@
 import { _electron as electron, expect, test, type ElectronApplication, type Page } from '@playwright/test';
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawn } from 'node:child_process';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
@@ -177,6 +177,18 @@ test('the next launch opens the charts signed in, without the first-run page', a
   await expect(page.locator('.trading-workspace')).toBeVisible({ timeout: 120_000 });
   expect(page.url()).not.toContain('/welcome');
   expect(await page.evaluate(async () => (await (await fetch('/api/auth/session')).json()).account?.has_password)).toBe(true);
-  await app.close();
+});
+
+test('a second launch with --quit (the installer, before replacing files) stops the running app cleanly', async () => {
+  const running = app.process();
+  expect(backendProcesses(dataDir).length).toBeGreaterThan(0);
+  const electronPath = (await import('electron')).default as unknown as string;
+  const quitter = spawn(electronPath, [join(DESKTOP, 'out', 'main.js'), '--quit'], {
+    env: { ...Object.fromEntries(Object.entries(process.env).filter(([name]) => name !== 'ELECTRON_RUN_AS_NODE')) as Record<string, string>,
+      MARKETPULSE_DATA_DIR: dataDir, MARKETPULSE_RESOURCES: STAGE },
+    stdio: 'ignore',
+  });
+  await new Promise((resolveExit) => quitter.on('exit', resolveExit));
+  await expect.poll(() => running.exitCode, { timeout: 60_000 }).not.toBeNull();
   await expect.poll(() => backendProcesses(dataDir).length, { timeout: 60_000 }).toBe(0);
 });

@@ -57,6 +57,10 @@ MACOS_PTH = "../../../../app/src\n../../../../app/scripts\n"
 POSTGRES_KEEP = ("bin", "lib", "share", "server_license.txt", "commandlinetools_3rd_party_licenses.txt")
 APP_SOURCES = ("src/app", "src/marketpulse")
 APP_SCRIPTS = ("scripts/run_omnix_gateway.py", "scripts/gateway_cluster.py")
+# The longest path below the stage that a Windows install may hold. NSIS cannot remove paths over 260 characters, so
+# desktop/build-resources/installer.nsh caps the install folder at 112 characters: 260, less 19 for the
+# \resources\runtime\ between them, less this, less 1.
+MAX_RELATIVE_PATH = 128
 
 
 class StageError(RuntimeError):
@@ -239,7 +243,7 @@ def stage_postgres(target_platform: str) -> None:
     print(f"postgres staged: {PINS['postgres']['version']} ({target_platform})")
 
 
-def stage_app(_target_platform: str) -> None:
+def stage_app(target_platform: str) -> None:
     app_dir = STAGE / "app"
     _reset(app_dir)
     ignore = shutil.ignore_patterns("__pycache__", "*.pyc", "tests", "test_*.py")
@@ -256,7 +260,7 @@ def stage_app(_target_platform: str) -> None:
     lock = json.loads((ROOT / "sync" / "omnix-sync.json").read_text(encoding="utf-8"))
     commit = subprocess.run(["git", "-C", str(ROOT), "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip()
     (STAGE / "build-info.json").write_text(json.dumps({
-        "marketpulse_commit": commit or None, "omnix_commit": lock.get("commit"),
+        "platform": target_platform, "marketpulse_commit": commit or None, "omnix_commit": lock.get("commit"),
         "python": PINS["python"]["version"], "postgres": PINS["postgres"]["version"], "ibapi": PINS["ibapi"]["version"],
     }, indent=2) + "\n", encoding="utf-8")
     print("app staged")
@@ -275,6 +279,10 @@ def stage_web(_target_platform: str) -> None:
 
 def check(target_platform: str) -> None:
     interpreter, _, _ = python_paths(target_platform)
+    longest = max((path for path in STAGE.rglob("*") if "__pycache__" not in path.parts),
+                  key=lambda path: len(str(path.relative_to(STAGE))))
+    if len(str(longest.relative_to(STAGE))) > MAX_RELATIVE_PATH:
+        raise StageError(f"{longest.relative_to(STAGE)} is longer than {MAX_RELATIVE_PATH} characters (see MAX_RELATIVE_PATH)")
     script = (
         "import sys, app, gateway_cluster, marketpulse, marketpulse.desktop_app, ibapi, psycopg, uvicorn;"
         "from ibapi.client import EClient;"
