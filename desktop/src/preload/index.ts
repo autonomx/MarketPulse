@@ -12,6 +12,8 @@ if (location.protocol === 'file:') {
     },
     retry: () => ipcRenderer.send('mp:retry'),
     newPorts: () => ipcRenderer.send('mp:new-ports'),
+    restore: () => ipcRenderer.send('mp:restore-snapshot'),
+    exportDiagnostics: () => ipcRenderer.send('mp:export-diagnostics'),
     revealLogs: () => ipcRenderer.send('mp:reveal-logs'),
     quit: () => ipcRenderer.send('mp:quit'),
   });

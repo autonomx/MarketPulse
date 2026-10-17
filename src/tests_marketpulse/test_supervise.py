@@ -4,6 +4,7 @@ from __future__ import annotations
 import json
 import os
 import socket
+import sys
 import subprocess
 import threading
 import time
@@ -144,3 +145,48 @@ def test_the_staged_runtime_starts_from_nothing_and_stops_cleanly(tmp_path):
     assert not (config.data_dir / "pgdata" / "postmaster.pid").exists()
     time.sleep(0.5)
     assert port_free(config.http_port) and port_free(config.pg_port)
+
+
+@staged
+@pytest.mark.postgres
+def test_a_failed_update_migration_is_rolled_back_from_the_snapshot(tmp_path):
+    """Phase 9 gate: a migration failure after the pre-update snapshot, then a restore that starts on the old data."""
+    config = _config(tmp_path)
+    launch = tmp_path / "launch.json"
+    launch.write_text(json.dumps({
+        "install_root": str(STAGE), "data_dir": str(config.data_dir), "http_port": config.http_port,
+        "pg_port": config.pg_port, "metrics_port": config.metrics_port, "notify_port": config.notify_port,
+        "postgres_bin": str(STAGE / "postgres" / "bin"),
+    }), encoding="utf-8")
+    base = {**{k: v for k, v in os.environ.items() if not k.startswith(("PYTHON", "OMNIX_"))}, **SECRETS}
+    # The tests' supervisor runs from the source tree, where the test hook is active.
+    base["PYTHONPATH"] = os.pathsep.join((str(ROOT / "src"), str(ROOT / "scripts")))
+
+    def run(extra_env: dict[str, str], *flags: str) -> list[dict]:
+        events: list[dict] = []
+        process = subprocess.Popen([sys.executable, "-m", "marketpulse.supervise", "--config", str(launch), *flags],
+                                   stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+                                   env={**base, **extra_env}, cwd=str(tmp_path))
+        for line in process.stdout:  # type: ignore[union-attr]
+            events.append(json.loads(line))
+            if events[-1]["event"] in {"ready", "error"}:
+                break
+        process.stdin.close()  # type: ignore[union-attr]
+        process.wait(120)
+        return events
+
+    first = run({})
+    assert first[-1]["event"] == "ready"
+    marker = config.data_dir / "pgdata" / "marketpulse-marker"
+    marker.write_text("before the update", encoding="utf-8")
+
+    failed = run({"MARKETPULSE_TEST_FAIL_MIGRATION": "1"})
+    assert failed[-1]["event"] == "error" and failed[-1]["step"] == "migrate"
+    assert "snapshot" in [event.get("step") for event in failed]
+    assert len(list((config.data_dir / "snapshots").glob("pgdata-*"))) == 1
+
+    restored = run({}, "--restore-snapshot")
+    assert restored[-1]["event"] == "ready", restored
+    assert "restore" in [event.get("step") for event in restored]
+    assert marker.read_text(encoding="utf-8") == "before the update"
+    assert list(config.data_dir.glob("pgdata-failed-*"))

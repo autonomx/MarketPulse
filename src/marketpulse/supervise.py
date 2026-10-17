@@ -270,7 +270,13 @@ class Supervisor:
                 connection.execute(sql.SQL("ALTER ROLE {} PASSWORD {}").format(sql.Identifier(DB_APP), sql.Literal(password)))
             connection.execute(sql.SQL("GRANT CONNECT ON DATABASE {} TO {}").format(sql.Identifier(DB_NAME), sql.Identifier(DB_APP)))
 
+    def _test_hook(self, name: str) -> bool:
+        """A test-only failure switch. Release builds ship no src/tests_marketpulse, so it is never active there."""
+        return bool(os.environ.get(name)) and (ROOT / "src" / "tests_marketpulse").is_dir()
+
     def pending_migrations(self) -> list[str]:
+        if self._test_hook("MARKETPULSE_TEST_FAIL_MIGRATION"):
+            return ["test-hook"]
         report = json.loads(self._run("migrate", self._serve_command("status"), env=self._serve_env(), log="migrations.log"))
         return list(report.get("pending") or [])
 
@@ -286,8 +292,23 @@ class Supervisor:
         self.start_postgres()
         return target
 
+    def restore_latest_snapshot(self) -> Path | None:
+        """Puts back the newest pgdata snapshot after a failed update; the failed copy is kept beside it."""
+        folder = self.data / "snapshots"
+        snapshots = sorted(folder.glob("pgdata-*"), reverse=True) if folder.is_dir() else []
+        if not snapshots:
+            return None
+        self._step("restore", "Restoring your data from before the update")
+        self.stop_postgres()
+        if self.pgdata.exists():
+            self.pgdata.rename(self.data / f"pgdata-failed-{_stamp()}")
+        shutil.copytree(snapshots[0], self.pgdata)
+        return snapshots[0]
+
     def migrate(self) -> None:
         self._step("migrate", "Updating the database")
+        if self._test_hook("MARKETPULSE_TEST_FAIL_MIGRATION"):
+            raise SupervisorError("migrate", "a migration failed (test hook)")
         self._run("migrate", self._serve_command("migrate"), env=self._serve_env(), log="migrations.log")
 
     def start_gateway(self) -> None:
@@ -422,6 +443,7 @@ def _emitter() -> Callable[[dict[str, Any]], None]:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="python -m marketpulse.supervise", description=__doc__.splitlines()[0])
     parser.add_argument("--config", required=True, type=Path)
+    parser.add_argument("--restore-snapshot", action="store_true", help="put back the newest pgdata snapshot first")
     args = parser.parse_args(argv)
     emit = _emitter()
     job = contain_children()
@@ -432,6 +454,11 @@ def main(argv: list[str] | None = None) -> int:
     if args.config.resolve() != config_copy.resolve():
         shutil.copyfile(args.config, config_copy)
     try:
+        if args.restore_snapshot:
+            supervisor.data.mkdir(parents=True, exist_ok=True)
+            supervisor.logs.mkdir(parents=True, exist_ok=True)
+            if supervisor.restore_latest_snapshot() is None:
+                raise SupervisorError("restore", "there is no snapshot to restore")
         supervisor.start()
     except SupervisorError as exc:
         emit({"event": "error", "step": exc.step, "message": str(exc), "log": exc.log})

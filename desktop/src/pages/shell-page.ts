@@ -10,6 +10,8 @@ interface ShellBridge {
   onStatus(listener: (status: ShellStatus) => void): void;
   retry(): void;
   newPorts(): void;
+  restore(): void;
+  exportDiagnostics(): void;
   revealLogs(): void;
   quit(): void;
 }
@@ -28,10 +30,14 @@ bridge?.onStatus((status) => {
     text('log', status.log ?? '');
     const newPort = document.getElementById('new-port');
     if (newPort) newPort.hidden = !status.message.startsWith('port_busy');
+    const restore = document.getElementById('restore');
+    if (restore) restore.hidden = status.step !== 'migrate';
   }
 });
 
 document.getElementById('retry')?.addEventListener('click', () => bridge?.retry());
 document.getElementById('new-port')?.addEventListener('click', () => bridge?.newPorts());
 document.getElementById('logs')?.addEventListener('click', () => bridge?.revealLogs());
+document.getElementById('restore')?.addEventListener('click', () => bridge?.restore());
+document.getElementById('diagnostics')?.addEventListener('click', () => bridge?.exportDiagnostics());
 document.getElementById('quit')?.addEventListener('click', () => bridge?.quit());

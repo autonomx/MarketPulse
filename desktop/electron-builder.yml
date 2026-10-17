@@ -1,0 +1,59 @@
+# The MarketPulse Windows installer (roadmap MP-9.1). Run: npm --prefix desktop run dist
+appId: com.autonomx.marketpulse
+productName: MarketPulse
+copyright: Copyright (c) 2026 Autonomx
+directories:
+  output: release
+  buildResources: build-resources
+files:
+  - out/**
+  - package.json
+  - "!out/**/*.map"
+extraResources:
+  # The staged runtime (python, postgres, app, web, licenses), built by build/stage.py.
+  - from: ../build/stage
+    to: runtime
+    filter:
+      - "**/*"
+      - "!**/__pycache__/**"
+  # The publisher's Google OAuth Desktop client, when the build has one.
+  - from: config
+    to: .
+    filter:
+      - google-oauth.json
+asar: true
+compression: normal
+win:
+  target:
+    - target: nsis
+      arch: [x64]
+  icon: ../brand/out/icon.ico
+  executableName: MarketPulse
+  # Unsigned until the owner picks Azure Trusted Signing or an OV/EV certificate (MP-9.2).
+  signAndEditExecutable: true
+nsis:
+  oneClick: false
+  perMachine: false
+  allowElevation: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: MarketPulse
+  deleteAppDataOnUninstall: false
+  include: build-resources/installer.nsh
+  installerIcon: ../brand/out/icon.ico
+  uninstallerIcon: ../brand/out/icon.ico
+  license: ../LICENSE
+publish:
+  # A public releases feed, so no token ships in the app (MP-9.3). Owner creates autonomx/marketpulse-releases.
+  provider: github
+  owner: autonomx
+  repo: marketpulse-releases
+  releaseType: release
+electronFuses:
+  runAsNode: false
+  enableCookieEncryption: true
+  enableNodeOptionsEnvironmentVariable: false
+  enableNodeCliInspectArguments: false
+  enableEmbeddedAsarIntegrityValidation: true
+  onlyLoadAppFromAsar: true

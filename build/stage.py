@@ -198,6 +198,13 @@ def stage_app() -> None:
     licenses.mkdir(parents=True, exist_ok=True)
     for name in ("LICENSE", "NOTICE", "THIRD_PARTY_NOTICES.md"):
         shutil.copy2(ROOT / name, licenses / name)
+    # Which code this build is: shown in exported diagnostics.
+    lock = json.loads((ROOT / "sync" / "omnix-sync.json").read_text(encoding="utf-8"))
+    commit = subprocess.run(["git", "-C", str(ROOT), "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip()
+    (STAGE / "build-info.json").write_text(json.dumps({
+        "marketpulse_commit": commit or None, "omnix_commit": lock.get("commit"),
+        "python": PINS["python"]["version"], "postgres": PINS["postgres"]["version"], "ibapi": PINS["ibapi"]["version"],
+    }, indent=2) + "\n", encoding="utf-8")
     print("app staged")
 
 

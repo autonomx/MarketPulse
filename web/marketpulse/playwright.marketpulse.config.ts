@@ -8,7 +8,9 @@ const origin = `http://127.0.0.1:${port}`;
 
 export default defineConfig({
   testDir: '../tests/e2e',
-  testMatch: ['trading-terminal.spec.ts'],
+  testMatch: ['trading-terminal.spec.ts', 'trading-look.spec.ts'],
+  // MarketPulse's own look baselines: its terminal fills the window (no Omnix shell bar), so Omnix's do not apply.
+  snapshotPathTemplate: '{testDir}/../../marketpulse/look-baselines/{arg}-{projectName}-{platform}{ext}',
   timeout: 45_000,
   expect: { timeout: 7_000 },
   use: { baseURL: origin, trace: 'on-first-retry' },

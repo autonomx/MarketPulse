@@ -95,3 +95,11 @@
     min-width: min(320px, 100%);
   }
 }
+
+@layer overrides {
+  /* MarketPulse has no Omnix shell bar above the workspace: the terminal fills the window. */
+  .trading-workspace {
+    height: 100vh;
+    min-height: 100vh;
+  }
+}

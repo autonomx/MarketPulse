@@ -11,6 +11,8 @@ import { SettingsStore, choosePorts, type DesktopSettings } from './settings';
 import { BackendSupervisor, type SupervisorEvent } from './supervisor';
 import { SESSION_PARTITION, WindowManager } from './windows';
 import { isMarketHours } from './marketHours';
+import { exportDiagnostics } from './diagnostics';
+import { startUpdateChecks } from './updates';
 
 const paths = desktopPaths();
 // Electron's own data (session, cookies, caches) lives with the rest of MarketPulse's data.
@@ -122,7 +124,7 @@ async function main(): Promise<void> {
     splash = null;
   };
 
-  const startBackend = () => {
+  const startBackend = (options: { restoreSnapshot?: boolean } = {}) => {
     errorWindow?.destroy();
     errorWindow = null;
     if (!startHidden && (!splash || splash.isDestroyed())) splash = windows.shellPage('splash');
@@ -141,7 +143,7 @@ async function main(): Promise<void> {
     supervisor.on('exit', (code: number | null) => {
       if (!quitting && code !== 0 && !errorWindow) showError({ message: `The backend stopped (exit ${code}).`, step: 'backend' });
     });
-    supervisor.start();
+    supervisor.start(options);
   };
 
   // IPC from the bundled shell pages.
@@ -151,7 +153,7 @@ async function main(): Promise<void> {
   ipcMain.on('mp:status-ready', (event) => event.sender.send('mp:status', lastStatus));
   ipcMain.on('mp:retry', (event) => {
     if (!fromShellPage(event)) return;
-    void supervisor.stop().then(startBackend);
+    void supervisor.stop().then(() => startBackend());
   });
   ipcMain.on('mp:new-ports', async (event) => {
     if (!fromShellPage(event)) return;
@@ -162,6 +164,14 @@ async function main(): Promise<void> {
     quitting = true;
     await supervisor.stop();
     app.exit(0);
+  });
+  ipcMain.on('mp:restore-snapshot', (event) => {
+    if (!fromShellPage(event)) return;
+    // A failed update migration: put back the database as it was before the update (roadmap MP-9.3).
+    void supervisor.stop().then(() => startBackend({ restoreSnapshot: true }));
+  });
+  ipcMain.on('mp:export-diagnostics', (event) => {
+    if (fromShellPage(event) || fromApp(event)) void exportDiagnostics(paths, settings, BrowserWindow.fromWebContents(event.sender));
   });
   ipcMain.on('mp:quit', (event) => {
     if (fromShellPage(event) || fromApp(event)) app.quit();
@@ -207,7 +217,10 @@ async function main(): Promise<void> {
   // Tray, menu, start at login and the optional keep-awake (roadmap Phase 8).
   const tray: Tray | null = createTray(() => windows.focusMain(), () => app.quit());
   Menu.setApplicationMenu(buildMenu(() => origin, windows, paths.logs));
-  app.setLoginItemSettings({ openAtLogin: settings.startAtLogin, args: ['--hidden'] });
+  // Only an installed app registers itself to start at login; a development or test run never touches the OS setting.
+  if (app.isPackaged && !process.env.MARKETPULSE_DATA_DIR) {
+    app.setLoginItemSettings({ openAtLogin: settings.startAtLogin, args: ['--hidden'] });
+  }
   setInterval(() => {
     const want = settings.keepAwakeDuringMarketHours && isMarketHours(new Date());
     if (want && awakeBlocker === null) awakeBlocker = powerSaveBlocker.start('prevent-app-suspension');
@@ -229,6 +242,9 @@ async function main(): Promise<void> {
     void supervisor.stop().then(() => app.exit(0));
   });
 
+  startUpdateChecks((status) => {
+    if (status) tray?.setToolTip(`MarketPulse — ${status}`);
+  });
   startBackend();
 }
 
@@ -299,6 +315,7 @@ function buildMenu(origin: () => string | null, windows: WindowManager, logs: st
         { label: 'Settings…', click: go('/settings') },
         { type: 'separator' },
         { label: 'Open logs folder', click: () => void shell.openPath(logs) },
+        { label: 'Export diagnostics…', click: () => void exportDiagnostics(desktopPaths(), SettingsStore.in(desktopPaths().data).load(), null) },
         { type: 'separator' },
         { role: 'quit' },
       ],

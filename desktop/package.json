@@ -13,14 +13,18 @@
     "start": "npm run build && electron .",
     "test": "npm run build && playwright test --config tests/playwright.config.ts",
     "test:unit": "playwright test --config tests/playwright.config.ts tests/unit.spec.ts",
-    "dist": "npm run build && node scripts/dist.mjs"
+    "dist": "npm run build && node --experimental-require-module scripts/dist.mjs"
   },
   "devDependencies": {
+    "@electron/fuses": "2.1.3",
     "@playwright/test": "1.60.0",
     "@types/node": "22.20.1",
     "electron": "44.5.1",
     "electron-builder": "26.15.3",
     "esbuild": "0.28.2",
     "typescript": "5.9.3"
+  },
+  "dependencies": {
+    "electron-updater": "6.8.10"
   }
 }

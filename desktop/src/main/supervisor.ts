@@ -54,7 +54,7 @@ export class BackendSupervisor extends EventEmitter {
     }, null, 2), 'utf8');
   }
 
-  start(): void {
+  start(options: { restoreSnapshot?: boolean } = {}): void {
     if (this.child) return;
     this.ready = null;
     this.writeLaunchConfig();
@@ -65,7 +65,8 @@ export class BackendSupervisor extends EventEmitter {
       if (value) env[name] = value;
     }
     Object.assign(env, this.secrets);
-    const child = spawn(this.paths.python, ['-m', 'marketpulse.supervise', '--config', this.launchConfigPath()], {
+    const args = ['-m', 'marketpulse.supervise', '--config', this.launchConfigPath(), ...(options.restoreSnapshot ? ['--restore-snapshot'] : [])];
+    const child = spawn(this.paths.python, args, {
       cwd: this.paths.data,
       env,
       stdio: ['pipe', 'pipe', 'pipe'],
