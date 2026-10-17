@@ -1,5 +1,5 @@
 {
- "commit": "845993251434ae764a5eb9e109b5042161d56c3a",
+ "commit": "1d51102844a057bf75cf9e0b828c0208150762b0",
  "derived": {
   "pyproject.toml": "418462422a19766d7cd9e09accea65f94fc5b9a908e5fb41eb4279e167522a44",
   "web/package.json": "937d3d627e85e0db5106a9f7a1e2b43b87cd88fb6750de181fcd2ea5153a10a0"
@@ -2726,7 +2726,7 @@
   "src/tests/persistence/test_trading_notification_delivery_integration.py": "fdcc60d8ccbfd4f4f24825af5f1645ef1e49d76047915d4899a6afff2893672c",
   "src/tests/persistence/test_trading_order_gateway_integration.py": "c65e05bf20ff40ed84b5356490c4d96d2b266b6733e8caed670d1409218045b1",
   "src/tests/persistence/test_trading_paper_liquidity_integration.py": "795deaedaf410a2a9d065ce9e5275f809e2a49dfe599310499d51288672e5d86",
-  "src/tests/persistence/test_trading_paper_margin_integration.py": "ab71cf7b1c1b90f0d120de039dedef86ebceac06777b21cdc1fd042f9f2d09c9",
+  "src/tests/persistence/test_trading_paper_margin_integration.py": "34e576ca4c8ebf7f1a01832a61d5a329054bb26e9ef68da831121883d0383960",
   "src/tests/persistence/test_trading_paper_order_types_integration.py": "b66d0555295362991fc7fb6f2e0b7f1288099874a2a1c8c990ef8366c0b131b6",
   "src/tests/persistence/test_trading_scanner_runs_integration.py": "0ff5ad3876ea159e84f421a7c769d1bb5e31e7ee238994366d283c62846a6cbe",
   "src/tests/persistence/test_trading_script_alerts_integration.py": "a71f42af4bed84ced5d47410a9516e541dc95b8db452d3ed015dc0f36a470548",
@@ -4579,5 +4579,5 @@
   "web/vitest.workspace.config.ts": "f1f2382afdf7550337092061b966ac32b22fb2286174c89b691bc35703795507"
  },
  "source": "F:/LLM/omnix",
- "synced_at": "2026-10-17T05:40:19+00:00"
+ "synced_at": "2026-10-17T07:18:59+00:00"
 }

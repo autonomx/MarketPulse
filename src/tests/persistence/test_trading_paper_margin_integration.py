@@ -264,6 +264,8 @@ def test_a_margin_call_is_sent_by_email_once_when_the_account_asks(paper) -> Non
         return PaperMarginCallNotifier(context=paper.context, uow_factory=paper.uow, settings_factory=settings)
 
     symbol = paper.instrument_id.split(":")[-1]
+    # Deliveries from this run only: the outbox keeps earlier runs' rows in a shared test database.
+    started = datetime.now(timezone.utc) - timedelta(seconds=1)
     previous = settings().email()
     settings().save_email(EmailSettings(host="smtp.example.com", from_address="omnix@example.com", to_addresses=["me@example.com"]))
     try:
@@ -278,7 +280,7 @@ def test_a_margin_call_is_sent_by_email_once_when_the_account_asks(paper) -> Non
         _margin_call(paper, account_id, "60", notifier)  # the next pass queues nothing new
 
         deliveries = NotificationDeliveryRepository(context=paper.context, uow_factory=paper.uow).list_deliveries(limit=500)
-        ours = [item for item in deliveries if item.event_kind == "margin_call" and item.created_at >= datetime.now(timezone.utc) - timedelta(minutes=5)]
+        ours = [item for item in deliveries if item.event_kind == "margin_call" and item.created_at >= started]
         mine = [item for item in ours if item.alert_id is None and item.trigger_id is None]
         assert [(item.channel, item.status) for item in mine] == [("email", "pending")]
         claimed = NotificationDeliveryRepository(all_workspaces=True, uow_factory=paper.uow).claim_due(datetime.now(timezone.utc) + timedelta(seconds=1), limit=500)
