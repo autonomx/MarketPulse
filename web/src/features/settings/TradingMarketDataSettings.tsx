@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { AlpacaKeySettings } from './AlpacaKeySettings';
 import { FredKeySettings } from './FredKeySettings';
 import { IbkrSettingsSection } from './IbkrSettings';
 import { SettingsField, SettingsSection } from './SettingsPrimitives';
@@ -113,6 +114,8 @@ export function TradingMarketDataSettings() {
         </div>
         <p className="settings-inline-status">Secret values are never stored in chart or strategy configuration. UI-entered keys are protected with the current Windows user's DPAPI key.</p>
       </SettingsSection>
+
+      <AlpacaKeySettings />
 
       <FredKeySettings />
 

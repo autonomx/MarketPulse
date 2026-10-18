@@ -10,6 +10,9 @@ const mockedApi = vi.hoisted(() => ({
   // The FRED section (TVP-10.5) loads its own status.
   fredCredentials: vi.fn(async () => ({ provider: 'fred', configured: false, api_key_masked: '', api_key_source: 'missing', api_key_editable: true, storage: 'Windows DPAPI user store' })),
   saveFredCredentials: vi.fn(),
+  // So does the Alpaca section.
+  alpacaCredentials: vi.fn(async () => ({ provider: 'alpaca_iex', configured: false, api_key_id_masked: '', api_key_source: 'missing', secret_key_source: 'missing', api_key_editable: true, secret_key_editable: true, storage: 'Windows DPAPI user store' })),
+  saveAlpacaCredentials: vi.fn(),
 }));
 
 vi.mock('./tradingMarketDataApi', () => ({ tradingMarketDataApi: mockedApi }));

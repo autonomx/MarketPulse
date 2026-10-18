@@ -3198,6 +3198,10 @@ export interface components {
              */
             output_tokens_reported: boolean;
         };
+        /** AlpacaIexCredentialStatus */
+        AlpacaIexCredentialStatus: core["schemas"]["AlpacaIexCredentialStatus"];
+        /** AlpacaIexCredentialUpdate */
+        AlpacaIexCredentialUpdate: core["schemas"]["AlpacaIexCredentialUpdate"];
         /** ArchiveCharacterResponse */
         ArchiveCharacterResponse: {
             character: components["schemas"]["CharacterProfile"];

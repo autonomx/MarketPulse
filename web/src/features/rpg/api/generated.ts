@@ -2532,6 +2532,10 @@ export interface components {
     schemas: {
         /** AccountResponse */
         AccountResponse: core["schemas"]["AccountResponse"];
+        /** AlpacaIexCredentialStatus */
+        AlpacaIexCredentialStatus: core["schemas"]["AlpacaIexCredentialStatus"];
+        /** AlpacaIexCredentialUpdate */
+        AlpacaIexCredentialUpdate: core["schemas"]["AlpacaIexCredentialUpdate"];
         /** ApplyGeometryPatchCommand */
         ApplyGeometryPatchCommand: {
             /** Cells */

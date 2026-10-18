@@ -1391,6 +1391,55 @@ export interface components {
              */
             kind: "standard" | "guest";
         };
+        /** AlpacaIexCredentialStatus */
+        AlpacaIexCredentialStatus: {
+            /** Api Key Editable */
+            api_key_editable: boolean;
+            /**
+             * Api Key Id Masked
+             * @default
+             */
+            api_key_id_masked: string;
+            /**
+             * Api Key Source
+             * @enum {string}
+             */
+            api_key_source: "environment" | "os_protected_store" | "missing";
+            /** Configured */
+            configured: boolean;
+            /**
+             * Provider
+             * @default alpaca_iex
+             * @constant
+             */
+            provider: "alpaca_iex";
+            /** Secret Key Editable */
+            secret_key_editable: boolean;
+            /**
+             * Secret Key Source
+             * @enum {string}
+             */
+            secret_key_source: "environment" | "os_protected_store" | "missing";
+            /** Storage */
+            storage: string;
+        };
+        /** AlpacaIexCredentialUpdate */
+        AlpacaIexCredentialUpdate: {
+            /** Api Key Id */
+            api_key_id?: string | null;
+            /**
+             * Clear Api Key Id
+             * @default false
+             */
+            clear_api_key_id?: boolean;
+            /**
+             * Clear Secret Key
+             * @default false
+             */
+            clear_secret_key?: boolean;
+            /** Secret Key */
+            secret_key?: string | null;
+        };
         /** AssetContentResponse */
         AssetContentResponse: {
             asset: components["schemas"]["PublicAssetRecord"];
