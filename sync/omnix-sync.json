@@ -1,5 +1,5 @@
 {
- "commit": "148212c788be530ef78a8ac06ded2fafcfb019fa",
+ "commit": "1022e512ac4279c6e3201ed0d59577ffe8324960",
  "derived": {
   "pyproject.toml": "418462422a19766d7cd9e09accea65f94fc5b9a908e5fb41eb4279e167522a44",
   "web/package.json": "937d3d627e85e0db5106a9f7a1e2b43b87cd88fb6750de181fcd2ea5153a10a0"
@@ -282,7 +282,7 @@
   "src/app/apps/trading/alerts_channels.py": "f028959b52b5e63522a7fa3d81f53ddffc0c7cb7f790425917d21a82f1937391",
   "src/app/apps/trading/alerts_delivery.py": "349c2bbb0011f5dab24a8651a2bbc2430c537ab9237adf8cd7c27f63e8c8d834",
   "src/app/apps/trading/alerts_delivery_http.py": "43ddc3790a97ba15d68ae588f24ce57590c446be5ff85691705c5982ae82ed9a",
-  "src/app/apps/trading/alerts_desktop.py": "a4706e6eaa09c4e8c5a6cdc7821fe670fe7d11d5bd3667cd77055269b73bf71a",
+  "src/app/apps/trading/alerts_desktop.py": "a71889c9c3253f11f2580803831833038433839160e1d1b9ec045826a0c06acd",
   "src/app/apps/trading/alerts_evaluation.py": "d8f64a4bac499708ab38bb5fc6935b8e6514fb7d859bbe9a0f6be043e1108463",
   "src/app/apps/trading/alerts_message.py": "c3e071f914f86df44351544be2a620c813e54b7ca5cd3c7a59e5c7a4214fa68a",
   "src/app/apps/trading/alerts_monitor.py": "560bee1b67e4e80f4d710040568eff4c38dbecdcebc94605fa9a1540ad5674b3",
@@ -1659,7 +1659,7 @@
   "src/tests/trading/test_trading_clock_aggregation.py": "4a7047aee0bd15cfcf0a5765e4e8f707a1a997a9e41f80e179c53c5bcd4c8bb5",
   "src/tests/trading/test_trading_coinmarketcap.py": "75c5f28ca1d5db4468ef4c63bfa8d57781a76491a03a825f00dc84bbdcbb6f86",
   "src/tests/trading/test_trading_corporate_events.py": "ffed3d514b74a6c83b784733231970c963d1e752d6269422503a457c390416bd",
-  "src/tests/trading/test_trading_desktop_notifications.py": "670c7555a16ee7dd0c7a4ef4a0f047c777b0e8f41621e9ca9886091887154ea9",
+  "src/tests/trading/test_trading_desktop_notifications.py": "597e0f098acd654706f00ab0f93e5dd6d60edf6c700a8fe34621f4ecdd99f75e",
   "src/tests/trading/test_trading_document_paging.py": "53332c08787bab8fb64aeb954e00799dd66daec8ffc6c2574f0b10618b5022e4",
   "src/tests/trading/test_trading_economic_calendar.py": "0beeb07e5e534dfa31a636ff56bfbcd5e77b284c5866c3735110b9da9ea4bebe",
   "src/tests/trading/test_trading_evidence_execution_v3_migration.py": "bbafaabc54fc5ae616a2083563da37cdac1812571eab9172e68c91aa9afd484a",
@@ -3361,5 +3361,5 @@
   "web/vitest.workspace.config.ts": "f1f2382afdf7550337092061b966ac32b22fb2286174c89b691bc35703795507"
  },
  "source": "F:/LLM/omnix",
- "synced_at": "2026-10-17T22:11:03+00:00"
+ "synced_at": "2026-10-18T00:51:38+00:00"
 }

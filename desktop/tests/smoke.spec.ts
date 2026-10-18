@@ -216,12 +216,13 @@ test('an alert that fires while every window is hidden raises a native notificat
   const created = await main.evaluate(async () => {
     const csrf = decodeURIComponent((document.cookie.split('; ').find((part) => part.startsWith('omnix_csrf=')) ?? '').split('=')[1] ?? '');
     const headers = { 'Content-Type': 'application/json', 'X-Omnix-Client': 'web', 'X-Omnix-CSRF': csrf };
-    const instrument = 'crypto:BINANCE:spot:BTC-USDT';
+    // Not the chart the workspace opens on (BTC), so the click must switch to the alert's chart.
+    const instrument = 'crypto:BINANCE:spot:ETH-USDT';
     const alert = await fetch('/api/trading/alerts', { method: 'POST', headers, body: JSON.stringify({
       alert_id: `smoke-${Date.now()}`,
       instrument_id: instrument,
       conditions: [{ source: { kind: 'price', field: 'close' }, operator: 'crossing_up', target: { kind: 'value', value: '100' } }],
-      parameters: { notification_channels: ['app', 'desktop'], message: 'BTC crossed 100 (smoke test)' },
+      parameters: { notification_channels: ['app', 'desktop'], message: 'ETH crossed 100 (smoke test)' },
     }) });
     const observed = Date.now();
     for (const [price, offset] of [['99', 0], ['101', 30_000]] as const) {
@@ -234,11 +235,13 @@ test('an alert that fires while every window is hidden raises a native notificat
   expect(created).toBe(201);
   // The delivery monitor runs every 10 s; the listener shows the notification, then answers 200.
   await expect.poll(() => app.evaluate(() => (globalThis as unknown as { shown: string[] }).shown), { timeout: 90_000 })
-    .toContain('MarketPulse alert|BTC crossed 100 (smoke test)');
-  // Clicking the notification opens the alert's chart in the main window.
+    .toContain('MarketPulse alert|ETH crossed 100 (smoke test)');
+  // Clicking the notification opens the alert's chart in the main window: the link names its instrument.
   await main.goto(`${origin}/settings`);
   await app.evaluate(() => (globalThis as unknown as { notifications: Electron.Notification[] }).notifications.at(-1)?.emit('click'));
-  await expect.poll(() => main.url(), { timeout: 30_000 }).toContain('BTC-USDT');
+  await expect.poll(() => main.url(), { timeout: 30_000 }).toContain('ETH-USDT');
+  // The chart itself switched, not only the address: its session tab names the symbol.
+  await expect(main.locator('.trading-title-bar .trading-session-tabs')).toContainText('ETHUSDT', { timeout: 60_000 });
   expect(main.url()).toContain('/trading');
   expect(await app.evaluate(({ BrowserWindow }, url) => BrowserWindow.getAllWindows().find((window) => window.webContents.getURL() === url)?.isVisible(), main.url())).toBe(true);
 });

@@ -42,10 +42,10 @@ and users allow it once under System Settings › Privacy & Security › Open An
 
 **Still to do:**
 
-1. **Open the alert's chart.** A notification's link is `/trading?alert=<id>`, and the web app ignores `alert`, so a
-   click keeps the current chart. The smoke test only passes because its alert is on the default instrument. The
-   fix is in mirrored Omnix code (`alerts_desktop.py` can add `instrument=`, which the web app already follows),
-   then a sync. Windows has the same issue.
+1. **Open the alert's chart: fixed on `main`, not yet released.** A notification's link was `/trading?alert=<id>`,
+   which the web app ignores, so a click kept the current chart. Omnix `1022e512a` adds `instrument=` to the link;
+   it is synced, and the smoke test now uses an ETH alert and checks that the ETH chart opens (it failed before the
+   fix). The 0.1.2 Mac build and Windows 0.1.2 still open the current chart.
 2. **Developer ID signing and notarization**, then check the hardened runtime with a real identity and that the
    updater moves one macOS build to the next. Until then Mac users update by installing the new dmg.
 3. **An Intel build** (`macos-x64`), on an Intel Mac.

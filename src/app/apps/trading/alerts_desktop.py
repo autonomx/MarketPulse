@@ -17,7 +17,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, Callable
-from urllib.parse import urlsplit
+from urllib.parse import urlencode, urlsplit
 
 from app.config.env import env_str
 from app.config.product import product_name
@@ -56,9 +56,9 @@ def desktop_notifications_configured() -> bool:
 def desktop_payload(delivery: ClaimedDelivery) -> dict[str, Any]:
     """What the shell needs to show, place and route one notification without calling back."""
     margin_call = delivery.event_kind == "margin_call"
-    url = "/trading"
-    if delivery.alert_id:
-        url += f"?alert={delivery.alert_id}"
+    # A click opens the alert's chart: the trading page shows the linked ``instrument`` once the workspace has loaded.
+    query = {name: value for name, value in (("instrument", delivery.instrument_id), ("alert", delivery.alert_id)) if value}
+    url = "/trading" + (f"?{urlencode(query)}" if query else "")
     return {
         "delivery_id": delivery.delivery_id,
         "event_kind": delivery.event_kind,

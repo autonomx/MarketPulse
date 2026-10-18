@@ -67,7 +67,8 @@ def test_payload_carries_what_the_shell_shows_without_calling_back(monkeypatch):
     assert payload == {
         "delivery_id": "d1", "event_kind": "alert", "workspace_id": "workspace:local",
         "title": "MarketPulse alert", "message": "AAPL crossed 200", "alert_id": "a1", "trigger_id": "t1",
-        "instrument_id": "equity:NASDAQ:AAPL", "created_at": "2026-10-17T13:30:00+00:00", "url": "/trading?alert=a1",
+        "instrument_id": "equity:NASDAQ:AAPL", "created_at": "2026-10-17T13:30:00+00:00",
+        "url": "/trading?instrument=equity%3ANASDAQ%3AAAPL&alert=a1",
     }
     margin = desktop_payload(_delivery(event_kind="margin_call", alert_id="", trigger_id="", instrument_id=""))
     assert (margin["title"], margin["alert_id"], margin["url"]) == ("MarketPulse margin call", None, "/trading")
