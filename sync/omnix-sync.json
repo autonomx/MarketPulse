@@ -1,5 +1,5 @@
 {
- "commit": "3deed8a1fc9cd79f094010a32fef2e783f305463",
+ "commit": "1071b860befb81ce808adf00f6d9e01146f8c794",
  "derived": {
   "pyproject.toml": "418462422a19766d7cd9e09accea65f94fc5b9a908e5fb41eb4279e167522a44",
   "web/package.json": "937d3d627e85e0db5106a9f7a1e2b43b87cd88fb6750de181fcd2ea5153a10a0"
@@ -2614,7 +2614,7 @@
   "web/src/features/settings/CatalogPanel.tsx": "fd44ce5382398b309ade8bbb21c270f984dc5171a8c7e40e9f097e10d3e55f0d",
   "web/src/features/settings/DataSourcesOverview.css": "b1ba70fff84c93eefb2c71c999e0a3ef09c8f45f1c6583b9fd75c3210a7f7bda",
   "web/src/features/settings/DataSourcesOverview.test.tsx": "1b1416826b59607645dad303e7f25e1c027bebfc496e6154409ab47e6e8a2325",
-  "web/src/features/settings/DataSourcesOverview.tsx": "0a1a284c45853ff7790893a7878b2dad7d836406d82f6efbd2c30cf9fea30e64",
+  "web/src/features/settings/DataSourcesOverview.tsx": "e7646091b9270dfa13b57295d2c894d4ad08b7a6ae513f35d7b01188743c5230",
   "web/src/features/settings/FredKeySettings.test.tsx": "62a7602efc1d0aaa01de47195c68930cc6ae22b587819a6b1e809a49ed35246c",
   "web/src/features/settings/FredKeySettings.tsx": "727f66bd5204f407b9acf41c4978881ce22a01dd0c65c7b42e5d19350136812f",
   "web/src/features/settings/IbkrSettings.css": "9f9cdc78fafdb1c198512c4df68c35a1ea779de60a87b783d9937af67ac78b12",
@@ -3374,5 +3374,5 @@
   "web/vitest.workspace.config.ts": "f1f2382afdf7550337092061b966ac32b22fb2286174c89b691bc35703795507"
  },
  "source": "F:/LLM/omnix",
- "synced_at": "2026-10-18T08:17:40+00:00"
+ "synced_at": "2026-10-18T08:56:41+00:00"
 }

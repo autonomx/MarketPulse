@@ -8,7 +8,7 @@ const KEYED: Source[] = [
   { name: 'Alpaca', uses: 'Real-time US stock quotes for AUTO PAPER, option chains, dividends and splits, market breadth, and rebuilt gapper history in backtests.' },
   { name: 'CoinMarketCap', uses: 'Crypto market-cap symbols: TOTAL, TOTAL2, TOTAL3 and dominance symbols such as BTC.D and USDT.D.' },
   { name: 'FRED', uses: 'The economic calendar: US data releases (CPI, jobs, GDP, …) with their actual values.' },
-  { name: 'Interactive Brokers', uses: 'Optional. Checks chart data against your IB Gateway feed and repairs gaps; your IB login stays in IB Gateway.' },
+  { name: 'Interactive Brokers', uses: 'Optional, through IB Gateway or the IBKR Web API. Live stock charts from one minute to 30 minutes while connected, and checks chart data and repairs gaps. Your IBKR username and password are never stored.' },
 ];
 
 const BUILT_IN: Source[] = [
