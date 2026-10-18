@@ -7,10 +7,10 @@ import './IbkrSettings.css';
 type Tone = 'ready' | 'warning' | 'error' | 'idle';
 
 function ibkrSourceLabel(source: IbkrSettingsStatus['settings_source']): string {
-  if (source === 'omnix_settings') return 'Omnix settings';
+  if (source === 'omnix_settings') return `${PRODUCT_NAME} settings`;
   if (source === 'environment') return 'Legacy environment variables';
   if (source === 'runtime_arguments') return 'Runtime arguments';
-  return 'Omnix defaults';
+  return `${PRODUCT_NAME} defaults`;
 }
 
 function ibkrConnectionLabel(status: IbkrSettingsStatus['connection_status']): string {
@@ -129,7 +129,7 @@ export function IbkrSettingsSection() {
         <IbkrToggle
           label="Enable IBKR"
           ariaLabel="Enable IBKR"
-          help="Omnix uses the official ibapi client only when this is enabled."
+          help={`${PRODUCT_NAME} uses the official ibapi client only when this is enabled.`}
           checked={form.enabled}
           disabled={busy}
           onChange={(enabled) => update({ enabled })}
@@ -197,7 +197,7 @@ export function IbkrSettingsSection() {
           {busy ? 'Saving...' : 'Save IBKR settings'}
         </button>
       </div>
-      <p className="ibkr-note">Live-data and recovery authority stay off by default. Omnix stores no IBKR username, password, or API secret.</p>
+      <p className="ibkr-note">Live-data and recovery authority stay off by default. {PRODUCT_NAME} stores no IBKR username, password, or API secret.</p>
     </SettingsSection>
   );
 }
