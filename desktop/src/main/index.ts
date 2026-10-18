@@ -13,7 +13,8 @@ import { BackendSupervisor, type SupervisorEvent } from './supervisor';
 import { SESSION_PARTITION, WindowManager } from './windows';
 import { isMarketHours } from './marketHours';
 import { exportDiagnostics } from './diagnostics';
-import { startUpdateChecks } from './updates';
+import { Updates } from './updates';
+import { updateMenuItem, updateTooltip } from './updateStatus';
 import { appUserModelId, DEV_SHORTCUT_NAME } from './identity';
 
 const paths = desktopPaths();
@@ -314,7 +315,19 @@ async function main(): Promise<void> {
   // Tray, menu, start at login and the optional keep-awake (roadmap Phase 8).
   // Start at login applies to an installed app only; a development or test run never touches the OS setting.
   const manageLoginItem = app.isPackaged && !process.env.MARKETPULSE_DATA_DIR;
-  const tray: Tray | null = createTray(() => windows.focusMain(), () => openPage(origin, windows, '/settings'), () => app.quit(), {
+  // The tray and Help menus show where an update stands; they are rebuilt only when its menu label changes.
+  let updateLabel = '';
+  const updates = new Updates((state) => {
+    const status = updateTooltip(state);
+    if (status) tray?.setToolTip(`MarketPulse — ${status}`);
+    const label = updateMenuItem(state).label;
+    if (label === updateLabel) return;
+    updateLabel = label;
+    trayMenu?.refresh();
+    Menu.setApplicationMenu(buildMenu(() => origin, windows, paths.logs, openImport, () => updateMenuItems(updates)));
+  });
+  const trayMenu = createTray(() => windows.focusMain(), () => openPage(origin, windows, '/settings'), () => app.quit(), {
+    updateItems: () => updateMenuItems(updates),
     startAtLogin: () => settings.startAtLogin,
     setStartAtLogin: (on) => {
       settings = store.update((current) => Object.assign(current, { startAtLogin: on }));
@@ -325,6 +338,7 @@ async function main(): Promise<void> {
       settings = store.update((current) => Object.assign(current, { keepAwakeDuringMarketHours: on }));
     },
   });
+  const tray: Tray | null = trayMenu?.tray ?? null;
   if (process.platform === 'darwin') {
     // The Dock: its menu reopens the window; a development run shows the brand icon (packaged, the .icns does).
     app.dock?.setMenu(Menu.buildFromTemplate([{ label: 'Show MarketPulse', click: () => windows.focusMain() }]));
@@ -347,7 +361,7 @@ async function main(): Promise<void> {
     if (importWindow && !importWindow.isDestroyed()) importWindow.focus();
     else importWindow = windows.shellPage('import', { width: 640, height: 520 });
   };
-  Menu.setApplicationMenu(buildMenu(() => origin, windows, paths.logs, openImport));
+  Menu.setApplicationMenu(buildMenu(() => origin, windows, paths.logs, openImport, () => updateMenuItems(updates)));
   if (manageLoginItem) app.setLoginItemSettings({ openAtLogin: settings.startAtLogin, args: ['--hidden'] });
   // A daily pg_dump while the backend runs (roadmap §4.5); the supervisor keeps the newest seven.
   setInterval(() => void backupIfDue(), 60 * 60_000);
@@ -374,9 +388,7 @@ async function main(): Promise<void> {
     void supervisor.stop().then(() => app.exit(0));
   });
 
-  startUpdateChecks((status) => {
-    if (status) tray?.setToolTip(`MarketPulse — ${status}`);
-  });
+  updates.start();
   if (await listenForNotifications()) startBackend();
 
   async function backupIfDue(): Promise<void> {
@@ -436,13 +448,17 @@ function hardenSession(): void {
 }
 
 interface TrayToggles {
+  /** The update item (Check for Updates, Restart to Update, …); none outside an installed app. */
+  updateItems: () => MenuItemConstructorOptions[];
   startAtLogin: () => boolean;
   setStartAtLogin: (on: boolean) => void;
   keepAwake: () => boolean;
   setKeepAwake: (on: boolean) => void;
 }
 
-function createTray(show: () => void, openSettings: () => void, quit: () => void, toggles: TrayToggles): Tray | null {
+function createTray(
+  show: () => void, openSettings: () => void, quit: () => void, toggles: TrayToggles,
+): { tray: Tray; refresh: () => void } | null {
   try {
     // macOS: a black-on-transparent template (with @2x) that the menu bar tints for light and dark.
     const name = process.platform === 'darwin' ? 'trayTemplate.png' : process.platform === 'win32' ? 'icon-32.png' : 'icon-16.png';
@@ -453,6 +469,7 @@ function createTray(show: () => void, openSettings: () => void, quit: () => void
     const menu = () => Menu.buildFromTemplate([
       { label: 'Show MarketPulse', click: show },
       { label: 'Settings…', click: openSettings },
+      ...toggles.updateItems(),
       { type: 'separator' },
       { label: 'Start MarketPulse when I sign in', type: 'checkbox', checked: toggles.startAtLogin(),
         click: (item) => toggles.setStartAtLogin(item.checked) },
@@ -465,10 +482,17 @@ function createTray(show: () => void, openSettings: () => void, quit: () => void
     tray.setContextMenu(menu());
     tray.on('right-click', () => tray.setContextMenu(menu()));
     tray.on('click', show);
-    return tray;
+    return { tray, refresh: () => tray.setContextMenu(menu()) };
   } catch {
     return null;
   }
+}
+
+/** The update item for the tray and Help menus: a status line while checking or downloading, else an action. */
+function updateMenuItems(updates: Updates): MenuItemConstructorOptions[] {
+  if (!updates.enabled) return [];
+  const { label, action } = updateMenuItem(updates.current());
+  return [{ label, enabled: action !== null, click: () => { if (action) updates.act(action); } }];
 }
 
 /** Shows a page of the app in the main window, opening it if it is closed; nothing before the backend is up. */
@@ -482,7 +506,10 @@ function openPage(origin: string | null, windows: WindowManager, path: string): 
   }
 }
 
-function buildMenu(origin: () => string | null, windows: WindowManager, logs: string, openImport: () => void): Menu {
+function buildMenu(
+  origin: () => string | null, windows: WindowManager, logs: string, openImport: () => void,
+  updateItems: () => MenuItemConstructorOptions[],
+): Menu {
   const go = (path: string) => () => openPage(origin(), windows, path);
   const template: MenuItemConstructorOptions[] = [
     ...(process.platform === 'darwin' ? [{ role: 'appMenu' as const }] : []),
@@ -519,6 +546,7 @@ function buildMenu(origin: () => string | null, windows: WindowManager, logs: st
       role: 'help',
       submenu: [
         { label: `MarketPulse ${app.getVersion()}`, enabled: false },
+        ...updateItems(),
         { label: 'Third-party licences', click: () => void shell.openPath(join(desktopPaths().resources, 'licenses')) },
       ],
     },

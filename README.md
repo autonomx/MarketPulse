@@ -119,7 +119,8 @@ notification and badges its taskbar or Dock icon until you look. Add your mail s
 2. Run it. It installs just for you, with no administrator rights needed (about 600 MB).
 3. MarketPulse sets itself up on first launch, in about 30 seconds. Then create your password and start charting.
 
-Updates install themselves the next time you quit.
+Updates download by themselves. When one is ready, choose **Restart to Update** (in the tray menu or the
+notification), or it installs the next time you quit. **Check for Updates…** in the tray menu checks at once.
 
 > **Windows says it "protected your PC"?** MarketPulse isn't code-signed yet, so SmartScreen doesn't recognise it.
 > Choose **More info**, then **Run anyway**.
@@ -131,8 +132,8 @@ Updates install themselves the next time you quit.
 3. Start MarketPulse. It sets itself up on first launch, in about 30 seconds. Then create your password and start
    charting.
 
-MarketPulse tells you when a new version is out. To update, download the newer dmg and drag it to Applications
-again. Your data is kept.
+MarketPulse tells you when a new version is out, and **Check for Updates…** in the menu-bar icon's menu checks at
+once. To update, download the newer dmg and drag it to Applications again. Your data is kept.
 
 > **macOS says it "could not verify" MarketPulse?** MarketPulse isn't notarized by Apple yet. Open **System
 > Settings › Privacy & Security**, scroll down to the message about MarketPulse, and choose **Open Anyway**. You

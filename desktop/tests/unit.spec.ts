@@ -4,6 +4,7 @@ import { classify } from '../src/main/navigation';
 import { AlertBadge, alertDotBitmap, NotificationListener, type DesktopDelivery } from '../src/main/notifications';
 import { APP_ID, appUserModelId } from '../src/main/identity';
 import { isMarketHours } from '../src/main/marketHours';
+import { checkResultMessage, updateMenuItem, updateTooltip } from '../src/main/updateStatus';
 import { rotateLog } from '../src/main/supervisor';
 import { mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -137,4 +138,31 @@ test('a development run has its own AppUserModelID, so its shortcut never gives 
   expect(APP_ID).toBe(builderAppId);
   expect(appUserModelId(true)).toBe(APP_ID);
   expect(appUserModelId(false)).toBe(`${APP_ID}.dev`);
+});
+
+test.describe('updates (roadmap MP-9.3)', () => {
+  test('the menu item checks, shows progress, then offers Restart to Update', () => {
+    expect(updateMenuItem({ kind: 'idle' })).toEqual({ label: 'Check for Updates…', action: 'check' });
+    expect(updateMenuItem({ kind: 'checking' })).toEqual({ label: 'Checking for Updates…', action: null });
+    expect(updateMenuItem({ kind: 'downloading', version: '0.1.5', percent: null }).label).toBe('Downloading MarketPulse 0.1.5…');
+    expect(updateMenuItem({ kind: 'downloading', version: '0.1.5', percent: 42 })).toEqual({ label: 'Downloading MarketPulse 0.1.5… 42%', action: null });
+    expect(updateMenuItem({ kind: 'ready', version: '0.1.5' })).toEqual({ label: 'Restart to Update to 0.1.5', action: 'restart' });
+    expect(updateMenuItem({ kind: 'available', version: '0.1.5' })).toEqual({ label: 'Download MarketPulse 0.1.5…', action: 'download' });
+    expect(updateMenuItem({ kind: 'up-to-date' }).action).toBe('check');
+    expect(updateMenuItem({ kind: 'failed' }).action).toBe('check');
+  });
+
+  test('a check the user asked for always answers, and a ready update can restart from the answer', () => {
+    expect(checkResultMessage({ kind: 'up-to-date' }, '0.1.4')).toMatchObject({ message: 'MarketPulse is up to date', detail: 'Version 0.1.4 is the latest.', confirm: null });
+    expect(checkResultMessage({ kind: 'failed' }, '0.1.4')?.message).toBe('Could not check for updates');
+    expect(checkResultMessage({ kind: 'downloading', version: '0.1.5', percent: 3 }, '0.1.4')?.confirm).toBeNull();
+    expect(checkResultMessage({ kind: 'ready', version: '0.1.5' }, '0.1.4')).toMatchObject({ buttons: ['Restart Now', 'Later'], confirm: 'restart' });
+    expect(checkResultMessage({ kind: 'available', version: '0.1.5' }, '0.1.4')).toMatchObject({ confirm: 'download' });
+    expect(checkResultMessage({ kind: 'checking' }, '0.1.4')).toBeNull();
+  });
+
+  test('the tray tooltip mentions an update only while there is one', () => {
+    expect(updateTooltip({ kind: 'up-to-date' })).toBe('');
+    expect(updateTooltip({ kind: 'ready', version: '0.1.5' })).toBe('MarketPulse 0.1.5 is ready: restart to update');
+  });
 });
