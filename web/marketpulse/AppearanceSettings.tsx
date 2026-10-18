@@ -13,7 +13,7 @@ export function AppearanceSettings() {
   const { mode } = useAppearanceMode();
 
   return (
-    <SettingsSection title="Appearance" description="Saved on this computer. The button beside the window controls switches light and dark too.">
+    <SettingsSection title="Theme" description="Saved on this computer. The button beside the window controls switches light and dark too.">
       <div className="mp-settings-choices" role="radiogroup" aria-label="Appearance">
         {MODES.map((item) => (
           <label key={item.id}>
