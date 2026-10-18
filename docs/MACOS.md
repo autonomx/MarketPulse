@@ -11,11 +11,25 @@ is built from `4c079f1`, later than the tag, and is signed ad hoc, not notarized
 copy, and users allow it once under System Settings › Privacy & Security › Open Anyway (the README says how).
 
 **Released: 0.1.3**, for both platforms. The macOS dmg and zip and the Windows installer are on the
-[v0.1.3 release](https://github.com/autonomx/MarketPulse/releases/tag/v0.1.3), all built from `12e3b07`, and it is
-the latest release that installed apps check. It has every fix below; on the installed Mac app, a click on an ETH
+[v0.1.3 release](https://github.com/autonomx/MarketPulse/releases/tag/v0.1.3), all built from `12e3b07`. It has
+every fix below; on the installed Mac app, a click on an ETH
 alert's notification opened the ETH chart. The Windows build passed the sync check, `src/tests_marketpulse` and the
 Electron suite (21 of 21) before it was published. The installed check on Windows (0.1.2 upgraded to 0.1.3, then a
 real notification click) was not run.
+
+**Released: 0.1.4**, for both platforms. The Windows installer was published first; the macOS dmg, zip and
+`latest-mac.yml` joined the [v0.1.4 release](https://github.com/autonomx/MarketPulse/releases/tag/v0.1.4) after,
+built from `049f202` like the Windows files, and it is the latest release that installed apps check. On a Mac,
+Restart to Update isn't offered (the build is ad hoc signed): MarketPulse says when a version is out, and Check for
+Updates… opens the download page. Checked on the Mac before the upload:
+
+- `sync check` passes (mirror at Omnix `406dc03a93`, 3355 files). The manifest's default Omnix path is the Windows
+  machine's, so on a Mac pass `--omnix` with a local Omnix checkout.
+- `src/tests_marketpulse` passes (45, plus the Windows-only Job Object test skipped), and the Electron suite passes
+  25 of 25.
+- `codesign --verify --deep --strict` passes on the app, and `latest-mac.yml` says 0.1.4 and names the zip.
+- Installed over 0.1.3, 0.1.4 opened on the charts with the existing data, signed in, and Check for Updates… in the
+  menu-bar icon's menu said MarketPulse is up to date (Version 0.1.4).
 
 **Checked on a Mac** (Apple silicon, macOS 26):
 
