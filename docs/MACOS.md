@@ -3,18 +3,19 @@
 Roadmap Phase 11. Everything macOS needs is in the repository. A Mac stages its own runtime, because the bundled
 Python installs its packages itself. Apple silicon builds `macos-arm64`; an Intel Mac builds `macos-x64`.
 
-## Status (2026-10-17)
+## Status (2026-10-18)
 
-**Released: 0.1.2.** The first macOS build, `MarketPulse-0.1.2-arm64.dmg` and `.zip` for Apple silicon, is on the
-[v0.1.2 release](https://github.com/autonomx/MarketPulse/releases/tag/v0.1.2) next to the Windows installer. It is
-built from `4c079f1`, later than the tag, and is signed ad hoc, not notarized: Gatekeeper rejects a downloaded copy,
-and users allow it once under System Settings › Privacy & Security › Open Anyway (the README says how).
+**First release: 0.1.2.** The first macOS build, `MarketPulse-0.1.2-arm64.dmg` and `.zip` for Apple silicon, is on
+the [v0.1.2 release](https://github.com/autonomx/MarketPulse/releases/tag/v0.1.2) next to the Windows installer. It
+is built from `4c079f1`, later than the tag, and is signed ad hoc, not notarized: Gatekeeper rejects a downloaded
+copy, and users allow it once under System Settings › Privacy & Security › Open Anyway (the README says how).
 
-**Drafted: 0.1.3.** The macOS dmg, zip and `latest-mac.yml` are on a draft `v0.1.3` release that targets `12e3b07`.
-It has every fix below; on the installed app, a click on an ETH alert's notification opened the ETH chart. A draft
-is invisible to installed apps and to `releases/latest`, so nothing changes for users until it is published.
-[Finish it on Windows](#finishing-a-release-on-windows) before publishing: published without `latest.yml`, it would
-break the Windows apps' update checks.
+**Released: 0.1.3**, for both platforms. The macOS dmg and zip and the Windows installer are on the
+[v0.1.3 release](https://github.com/autonomx/MarketPulse/releases/tag/v0.1.3), all built from `12e3b07`, and it is
+the latest release that installed apps check. It has every fix below; on the installed Mac app, a click on an ETH
+alert's notification opened the ETH chart. The Windows build passed the sync check, `src/tests_marketpulse` and the
+Electron suite (21 of 21) before it was published. The installed check on Windows (0.1.2 upgraded to 0.1.3, then a
+real notification click) was not run.
 
 **Checked on a Mac** (Apple silicon, macOS 26):
 
@@ -48,17 +49,16 @@ break the Windows apps' update checks.
 
 **Still to do:**
 
-1. **Windows 0.1.3**, to finish and publish the draft release ([below](#finishing-a-release-on-windows)).
-2. **Developer ID signing and notarization.** Until then a Mac build cannot update itself: checked with a local
+1. **Developer ID signing and notarization.** Until then a Mac build cannot update itself: checked with a local
    feed, 0.1.2 downloaded the 0.1.3 zip and Squirrel.Mac refused it ("code failed to satisfy specified code
    requirement(s)"), because an ad hoc signature never matches another build's. From 0.1.3, an ad hoc signed Mac
    build downloads nothing and says "MarketPulse x.y.z is available", with a link to the release; users install
    the dmg. 0.1.2 Mac installs download the zip once and fail silently. Then check the hardened runtime with a real
    identity and the updater from one macOS build to the next.
-3. **An Intel build** (`macos-x64`), on an Intel Mac.
-4. **Quit takes about 20 s** (the gateway drains, then PostgreSQL stops), and nothing shows while it does. That is
+2. **An Intel build** (`macos-x64`), on an Intel Mac.
+3. **Quit takes about 20 s** (the gateway drains, then PostgreSQL stops), and nothing shows while it does. That is
    why a user chooses Quit twice.
-5. **Bytecode in the bundle.** Builds with the dmg target carry 20 standard-library `.pyc` files (`functools`, `re`,
+4. **Bytecode in the bundle.** Builds with the dmg target carry 20 standard-library `.pyc` files (`functools`, `re`,
    `encodings`, …) inside the bundle, although electron-builder's filter drops `__pycache__` from the staged runtime
    and zip-only builds have none. They are inside the signature and nothing writes to them at run time, so they are
    harmless; the cause is not found yet.

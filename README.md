@@ -131,7 +131,8 @@ Updates install themselves the next time you quit.
 3. Start MarketPulse. It sets itself up on first launch, in about 30 seconds. Then create your password and start
    charting.
 
-To update, download the newer dmg and drag it to Applications again. Your data is kept.
+MarketPulse tells you when a new version is out. To update, download the newer dmg and drag it to Applications
+again. Your data is kept.
 
 > **macOS says it "could not verify" MarketPulse?** MarketPulse isn't notarized by Apple yet. Open **System
 > Settings › Privacy & Security**, scroll down to the message about MarketPulse, and choose **Open Anyway**. You
