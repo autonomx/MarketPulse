@@ -19,7 +19,7 @@ real notification click) was not run.
 
 **Released: 0.1.4**, for both platforms. The Windows installer was published first; the macOS dmg, zip and
 `latest-mac.yml` joined the [v0.1.4 release](https://github.com/autonomx/MarketPulse/releases/tag/v0.1.4) after,
-built from `049f202` like the Windows files, and it is the latest release that installed apps check. On a Mac,
+built from `049f202` like the Windows files. On a Mac,
 Restart to Update isn't offered (the build is ad hoc signed): MarketPulse says when a version is out, and Check for
 Updates… opens the download page. Checked on the Mac before the upload:
 
@@ -30,6 +30,32 @@ Updates… opens the download page. Checked on the Mac before the upload:
 - `codesign --verify --deep --strict` passes on the app, and `latest-mac.yml` says 0.1.4 and names the zip.
 - Installed over 0.1.3, 0.1.4 opened on the charts with the existing data, signed in, and Check for Updates… in the
   menu-bar icon's menu said MarketPulse is up to date (Version 0.1.4).
+
+**Released: 0.1.5**, for both platforms. As with 0.1.4, the Windows installer was published first and the macOS dmg,
+zip and `latest-mac.yml` joined the [v0.1.5 release](https://github.com/autonomx/MarketPulse/releases/tag/v0.1.5)
+after, built from `12fb467` like the Windows files, and it is the latest release that installed apps check. Omnix's
+`main` was rewritten on 2026-10-18 (authors only), so the Mac's Omnix clone was reset to `origin/main`
+(`e959672316`) rather than pulled: a pull merges the old history back in. Checked on the Mac before the upload:
+
+- `sync check --omnix <the Mac's Omnix clone>` passes (mirror at Omnix `e959672316`, 3360 files).
+- `src/tests_marketpulse` passes (45, plus the Windows-only Job Object test skipped), and the Electron suite passes
+  26 of 26, the new text-size test included.
+- `codesign --verify --deep --strict` passes on the app, and `latest-mac.yml` says 0.1.5 and names the zip.
+
+And on the installed app, 0.1.5 over 0.1.4:
+
+- The first start waited for macOS's Keychain prompt ("MarketPulse wants to use your confidential information
+  stored in 'MarketPulse Safe Storage'"): the item's access follows the app's signature, and every ad hoc build has
+  a new one, so each Mac upgrade asks for the login password once (Always Allow). After the prompt was allowed, that
+  first start ended by itself without a window (exit status 0); the next start was normal.
+- It opened on the charts with the existing data, signed in, and Check for Updates… in the menu-bar icon's menu said
+  MarketPulse is up to date (Version 0.1.5).
+- The gear beside the window controls opens the new Settings page, with the sidebar (Appearance, Account, Market
+  data & brokers, AI providers, Research handoffs).
+- Settings › Appearance › Text size at 120% zooms every page, the chart included (it draws at the zoomed scale).
+  ⌘= and ⌘− step it by 5% and ⌘0 resets it to 100%, each checked one press at a time. It was left at 100%.
+- Settings › Market data & brokers has the Alpaca section (API key ID and secret key) and the list of what each data
+  source is for.
 
 **Checked on a Mac** (Apple silicon, macOS 26):
 
