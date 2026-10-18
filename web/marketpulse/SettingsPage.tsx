@@ -9,9 +9,11 @@ import { TradingMarketDataSettings } from '../src/features/settings/TradingMarke
 import '../src/features/settings/SettingsComponents.css';
 import '../src/features/settings/AiProvidersSettings.css';
 import '../src/features/settings/IbkrSettings.css';
+import { AppearanceSettings } from './AppearanceSettings';
 import { ResearchHandoffSettings } from './ResearchHandoffSettings';
 
 const CATEGORIES = [
+  { id: 'appearance', label: 'Appearance' },
   { id: 'account', label: 'Account' },
   { id: 'trading-market-data', label: 'Market data & brokers' },
   { id: 'ai-providers', label: 'AI providers' },
@@ -44,6 +46,9 @@ export function SettingsPage() {
         </header>
         <SettingsActionHeader />
         <main className="mp-settings-main">
+          <section id="settings-appearance" aria-label="Appearance">
+            <AppearanceSettings />
+          </section>
           <section id="settings-account" aria-label="Account">
             <AccountSection />
             <SignedInSessionsSection />

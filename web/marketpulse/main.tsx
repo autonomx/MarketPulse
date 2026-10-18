@@ -14,7 +14,7 @@ import '../src/appearance-overrides.css';
 import '../src/theme-presets.css';
 import '../src/liquid-glass-theme.css';
 import './marketpulse.css';
-import { applyStoredAppearance } from './appearance';
+import { AppearanceFollower, applyStoredAppearance } from './appearance';
 import { router } from './router';
 
 const queryClient = new QueryClient({
@@ -28,11 +28,12 @@ const queryClient = new QueryClient({
 
 // Uncaught errors and unhandled rejections are reported to the gateway (WP-9.9).
 installClientErrorReporting();
-applyStoredAppearance();
+const colorScheme = applyStoredAppearance();
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <MantineProvider theme={omnixTheme} defaultColorScheme="dark">
+    <MantineProvider theme={omnixTheme} defaultColorScheme={colorScheme}>
+      <AppearanceFollower />
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
       </QueryClientProvider>

@@ -94,6 +94,32 @@
   .mp-settings-inline input {
     min-width: min(320px, 100%);
   }
+
+  .mp-settings-choices {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+  }
+
+  .mp-settings-choices label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+  }
+
+  /* Light mode: the same pages on the light terminal's colours. */
+  :root[data-omnix-appearance='light'] .mp-startup,
+  :root[data-omnix-appearance='light'] .mp-welcome,
+  :root[data-omnix-appearance='light'] .mp-settings {
+    background: #f0f3fa;
+    color: #131722;
+  }
+
+  :root[data-omnix-appearance='light'] .mp-settings-header {
+    border-bottom-color: #e0e3eb;
+    background: #ffffff;
+  }
 }
 
 @layer overrides {
