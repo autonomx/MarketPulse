@@ -1,7 +1,7 @@
 {
   "name": "marketpulse-desktop",
   "productName": "MarketPulse",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "MarketPulse: market monitoring, premarket gappers, catalysts and momentum, in one desktop app.",
   "author": "Autonomx",
   "license": "MIT",
