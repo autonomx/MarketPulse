@@ -1,6 +1,7 @@
 """The child environment the gateway runs with (roadmap MP-3.1)."""
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 import pytest
@@ -23,7 +24,7 @@ def config(tmp_path) -> LaunchConfig:
 def _inherited(**extra: str) -> dict[str, str]:
     return {
         "SystemRoot": r"C:\Windows", "TEMP": r"C:\Temp", "USERPROFILE": r"C:\Users\me", "LOCALAPPDATA": r"C:\Users\me\AppData\Local",
-        "PATH": r"C:\Tools;C:\Windows\System32", "HTTPS_PROXY": "http://proxy:8080",
+        "PATH": os.pathsep.join([r"C:\Tools", r"C:\Windows\System32"]), "HTTPS_PROXY": "http://proxy:8080",
         "OMNIX_DATABASE_URL": "postgresql://omnix:omnix@127.0.0.1:5432/omnix", "OMNIX_FEATURES": "all",
         "PYTHONPATH": r"C:\elsewhere", "PYTHONHOME": r"C:\python", "UNRELATED": "value",
         **SECRETS, **extra,
@@ -39,7 +40,7 @@ def test_keeps_only_the_system_allowlist_and_drops_inherited_omnix_and_python(co
     assert not any(name.startswith("MARKETPULSE_DB") or name == "MARKETPULSE_NOTIFY_SECRET" for name in env)
     assert env["OMNIX_FEATURES"] == "trading"
     assert "5432" not in env["OMNIX_DATABASE_URL"]
-    parts = env["PATH"].split(";") if ";" in env["PATH"] else env["PATH"].split(":")
+    parts = env["PATH"].split(os.pathsep)
     assert parts[0] == str(config.postgres_bin)
 
 

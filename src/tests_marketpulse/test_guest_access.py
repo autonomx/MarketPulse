@@ -38,6 +38,7 @@ def gateway(monkeypatch, tmp_path):
     from app.persistence.config import DatabaseSettings
     from app.persistence.database import PostgresDatabase
     from app.persistence.identity_service import ensure_local_identity
+    from app.persistence.runtime import ensure_postgresql_runtime_ready
     from app.security.auth import AuthService, resolve_auth_settings
 
     monkeypatch.setenv("OMNIX_FEATURES", "trading")
@@ -47,6 +48,8 @@ def gateway(monkeypatch, tmp_path):
         monkeypatch.delenv(name, raising=False)
     database = PostgresDatabase(DatabaseSettings(url=os.environ["OMNIX_TEST_DATABASE_URL"], pool_min=1, pool_max=3,
                                                  application_name="marketpulse-guest-tests"))
+    # A fresh scratch database opens for writes as the gateway's startup would open it.
+    ensure_postgresql_runtime_ready(database, auto_initialize_fresh_install=True)
     ensure_local_identity(database)
     settings = resolve_auth_settings({"OMNIX_AUTH_MODE": "local"})
     service = AuthService(dataclasses.replace(settings, accounts=dataclasses.replace(settings.accounts, guests=True)),
