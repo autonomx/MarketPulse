@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { AlpacaKeySettings } from './AlpacaKeySettings';
+import { DataSourcesOverview } from './DataSourcesOverview';
 import { FredKeySettings } from './FredKeySettings';
 import { IbkrSettingsSection } from './IbkrSettings';
 import { SettingsField, SettingsSection } from './SettingsPrimitives';
@@ -79,6 +80,8 @@ export function TradingMarketDataSettings() {
         <h2 id="settings-category-title">Trading &amp; Market Data</h2>
         <p>Configure market-data providers used by charts, arithmetic symbols, watchlists, and replay.</p>
       </div>
+
+      <DataSourcesOverview />
 
       <SettingsSection
         title="CoinMarketCap"

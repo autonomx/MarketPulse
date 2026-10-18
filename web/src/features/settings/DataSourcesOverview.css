@@ -1,0 +1,39 @@
+@layer features {
+  .settings-data-sources-heading {
+    margin: 0 0 8px;
+    font-size: 0.85rem;
+    opacity: 0.75;
+  }
+
+  .settings-data-sources-heading:not(:first-child) {
+    margin-top: 16px;
+  }
+
+  .settings-data-sources {
+    display: grid;
+    gap: 6px;
+    margin: 0;
+  }
+
+  .settings-data-sources > div {
+    display: grid;
+    grid-template-columns: minmax(150px, 220px) 1fr;
+    gap: 12px;
+  }
+
+  .settings-data-sources dt {
+    font-weight: 600;
+  }
+
+  .settings-data-sources dd {
+    margin: 0;
+    opacity: 0.85;
+  }
+
+  @media (max-width: 760px) {
+    .settings-data-sources > div {
+      grid-template-columns: 1fr;
+      gap: 2px;
+    }
+  }
+}

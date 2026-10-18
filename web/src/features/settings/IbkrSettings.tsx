@@ -1,4 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react';
+import { PRODUCT_NAME } from '../../shared/productIdentity';
 import { SettingsField, SettingsSection } from './SettingsPrimitives';
 import { tradingMarketDataApi, type IbkrSettings, type IbkrSettingsStatus } from './tradingMarketDataApi';
 import './IbkrSettings.css';
@@ -102,7 +103,7 @@ export function IbkrSettingsSection() {
   return (
     <SettingsSection
       title="Interactive Brokers (IBKR)"
-      description="Connect Omnix to a locally running IB Gateway for market-data observation and repair. Login credentials stay inside IB Gateway."
+      description={`Optional. Connect ${PRODUCT_NAME} to a locally running IB Gateway, which it uses to check chart data and repair gaps. Login credentials stay inside IB Gateway.`}
       scope="global"
       className="ibkr-settings"
     >
