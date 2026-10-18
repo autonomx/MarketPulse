@@ -15,7 +15,7 @@
 
 <p align="center">
   <a href="https://github.com/autonomx/MarketPulse/releases/latest"><strong>⬇&nbsp; Download for Windows</strong></a>
-  &nbsp;·&nbsp; macOS coming soon
+  &nbsp;·&nbsp; macOS in testing
 </p>
 
 <p align="center">
@@ -121,7 +121,8 @@ Updates install themselves the next time you quit.
 > **Windows says it "protected your PC"?** MarketPulse isn't code-signed yet, so SmartScreen doesn't recognise it.
 > Choose **More info**, then **Run anyway**.
 
-**Requirements:** Windows 10 or 11 (64-bit). macOS is on the way.
+**Requirements:** Windows 10 or 11 (64-bit). A macOS version for Apple silicon is in testing. It will be released
+once it is signed and notarized by Apple.
 
 ## Questions
 
@@ -139,5 +140,5 @@ remove it.
 
 <sub>MarketPulse is a research and paper-trading tool, not investment advice. Market data is provided by third
 parties under their own terms. For developers: [build, test and architecture](docs/DEVELOPMENT.md) ·
-[roadmap](docs/ROADMAP.md). Licensed under MIT; bundled software is listed in [NOTICE](NOTICE) and
+[macOS build](docs/MACOS.md) · [roadmap](docs/ROADMAP.md). Licensed under MIT; bundled software is listed in [NOTICE](NOTICE) and
 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).</sub>

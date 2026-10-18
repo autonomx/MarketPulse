@@ -38,7 +38,7 @@ import sys
 import tarfile
 import urllib.request
 import zipfile
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 
 ROOT = Path(__file__).resolve().parents[1]
 BUILD = ROOT / "build"
@@ -119,8 +119,9 @@ def sha256_file(path: Path) -> str:
 
 
 def tree_sha256(root: Path) -> str:
+    """Files in Windows order (case-insensitive) on every platform, so a pin made on Windows also holds on a Mac."""
     digest = hashlib.sha256()
-    for path in sorted(root.rglob("*")):
+    for path in sorted(root.rglob("*"), key=lambda path: PureWindowsPath(path.relative_to(root))):
         if path.is_file() and "__pycache__" not in path.parts:
             digest.update(path.relative_to(root).as_posix().encode() + b"\0" + sha256_file(path).encode() + b"\n")
     return digest.hexdigest()
