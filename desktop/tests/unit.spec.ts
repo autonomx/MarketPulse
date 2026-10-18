@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 import { request } from 'node:http';
 import { classify } from '../src/main/navigation';
 import { AlertBadge, alertDotBitmap, NotificationListener, type DesktopDelivery } from '../src/main/notifications';
+import { APP_ID, appUserModelId } from '../src/main/identity';
 import { isMarketHours } from '../src/main/marketHours';
 import { rotateLog } from '../src/main/supervisor';
 import { mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
@@ -129,4 +130,11 @@ test('market hours cover 04:00 to 20:00 New York time on weekdays', () => {
   expect(isMarketHours(new Date('2026-10-19T07:30:00Z'))).toBe(false); // Monday 03:30 EDT
   expect(isMarketHours(new Date('2026-10-20T00:30:00Z'))).toBe(false); // Monday 20:30 EDT
   expect(isMarketHours(new Date('2026-10-18T15:00:00Z'))).toBe(false); // Sunday
+});
+
+test('a development run has its own AppUserModelID, so its shortcut never gives the installed app its icon', () => {
+  const builderAppId = /^appId:\s*(\S+)/m.exec(readFileSync(join(__dirname, '..', 'electron-builder.yml'), 'utf8'))?.[1];
+  expect(APP_ID).toBe(builderAppId);
+  expect(appUserModelId(true)).toBe(APP_ID);
+  expect(appUserModelId(false)).toBe(`${APP_ID}.dev`);
 });

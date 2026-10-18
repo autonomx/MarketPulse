@@ -14,11 +14,12 @@ import { SESSION_PARTITION, WindowManager } from './windows';
 import { isMarketHours } from './marketHours';
 import { exportDiagnostics } from './diagnostics';
 import { startUpdateChecks } from './updates';
+import { appUserModelId, DEV_SHORTCUT_NAME } from './identity';
 
 const paths = desktopPaths();
 // Electron's own data (session, cookies, caches) lives with the rest of MarketPulse's data.
 app.setPath('userData', join(paths.data, 'electron'));
-app.setAppUserModelId('com.autonomx.marketpulse');
+app.setAppUserModelId(appUserModelId(app.isPackaged));
 
 if (!app.requestSingleInstanceLock()) {
   app.quit();
@@ -313,7 +314,7 @@ async function main(): Promise<void> {
   // Tray, menu, start at login and the optional keep-awake (roadmap Phase 8).
   // Start at login applies to an installed app only; a development or test run never touches the OS setting.
   const manageLoginItem = app.isPackaged && !process.env.MARKETPULSE_DATA_DIR;
-  const tray: Tray | null = createTray(() => windows.focusMain(), () => app.quit(), {
+  const tray: Tray | null = createTray(() => windows.focusMain(), () => openPage(origin, windows, '/settings'), () => app.quit(), {
     startAtLogin: () => settings.startAtLogin,
     setStartAtLogin: (on) => {
       settings = store.update((current) => Object.assign(current, { startAtLogin: on }));
@@ -328,6 +329,18 @@ async function main(): Promise<void> {
     // The Dock: its menu reopens the window; a development run shows the brand icon (packaged, the .icns does).
     app.dock?.setMenu(Menu.buildFromTemplate([{ label: 'Show MarketPulse', click: () => windows.focusMain() }]));
     if (!app.isPackaged) app.dock?.setIcon(join(paths.icons, 'icon-256.png'));
+  }
+  if (process.platform === 'win32' && !app.isPackaged && !process.env.MARKETPULSE_DATA_DIR) {
+    // Windows shows a development run's notifications only through a Start menu shortcut with its AppUserModelID
+    // (the installer makes the installed app's); a test run leaves the Start menu alone.
+    shell.writeShortcutLink(join(app.getPath('appData'), 'Microsoft', 'Windows', 'Start Menu', 'Programs', DEV_SHORTCUT_NAME), {
+      target: process.execPath,
+      args: `"${app.getAppPath()}"`,
+      icon: join(paths.icons, 'icon.ico'),
+      iconIndex: 0,
+      appUserModelId: appUserModelId(false),
+      description: 'MarketPulse (development run)',
+    });
   }
   let importWindow: BrowserWindow | null = null;
   const openImport = () => {
@@ -429,7 +442,7 @@ interface TrayToggles {
   setKeepAwake: (on: boolean) => void;
 }
 
-function createTray(show: () => void, quit: () => void, toggles: TrayToggles): Tray | null {
+function createTray(show: () => void, openSettings: () => void, quit: () => void, toggles: TrayToggles): Tray | null {
   try {
     // macOS: a black-on-transparent template (with @2x) that the menu bar tints for light and dark.
     const name = process.platform === 'darwin' ? 'trayTemplate.png' : process.platform === 'win32' ? 'icon-32.png' : 'icon-16.png';
@@ -439,6 +452,7 @@ function createTray(show: () => void, quit: () => void, toggles: TrayToggles): T
     tray.setToolTip('MarketPulse');
     const menu = () => Menu.buildFromTemplate([
       { label: 'Show MarketPulse', click: show },
+      { label: 'Settings…', click: openSettings },
       { type: 'separator' },
       { label: 'Start MarketPulse when I sign in', type: 'checkbox', checked: toggles.startAtLogin(),
         click: (item) => toggles.setStartAtLogin(item.checked) },
@@ -457,17 +471,19 @@ function createTray(show: () => void, quit: () => void, toggles: TrayToggles): T
   }
 }
 
+/** Shows a page of the app in the main window, opening it if it is closed; nothing before the backend is up. */
+function openPage(origin: string | null, windows: WindowManager, path: string): void {
+  const main = windows.get('main');
+  if (origin && main) {
+    void main.loadURL(`${origin}${path}`);
+    windows.focusMain();
+  } else if (origin) {
+    windows.open('main', `${origin}${path}`);
+  }
+}
+
 function buildMenu(origin: () => string | null, windows: WindowManager, logs: string, openImport: () => void): Menu {
-  const go = (path: string) => () => {
-    const current = origin();
-    const main = windows.get('main');
-    if (current && main) {
-      void main.loadURL(`${current}${path}`);
-      windows.focusMain();
-    } else if (current) {
-      windows.open('main', `${current}${path}`);
-    }
-  };
+  const go = (path: string) => () => openPage(origin(), windows, path);
   const template: MenuItemConstructorOptions[] = [
     ...(process.platform === 'darwin' ? [{ role: 'appMenu' as const }] : []),
     {
