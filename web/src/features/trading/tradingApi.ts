@@ -34,10 +34,17 @@ const DOCUMENT_PATHS = {
   scripts: { list: '/api/trading/scripts', record: '/api/trading/scripts/{record_id}' },
 } as const;
 
-export function tradingStreamUrl(instrumentId: string, interval: string, bindingId?: string | null): string {
+/** `extendedHours` applies to session-calendar (equity) streams, whose intraday buckets depend on it. */
+export function tradingStreamUrl(
+  instrumentId: string,
+  interval: string,
+  bindingId?: string | null,
+  extendedHours?: boolean | null,
+): string {
   const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
   const query = new URLSearchParams({ instrument_id: instrumentId, interval });
   if (bindingId) query.set('binding_id', bindingId);
+  if (extendedHours !== undefined && extendedHours !== null) query.set('extended_hours', String(extendedHours));
   return `${protocol}//${window.location.host}/api/trading/stream?${query.toString()}`;
 }
 

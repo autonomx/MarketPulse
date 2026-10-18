@@ -5,10 +5,12 @@ from app.config.env import env_str as _env_str
 
 logger = logging.getLogger(__name__)
 
-"""Process-wide IBKR Gateway transport and runtime.
+"""Process-wide IBKR transport and runtime.
 
-The official IBKR Python client is intentionally optional. Omnix never stores an
-IBKR username, password, or API key; authentication remains inside IB Gateway.
+IBKR is reached through IB Gateway with the official Python client, which is
+intentionally optional and keeps authentication inside Gateway, or through
+IBKR's Web API with OAuth keys (``ibkr_web_api.py``), held in the OS-protected
+provider secret store. Omnix never stores an IBKR username or password.
 Unit tests use FakeIbkrTransport so CI does not require Gateway or IBKR's local
 TWS API installation.
 """
@@ -20,7 +22,7 @@ from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
-from typing import Any, Protocol
+from typing import Any, Literal, Protocol
 
 from app.apps.trading.ibkr_settings import IbkrSettings, load_ibkr_settings
 
@@ -109,6 +111,55 @@ class IbkrHistoricalBar:
     volume: Decimal
 
 
+# The reason a bar stream closes when IBKR has no trades in its opening window.
+BAR_STREAM_NO_DATA = "ibkr_historical_no_data"
+
+
+@dataclass(frozen=True, slots=True)
+class IbkrBarStreamEvent:
+    """One message on a live 1m bar stream.
+
+    ``history`` carries the bars the Gateway sends first, ``update`` the forming
+    bar each time it changes (a new start time means the previous minute closed),
+    and ``closed`` ends the stream: the socket dropped or IBKR rejected it.
+    """
+
+    kind: Literal["history", "update", "closed"]
+    bars: tuple[IbkrHistoricalBar, ...] = ()
+    reason: str | None = None
+
+
+def _historical_bar(bar: Any) -> IbkrHistoricalBar | None:
+    raw_date = getattr(bar, "date", "")
+    try:
+        start = datetime.fromtimestamp(float(raw_date), tz=timezone.utc)
+    except Exception:
+        text = str(raw_date)
+        parsed = None
+        for fmt in ("%Y%m%d  %H:%M:%S", "%Y%m%d-%H:%M:%S", "%Y%m%d"):
+            try:
+                parsed = datetime.strptime(text, fmt).replace(tzinfo=timezone.utc)
+                break
+            except ValueError:
+                continue
+        if parsed is None:
+            return None
+        start = parsed
+    return IbkrHistoricalBar(
+        start_time=start,
+        open=Decimal(str(bar.open)),
+        high=Decimal(str(bar.high)),
+        low=Decimal(str(bar.low)),
+        close=Decimal(str(bar.close)),
+        volume=Decimal(str(bar.volume)),
+    )
+
+
+def _duration_text(duration_seconds: int) -> str:
+    seconds = max(1, int(duration_seconds))
+    return f"{seconds} S" if seconds <= 86_400 else f"{max(1, (seconds + 86_399) // 86_400)} D"
+
+
 class IbkrTransport(Protocol):
     def connect(self, host: str, port: int, client_id: int, timeout_seconds: float = 8.0) -> None: ...
     def disconnect(self) -> None: ...
@@ -131,6 +182,15 @@ class IbkrTransport(Protocol):
         use_rth: bool,
         timeout_seconds: float = 20.0,
     ) -> list[IbkrHistoricalBar]: ...
+    def subscribe_bars(
+        self,
+        contract: IbkrContractIdentity,
+        listener: Callable[[IbkrBarStreamEvent], None],
+        *,
+        duration_seconds: int,
+        use_rth: bool,
+    ) -> int: ...
+    def unsubscribe_bars(self, token: int) -> None: ...
     def request_health(self, token: int) -> dict[str, Any]: ...
     def diagnostics(self) -> dict[str, Any]: ...
 
@@ -165,6 +225,8 @@ class OfficialIbapiTransport:
         self._contract_events: dict[int, threading.Event] = {}
         self._historical_rows: dict[int, list[IbkrHistoricalBar]] = {}
         self._historical_events: dict[int, threading.Event] = {}
+        self._bar_stream_listeners: dict[int, Callable[[IbkrBarStreamEvent], None]] = {}
+        self._bar_stream_rows: dict[int, list[IbkrHistoricalBar]] = {}
         self._quote_contracts: dict[int, IbkrContractIdentity] = {}
         self._quote_listeners: dict[int, Callable[[IbkrQuoteSnapshot], None]] = {}
         self._quote_values: dict[int, dict[str, Any]] = {}
@@ -261,36 +323,28 @@ class OfficialIbapiTransport:
                     owner._emit_quote(int(reqId))
 
             def historicalData(self, reqId, bar):  # noqa: N802
-                raw_date = getattr(bar, "date", "")
-                try:
-                    start = datetime.fromtimestamp(float(raw_date), tz=timezone.utc)
-                except Exception:
-                    text = str(raw_date)
-                    parsed = None
-                    for fmt in ("%Y%m%d  %H:%M:%S", "%Y%m%d-%H:%M:%S", "%Y%m%d"):
-                        try:
-                            parsed = datetime.strptime(text, fmt).replace(tzinfo=timezone.utc)
-                            break
-                        except ValueError:
-                            continue
-                    if parsed is None:
-                        return
-                    start = parsed
-                owner._historical_rows.setdefault(int(reqId), []).append(
-                    IbkrHistoricalBar(
-                        start_time=start,
-                        open=Decimal(str(bar.open)),
-                        high=Decimal(str(bar.high)),
-                        low=Decimal(str(bar.low)),
-                        close=Decimal(str(bar.close)),
-                        volume=Decimal(str(bar.volume)),
-                    )
-                )
+                row = _historical_bar(bar)
+                if row is None:
+                    return
+                stream_rows = owner._bar_stream_rows.get(int(reqId))
+                if stream_rows is not None:
+                    stream_rows.append(row)
+                    return
+                owner._historical_rows.setdefault(int(reqId), []).append(row)
 
             def historicalDataEnd(self, reqId, start, end):  # noqa: N802
+                stream_rows = owner._bar_stream_rows.pop(int(reqId), None)
+                if stream_rows is not None:
+                    owner._emit_bar_stream(int(reqId), IbkrBarStreamEvent("history", tuple(stream_rows)))
+                    return
                 event = owner._historical_events.get(int(reqId))
                 if event is not None:
                     event.set()
+
+            def historicalDataUpdate(self, reqId, bar):  # noqa: N802
+                row = _historical_bar(bar)
+                if row is not None:
+                    owner._emit_bar_stream(int(reqId), IbkrBarStreamEvent("update", (row,)))
 
         self._wrapper = Wrapper()
         self._client = EClient(self._wrapper)
@@ -305,6 +359,15 @@ class OfficialIbapiTransport:
                 event.set()
             for event in tuple(self._historical_events.values()):
                 event.set()
+            # A live bar stream cannot outlive its socket: tell each consumer so
+            # it can resubscribe after the reconnect.
+            bar_streams = tuple(self._bar_stream_listeners.values())
+            self._bar_stream_listeners.clear()
+            self._bar_stream_rows.clear()
+            for listener in bar_streams:
+                self._deliver_bar_stream(
+                    listener, IbkrBarStreamEvent("closed", reason="ibkr_gateway_disconnected")
+                )
 
             self._contract_rows.clear()
             self._contract_events.clear()
@@ -342,6 +405,16 @@ class OfficialIbapiTransport:
             historical = self._historical_events.get(request_id)
             if historical is not None and code < 2000:
                 historical.set()
+            if code < 2000 or code >= 10_000:
+                # A live bar stream ends on the same errors, and on the 10000+
+                # ones (no subscription, competing session, live updates lost).
+                listener = self._bar_stream_listeners.pop(request_id, None)
+                self._bar_stream_rows.pop(request_id, None)
+                if listener is not None:
+                    # "No data": no trades in the opening window (a weekend or holiday), not a failure.
+                    no_data = code == 162 and "no data" in message.lower()
+                    reason = f"{BAR_STREAM_NO_DATA if no_data else 'ibkr_historical_error'}:{code}:{message}"
+                    self._deliver_bar_stream(listener, IbkrBarStreamEvent("closed", reason=reason))
 
         farm_names = {
             2103: ("market_data", "DISCONNECTED"),
@@ -408,6 +481,22 @@ class OfficialIbapiTransport:
             # A consumer failure must never kill the IBKR network thread.
             logger.debug("suppressed error in %s", "OfficialIbapiTransport._emit_quote", exc_info=True)
             return
+
+    def _emit_bar_stream(self, req_id: int, event: IbkrBarStreamEvent) -> None:
+        listener = self._bar_stream_listeners.get(req_id)
+        if listener is not None:
+            self._deliver_bar_stream(listener, event)
+
+    @staticmethod
+    def _deliver_bar_stream(
+        listener: Callable[[IbkrBarStreamEvent], None],
+        event: IbkrBarStreamEvent,
+    ) -> None:
+        try:
+            listener(event)
+        except Exception:
+            # A consumer failure must never kill the IBKR network thread.
+            logger.debug("suppressed error in %s", "OfficialIbapiTransport._deliver_bar_stream", exc_info=True)
 
     def connect(self, host: str, port: int, client_id: int, timeout_seconds: float = 8.0) -> None:
         if self.is_connected():
@@ -524,14 +613,12 @@ class OfficialIbapiTransport:
         event = threading.Event()
         self._historical_events[req_id] = event
         self._historical_rows[req_id] = []
-        seconds = max(1, int(duration_seconds))
-        duration = f"{seconds} S" if seconds <= 86_400 else f"{max(1, (seconds + 86_399) // 86_400)} D"
         end_text = end.astimezone(timezone.utc).strftime("%Y%m%d %H:%M:%S UTC")
         self._client.reqHistoricalData(
             req_id,
             self._qualified_contract(contract),
             end_text,
-            duration,
+            _duration_text(duration_seconds),
             bar_size,
             what_to_show,
             1 if use_rth else 0,
@@ -560,6 +647,47 @@ class OfficialIbapiTransport:
             self._historical_events.pop(req_id, None)
             self._request_errors.pop(req_id, None)
 
+    def subscribe_bars(
+        self,
+        contract: IbkrContractIdentity,
+        listener: Callable[[IbkrBarStreamEvent], None],
+        *,
+        duration_seconds: int,
+        use_rth: bool,
+    ) -> int:
+        """Request 1m TRADES bars for the last ``duration_seconds`` and keep the newest one up to date."""
+        if not self.is_connected():
+            raise IbkrRuntimeError("ibkr_gateway_disconnected")
+        req_id = self._request_id()
+        self._bar_stream_rows[req_id] = []
+        self._bar_stream_listeners[req_id] = listener
+        # keepUpToDate requires an empty end time: the window ends now and stays open.
+        self._client.reqHistoricalData(
+            req_id,
+            self._qualified_contract(contract),
+            "",
+            _duration_text(duration_seconds),
+            "1 min",
+            "TRADES",
+            1 if use_rth else 0,
+            2,
+            True,
+            [],
+        )
+        return req_id
+
+    def unsubscribe_bars(self, token: int) -> None:
+        req_id = int(token)
+        active = self._bar_stream_listeners.pop(req_id, None) is not None
+        self._bar_stream_rows.pop(req_id, None)
+        self._request_errors.pop(req_id, None)
+        if not active:
+            return
+        try:
+            self._client.cancelHistoricalData(req_id)
+        except Exception:
+            logger.debug("suppressed error in %s", "OfficialIbapiTransport.unsubscribe_bars", exc_info=True)
+
     def request_health(self, token: int) -> dict[str, Any]:
         request_id = int(token)
         error = self._request_errors.get(request_id)
@@ -579,6 +707,7 @@ class OfficialIbapiTransport:
             "transport": "official_ibapi",
             "connected": self.is_connected(),
             "active_quote_subscriptions": len(self._quote_listeners),
+            "active_bar_streams": len(self._bar_stream_listeners),
             "last_error": self._last_error,
             "error_count": self._error_count,
             "entitlement_error_count": self._entitlement_error_count,
@@ -600,6 +729,8 @@ class FakeIbkrTransport:
         self.history = history or {}
         self.connected = False
         self.listeners: dict[int, tuple[IbkrContractIdentity, Callable[[IbkrQuoteSnapshot], None]]] = {}
+        self.bar_streams: dict[int, tuple[IbkrContractIdentity, Callable[[IbkrBarStreamEvent], None]]] = {}
+        self.bar_stream_requests: list[dict[str, Any]] = []
         self.request_health_by_token: dict[int, dict[str, Any]] = {}
         self._next_token = 1
 
@@ -609,6 +740,10 @@ class FakeIbkrTransport:
     def disconnect(self) -> None:
         self.connected = False
         self.listeners.clear()
+        bar_streams = tuple(listener for _, listener in self.bar_streams.values())
+        self.bar_streams.clear()
+        for listener in bar_streams:
+            listener(IbkrBarStreamEvent("closed", reason="ibkr_gateway_disconnected"))
 
     def is_connected(self) -> bool:
         return self.connected
@@ -651,6 +786,31 @@ class FakeIbkrTransport:
             if start <= row.start_time.astimezone(timezone.utc).timestamp() < end.astimezone(timezone.utc).timestamp()
         ]
 
+    def subscribe_bars(
+        self,
+        contract: IbkrContractIdentity,
+        listener: Callable[[IbkrBarStreamEvent], None],
+        *,
+        duration_seconds: int,
+        use_rth: bool,
+    ) -> int:
+        token = self._next_token
+        self._next_token += 1
+        self.bar_streams[token] = (contract, listener)
+        self.bar_stream_requests.append(
+            {"token": token, "con_id": contract.con_id, "duration_seconds": duration_seconds, "use_rth": use_rth}
+        )
+        return token
+
+    def unsubscribe_bars(self, token: int) -> None:
+        self.bar_streams.pop(int(token), None)
+
+    def emit_bars(self, token: int, event: IbkrBarStreamEvent) -> None:
+        _, listener = self.bar_streams[int(token)]
+        if event.kind == "closed":
+            self.bar_streams.pop(int(token), None)
+        listener(event)
+
     def request_health(self, token: int) -> dict[str, Any]:
         return dict(
             self.request_health_by_token.get(
@@ -669,6 +829,7 @@ class FakeIbkrTransport:
             "transport": "fake",
             "connected": self.connected,
             "active_quote_subscriptions": len(self.listeners),
+            "active_bar_streams": len(self.bar_streams),
             "request_health": {
                 str(key): dict(value)
                 for key, value in self.request_health_by_token.items()
@@ -714,6 +875,7 @@ class IbkrRuntime:
             "runtime_arguments",
         )
         self._settings_source = settings_source
+        self.connection = resolved_settings.connection
         self.host = resolved_settings.host
         self.port = resolved_settings.port
         self.client_id = resolved_settings.client_id
@@ -721,6 +883,8 @@ class IbkrRuntime:
         self._live_authority_enabled = resolved_settings.live_authority_enabled
         self._recovery_authority_enabled = resolved_settings.recovery_authority_enabled
         self.transport = transport
+        # A transport the caller passed in (tests, embedding) is usable by definition.
+        self._transport_injected = transport is not None
         self._lock = threading.RLock()
         self._connect_lock = threading.Lock()
         self._historical_lock = threading.Lock()
@@ -730,6 +894,7 @@ class IbkrRuntime:
         # Notified on every quote, so waiting for one does not poll.
         self._quote_arrived = threading.Condition()
         self._quote_listeners: dict[str, list[Callable[[IbkrQuoteSnapshot], None]]] = {}
+        self._bar_stream_tokens: set[int] = set()
         self.connect_count = 0
         self.connect_failure_count = 0
         self.reconnect_count = 0
@@ -758,9 +923,15 @@ class IbkrRuntime:
             or self.port != settings.port
             or self.client_id != settings.client_id
             or self.enabled != settings.enabled
+            or self.connection != settings.connection
         )
         if changed and self.is_connected():
             self.disconnect()
+        if self.connection != settings.connection and self.transport is not None:
+            # The other connection needs its own transport.
+            self.disconnect()
+            self.transport = None
+        self.connection = settings.connection
         self.host = settings.host
         self.port = settings.port
         self.client_id = settings.client_id
@@ -784,10 +955,27 @@ class IbkrRuntime:
     def _ensure_transport(self) -> IbkrTransport:
         if self.transport is not None:
             return self.transport
-        self.transport = OfficialIbapiTransport()
+        if self.connection == "web_api":
+            from .ibkr_web_api import IbkrWebApiTransport
+
+            self.transport = IbkrWebApiTransport()
+        else:
+            self.transport = OfficialIbapiTransport()
         return self.transport
 
-    def connect(self) -> None:
+    def client_available(self) -> bool:
+        """Whether the chosen connection can be tried: the ibapi client, or saved Web API credentials."""
+        if self._transport_injected:
+            return True
+        # A transport the runtime built exists after any attempt, so it proves nothing.
+        if self.connection == "web_api":
+            from .ibkr_web_api import web_api_credentials_configured
+
+            return web_api_credentials_configured()
+        return official_ibapi_available()
+
+    def connect(self, *, force: bool = False) -> None:
+        """Connect if needed; ``force`` (a user's explicit attempt) skips the retry backoff."""
         self.refresh_settings()
         if not self.enabled:
             raise IbkrRuntimeError("ibkr_provider_disabled")
@@ -796,7 +984,7 @@ class IbkrRuntime:
             if transport.is_connected():
                 return
             now_mono = time_module.monotonic()
-            if now_mono < self._next_connect_attempt_monotonic:
+            if not force and now_mono < self._next_connect_attempt_monotonic:
                 raise IbkrRuntimeError("ibkr_reconnect_backoff")
             prior = self.connect_count > 0
             if prior:
@@ -806,13 +994,15 @@ class IbkrRuntime:
                 with self._lock:
                     self._quote_tokens.clear()
                     self._latest_quotes.clear()
+                    self._bar_stream_tokens.clear()
                     self.subscription_count = 0
             try:
                 transport.connect(self.host, self.port, self.client_id)
             except Exception as exc:
                 self.connect_failure_count += 1
                 backoff = max(
-                    0.25,
+                    # A Web API attempt is a signed request to IBKR's servers, not a local socket.
+                    60.0 if self.connection == "web_api" else 0.25,
                     float(_env_str("OMNIX_IBKR_RECONNECT_BACKOFF_SECONDS", "1")),
                 )
                 self._next_connect_attempt_monotonic = time_module.monotonic() + backoff
@@ -833,6 +1023,7 @@ class IbkrRuntime:
         with self._lock:
             self._quote_tokens.clear()
             self._latest_quotes.clear()
+            self._bar_stream_tokens.clear()
             self.subscription_count = 0
 
     def is_connected(self) -> bool:
@@ -1014,14 +1205,7 @@ class IbkrRuntime:
         self.connect()
         assert self.transport is not None
         duration = int((end_utc - start_utc).total_seconds())
-        min_interval = (
-            0.0
-            if _env_str("OMNIX_PERSISTENCE_MODE", "").strip() == "legacy_test"
-            else max(
-                0.0,
-                float(_env_str("OMNIX_IBKR_HISTORICAL_MIN_INTERVAL_SECONDS", "0.25")),
-            )
-        )
+        min_interval = self._historical_min_interval_seconds()
         with self._historical_lock:
             # Concurrent tape warmers miss the cache together; whichever waited
             # on this lock reuses the answer the first one stored.
@@ -1054,6 +1238,46 @@ class IbkrRuntime:
                 self._historical_cache.popitem(last=False)
         return result
 
+    @staticmethod
+    def _historical_min_interval_seconds() -> float:
+        if _env_str("OMNIX_PERSISTENCE_MODE", "").strip() == "legacy_test":
+            return 0.0
+        return max(0.0, float(_env_str("OMNIX_IBKR_HISTORICAL_MIN_INTERVAL_SECONDS", "0.25")))
+
+    def subscribe_bars(
+        self,
+        contract: IbkrContractIdentity,
+        listener: Callable[[IbkrBarStreamEvent], None],
+        *,
+        duration_seconds: int,
+        use_rth: bool = False,
+    ) -> int:
+        """Open a live 1m TRADES bar stream; ``listener`` runs on the IBKR network thread."""
+        self.connect()
+        assert self.transport is not None
+        min_interval = self._historical_min_interval_seconds()
+        # The stream opens with a historical request, so it shares their pacing.
+        with self._historical_lock:
+            elapsed = time_module.monotonic() - self._last_historical_request_monotonic
+            if elapsed < min_interval:
+                time_module.sleep(min_interval - elapsed)
+            token = self.transport.subscribe_bars(
+                contract,
+                listener,
+                duration_seconds=duration_seconds,
+                use_rth=use_rth,
+            )
+            self._last_historical_request_monotonic = time_module.monotonic()
+        with self._lock:
+            self._bar_stream_tokens.add(token)
+        return token
+
+    def unsubscribe_bars(self, token: int) -> None:
+        with self._lock:
+            self._bar_stream_tokens.discard(token)
+        if self.transport is not None:
+            self.transport.unsubscribe_bars(token)
+
     def diagnostics(self) -> dict[str, Any]:
         self.refresh_settings()
         transport_diagnostics = self.transport.diagnostics() if self.transport is not None else {}
@@ -1074,6 +1298,8 @@ class IbkrRuntime:
             "monitor_enabled": settings.monitor_enabled,
             "settings_source": settings_source,
             "settings_managed": self._settings_managed,
+            "connection": self.connection,
+            "client_available": self.client_available(),
             "host": self.host,
             "port": self.port,
             "client_id": self.client_id,
@@ -1086,6 +1312,7 @@ class IbkrRuntime:
             "reconnect_count": self.reconnect_count,
             "qualified_contract_count": len(self._contract_cache),
             "active_quote_subscriptions": len(self._quote_tokens),
+            "active_bar_streams": len(self._bar_stream_tokens),
             "contract_failure_count": self.contract_failure_count,
             "historical_request_count": self.historical_request_count,
             "historical_cache_hit_count": self.historical_cache_hit_count,
@@ -1110,7 +1337,9 @@ def default_ibkr_runtime() -> IbkrRuntime:
 
 
 __all__ = [
+    "BAR_STREAM_NO_DATA",
     "FakeIbkrTransport",
+    "IbkrBarStreamEvent",
     "IbkrClientUnavailableError",
     "IbkrContractAmbiguousError",
     "IbkrContractIdentity",

@@ -37,7 +37,13 @@ from .providers.bar_semantics import interval_duration
 from .providers.errors import ProviderDataUnavailableError
 from .providers.registry import ProviderRegistry
 from .streaming.binance_stream import BinanceWebSocketStream
-from .streaming.manager import SharedBarStreamHub, SharedSubscriptionManager, StreamingBarUpdate
+from .streaming.ibkr_stream import IbkrBarStream, ibkr_streams_interval
+from .streaming.manager import (
+    BarStreamItem,
+    SharedBarStreamHub,
+    SharedSubscriptionManager,
+    StreamingBarUpdate,
+)
 from .yahoo_evidence import YahooEvidenceStore, default_yahoo_evidence_store
 from app.apps.trading.us_equity_calendar import EASTERN
 from app.apps.trading.us_equity_calendar import regular_close_time
@@ -164,6 +170,7 @@ class TradingMarketDataService:
         cache: TradingMarketDataCache | None = None,
         subscriptions: SharedSubscriptionManager | None = None,
         stream: BinanceWebSocketStream | None = None,
+        ibkr_stream: IbkrBarStream | None = None,
         yahoo_evidence_store: YahooEvidenceStore | None = None,
         ibkr_evidence_store: IbkrEvidenceStore | None = None,
     ) -> None:
@@ -174,9 +181,10 @@ class TradingMarketDataService:
         self.provider = self.registry.provider("binance")
         self.subscriptions = subscriptions or SharedSubscriptionManager()
         self.stream = stream or BinanceWebSocketStream()
+        self.ibkr_stream = ibkr_stream or IbkrBarStream(lambda: self.registry.provider("ibkr"))
         self.bar_streams = SharedBarStreamHub(
             self.subscriptions,
-            open_upstream=self.stream.messages,
+            open_upstream=self._open_bar_upstream,
             recover_gap=self._recover_stream_gap,
         )
         self.yahoo_evidence_store = yahoo_evidence_store or default_yahoo_evidence_store()
@@ -1003,20 +1011,52 @@ class TradingMarketDataService:
         instrument_id: str,
         interval: str,
         binding_id: str | None = None,
-    ) -> AsyncIterator[StreamingBarUpdate]:
+        *,
+        extended_hours: bool | None = None,
+    ) -> AsyncIterator[BarStreamItem]:
         binding = self.registry.resolve_binding(instrument_id, binding_id)
-        if binding.provider != "binance" or binding.feed_type is not FeedType.WEBSOCKET_AND_REST:
+        if binding.provider == "binance" and binding.feed_type is FeedType.WEBSOCKET_AND_REST:
+            scope = None  # 24x7: extended hours do not apply
+        elif binding.provider == "ibkr" and ibkr_streams_interval(interval):
+            scope = True if extended_hours is None else extended_hours
+        else:
             raise ValueError(
-                f"binding does not support Omnix live streaming: {binding.binding_id}"
+                f"binding does not support Omnix live streaming: {binding.binding_id} {interval}"
             )
         async with self.bar_streams.listen(
             provider_symbol=binding.provider_symbol,
             binding_id=binding.binding_id,
             instrument_id=instrument_id,
             interval=interval,
+            extended_hours=scope,
         ) as updates:
             while True:
                 yield await updates.get()
+
+    def _open_bar_upstream(
+        self,
+        *,
+        provider_symbol: str,
+        binding_id: str,
+        instrument_id: str,
+        interval: str,
+        extended_hours: bool | None = None,
+    ) -> AsyncIterator[StreamingBarUpdate]:
+        binding = self.registry.resolve_binding(instrument_id, binding_id)
+        if binding.provider == "ibkr":
+            return self.ibkr_stream.messages(
+                provider_symbol=provider_symbol,
+                binding_id=binding_id,
+                instrument_id=instrument_id,
+                interval=interval,
+                extended_hours=True if extended_hours is None else extended_hours,
+            )
+        return self.stream.messages(
+            provider_symbol=provider_symbol,
+            binding_id=binding_id,
+            instrument_id=instrument_id,
+            interval=interval,
+        )
 
     async def _recover_stream_gap(
         self,
@@ -1025,10 +1065,25 @@ class TradingMarketDataService:
         interval: str,
         start: datetime,
         end: datetime,
+        *,
+        extended_hours: bool = True,
     ) -> list[StreamingBarUpdate]:
-        """Finalized bars that closed while the upstream was down, from REST."""
+        """Finalized bars that closed while the upstream was down, from REST.
+
+        They are fetched the way the chart fetches its history (clock-aligned),
+        so a recovered derived bar has the chart's bucket edges.
+        """
         missing = int((end - start) / interval_duration(interval)) + 2
-        response = await asyncio.to_thread(self.bars, instrument_id, interval, min(1_000, missing), binding_id)
+        response = await asyncio.to_thread(
+            lambda: self.bars(
+                instrument_id,
+                interval,
+                min(1_000, missing),
+                binding_id,
+                alignment="clock",
+                include_extended_hours=extended_hours,
+            )
+        )
         return [
             StreamingBarUpdate(
                 binding_id=binding_id,
@@ -1045,6 +1100,7 @@ class TradingMarketDataService:
                 provider_event_id=bar.provider_event_id,
                 provider_sequence=bar.provider_sequence,
                 ingestion_revision=bar.ingestion_revision,
+                session=bar.session,
             )
             for bar in response.bars
             if bar.is_final and start <= bar.start_time < end

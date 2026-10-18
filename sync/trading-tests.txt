@@ -37,11 +37,13 @@ src/tests/trading/test_evidence_storage.py
 src/tests/trading/test_execution_observation_monitor.py
 src/tests/trading/test_execution_observation_plane.py
 src/tests/trading/test_feature_qualification.py
+src/tests/trading/test_ibkr_live_bars.py
 src/tests/trading/test_ibkr_market_data_monitor.py
 src/tests/trading/test_ibkr_provider_authority.py
 src/tests/trading/test_ibkr_recovery_semantics.py
 src/tests/trading/test_ibkr_runtime.py
 src/tests/trading/test_ibkr_settings.py
+src/tests/trading/test_ibkr_web_api.py
 src/tests/trading/test_indicator_registry_goldens.py
 src/tests/trading/test_indicator_sources.py
 src/tests/trading/test_instrument_catalog_service.py

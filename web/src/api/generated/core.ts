@@ -2446,6 +2446,12 @@ export interface components {
         IbkrSettingsPayload: {
             /** Client Id */
             client_id: number;
+            /**
+             * Connection
+             * @default gateway
+             * @enum {string}
+             */
+            connection: "gateway" | "web_api";
             /** Enabled */
             enabled: boolean;
             /** Host */
@@ -2467,7 +2473,7 @@ export interface components {
              * Connection Status
              * @enum {string}
              */
-            connection_status: "disabled" | "client_unavailable" | "connected" | "disconnected";
+            connection_status: "disabled" | "client_unavailable" | "credentials_missing" | "connected" | "disconnected";
             /** Diagnostics */
             diagnostics: {
                 [key: string]: unknown;
@@ -2488,11 +2494,14 @@ export interface components {
              * @enum {string}
              */
             settings_source: "defaults" | "environment" | "omnix_settings" | "runtime_arguments";
+            web_api: components["schemas"]["IbkrWebApiStatus"];
         };
         /** IbkrSettingsUpdate */
         IbkrSettingsUpdate: {
             /** Client Id */
             client_id?: number | null;
+            /** Connection */
+            connection?: ("gateway" | "web_api") | null;
             /** Enabled */
             enabled?: boolean | null;
             /** Host */
@@ -2505,6 +2514,63 @@ export interface components {
             port?: number | null;
             /** Recovery Authority Enabled */
             recovery_authority_enabled?: boolean | null;
+        };
+        /** IbkrWebApiCredentialUpdate */
+        IbkrWebApiCredentialUpdate: {
+            /** Access Token */
+            access_token?: string | null;
+            /** Access Token Secret */
+            access_token_secret?: string | null;
+            /** Consumer Key */
+            consumer_key?: string | null;
+        };
+        /** IbkrWebApiKeysRequest */
+        IbkrWebApiKeysRequest: {
+            /**
+             * Replace
+             * @default false
+             */
+            replace?: boolean;
+        };
+        /**
+         * IbkrWebApiPublicKeys
+         * @description The public files the user uploads to IBKR's OAuth page; the private keys never leave the server.
+         */
+        IbkrWebApiPublicKeys: {
+            /** Dh Parameters */
+            dh_parameters: string;
+            /** Encryption Public Key */
+            encryption_public_key: string;
+            /** Signature Public Key */
+            signature_public_key: string;
+        };
+        /**
+         * IbkrWebApiStatus
+         * @description What the IBKR Web API connection has saved: never a secret, only whether it is there.
+         */
+        IbkrWebApiStatus: {
+            /**
+             * Access Token Masked
+             * @default
+             */
+            access_token_masked: string;
+            /** Access Token Secret Saved */
+            access_token_secret_saved: boolean;
+            /**
+             * Consumer Key
+             * @default
+             */
+            consumer_key: string;
+            /** Editable */
+            editable: boolean;
+            /** Keys Generated */
+            keys_generated: boolean;
+            /** Portal Url */
+            portal_url: string;
+            /** Ready */
+            ready: boolean;
+            /** Storage */
+            storage: string;
         };
         /** InviteCheckResponse */
         InviteCheckResponse: {

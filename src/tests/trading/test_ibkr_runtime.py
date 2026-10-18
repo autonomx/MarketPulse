@@ -240,10 +240,17 @@ def test_official_transport_socket_reset_wakes_waiters_and_clears_request_state(
     transport._market_data_types = {3: "LIVE"}
     transport._request_errors = {2: {"code": 162}}
     transport._farm_status = {"market_data": "READY"}
+    bar_stream_events = []
+    transport._bar_stream_listeners = {4: bar_stream_events.append}
+    transport._bar_stream_rows = {4: []}
 
     transport._reset_socket_state()
 
     assert not transport._connected.is_set()
+    # A live bar stream is told it ended, so its consumer resubscribes after the reconnect.
+    assert [(event.kind, event.reason) for event in bar_stream_events] == [("closed", "ibkr_gateway_disconnected")]
+    assert transport._bar_stream_listeners == {}
+    assert transport._bar_stream_rows == {}
     assert contract_event.is_set()
     assert historical_event.is_set()
     assert transport._contract_rows == {}
@@ -338,6 +345,7 @@ def _official_transport(script) -> OfficialIbapiTransport:
     transport._next_request_id = 10_000
     transport._contract_rows, transport._contract_events = {}, {}
     transport._historical_rows, transport._historical_events = {}, {}
+    transport._bar_stream_listeners, transport._bar_stream_rows = {}, {}
     transport._quote_contracts, transport._quote_listeners, transport._quote_values = {}, {}, {}
     transport._market_data_types, transport._request_errors, transport._farm_status = {}, {}, {}
     transport._error_count, transport._entitlement_error_count, transport._last_error = 0, 0, None

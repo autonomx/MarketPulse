@@ -66,6 +66,7 @@ def test_saved_ibkr_settings_are_durable_and_drive_default_runtime(monkeypatch) 
         "client_id": 93,
         "live_authority_enabled": False,
         "recovery_authority_enabled": False,
+        "connection": "gateway",
     }
 
     runtime = IbkrRuntime()

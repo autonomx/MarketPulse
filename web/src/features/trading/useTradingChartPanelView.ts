@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { upsertChartBar } from './chart/chartAdapter';
 import { indicatorUsesSeparatePane } from './indicators/coreIndicators';
+import { bindingStreamsInterval } from './liveChartFeed';
 import { tradingStreamHub } from './streaming/tradingStreamHub';
 import { isTradingFormulaInstrumentId } from './tradingFormula';
 import { TRADING_TIMEZONE_OPTIONS } from './tradingTime';
@@ -15,11 +16,12 @@ import { POLL_INTERVALS_MS, startPolling } from '../../shared/timers';
 /** What the panel shows: quote, change, legend and visible indicator outputs. */
 export function useChartView(ws: TradingChartPanelProps & ReturnType<typeof useChartPanelState> & ReturnType<typeof useChartIndicatorScheduling> & ReturnType<typeof useChartPanelData> & ReturnType<typeof useChartLifecycle> & ReturnType<typeof useChartSync>) {
   const {
-    adapterRef, allBarsRef, barsRef, chartFocusMode, chartId, chartQuery, comparisonRenderData, contextMenu,
+    adapterRef, allBarsRef, barsRef, chartFocusMode, chartId, chartQuery, chartSettings, comparisonRenderData, contextMenu,
     forceLiveRender, fullscreenIndicator, fullscreenIndicatorRef, fullscreenMainPane, fullscreenMainPaneRef,
     indicatorOutputs, indicators, instrumentId, interval, replayMode, scheduleIndicators, selectedIndicator,
     setFullscreenIndicator, setFullscreenMainPane, setStreamError, setStreamStatus, streamRevisionRef, timezoneId,
   } = ws;
+  const showExtendedHours = chartSettings?.extendedHours !== false;
 
   useEffect(() => {
     const resolved = chartQuery.data?.binding;
@@ -34,12 +36,18 @@ export function useChartView(ws: TradingChartPanelProps & ReturnType<typeof useC
       return startPolling(() => chartQuery.refetch(), POLL_INTERVALS_MS.chartFallback);
     }
     setStreamError(null);
-    const derivedInterval = !resolved.supported_intervals.includes(interval);
-    if (resolved.feed_type !== 'websocket_and_rest' || derivedInterval) {
+    if (!bindingStreamsInterval(resolved, interval)) {
       setStreamStatus('polling');
       return startPolling(() => chartQuery.refetch(), POLL_INTERVALS_MS.chartFallback);
     }
-    return tradingStreamHub.subscribe(
+    // While the server's upstream reconnects (IB Gateway restarting, say) the socket stays open: poll meanwhile.
+    let stopFallbackPolling: (() => void) | null = null;
+    const stopFallback = () => {
+      stopFallbackPolling?.();
+      stopFallbackPolling = null;
+    };
+    let continuityChecked = false;
+    const unsubscribe = tradingStreamHub.subscribe(
       chartId,
       instrumentId,
       interval,
@@ -52,10 +60,18 @@ export function useChartView(ws: TradingChartPanelProps & ReturnType<typeof useC
           if (message.code !== 'stream_failed') setStreamError(message.message);
           return;
         }
+        if (message.type !== 'bar') return; // status messages reach the status listener instead
         const providerRevision = Number(message.bar.ingestion_revision) || 0;
         const ingestionRevision = Math.max(streamRevisionRef.current + 1, providerRevision);
         streamRevisionRef.current = ingestionRevision;
         const bar = normalizeStreamBar(message, resolved.provider, ingestionRevision);
+        if (!continuityChecked) {
+          continuityChecked = true;
+          // A bar can close between the history request and the first live bar, and the
+          // chart can only revise its last bar: reload the history once if one is missing.
+          const last = barsRef.current[barsRef.current.length - 1];
+          if (last && Date.parse(bar.start_time) > Date.parse(last.end_time)) void chartQuery.refetch();
+        }
         if (adapterRef.current?.updateBar(bar)) {
           barsRef.current = upsertChartBar(barsRef.current, bar);
           allBarsRef.current = upsertChartBar(allBarsRef.current, bar);
@@ -65,14 +81,24 @@ export function useChartView(ws: TradingChartPanelProps & ReturnType<typeof useC
       },
       (status) => {
         setStreamStatus(status);
-        if (status === 'live') setStreamError(null);
+        if (status === 'live') {
+          setStreamError(null);
+          stopFallback();
+        }
+        if (status === 'polling') stopFallbackPolling ??= startPolling(() => chartQuery.refetch(), POLL_INTERVALS_MS.chartFallback);
         if (status === 'closed' || status === 'error') void chartQuery.refetch();
       },
       resolved.binding_id,
+      // Session-calendar (IBKR) bars are bucketed with or without extended hours; 24x7 streams ignore it.
+      resolved.provider === 'ibkr' ? showExtendedHours : null,
     );
+    return () => {
+      stopFallback();
+      unsubscribe();
+    };
     // Resubscribes the stream when its identity changes, not on every chart query result.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chartId, instrumentId, interval, replayMode, chartQuery.data?.binding.binding_id, scheduleIndicators, adapterRef, allBarsRef, barsRef, forceLiveRender, setStreamError, setStreamStatus, streamRevisionRef]);
+  }, [chartId, instrumentId, interval, replayMode, chartQuery.data?.binding.binding_id, showExtendedHours, scheduleIndicators, adapterRef, allBarsRef, barsRef, forceLiveRender, setStreamError, setStreamStatus, streamRevisionRef]);
 
   const provenance = chartQuery.data?.provenance;
 

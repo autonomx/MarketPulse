@@ -1085,6 +1085,20 @@ export interface components {
         IbkrSettingsStatus: core["schemas"]["IbkrSettingsStatus"];
         /** IbkrSettingsUpdate */
         IbkrSettingsUpdate: core["schemas"]["IbkrSettingsUpdate"];
+        /** IbkrWebApiCredentialUpdate */
+        IbkrWebApiCredentialUpdate: core["schemas"]["IbkrWebApiCredentialUpdate"];
+        /** IbkrWebApiKeysRequest */
+        IbkrWebApiKeysRequest: core["schemas"]["IbkrWebApiKeysRequest"];
+        /**
+         * IbkrWebApiPublicKeys
+         * @description The public files the user uploads to IBKR's OAuth page; the private keys never leave the server.
+         */
+        IbkrWebApiPublicKeys: core["schemas"]["IbkrWebApiPublicKeys"];
+        /**
+         * IbkrWebApiStatus
+         * @description What the IBKR Web API connection has saved: never a secret, only whether it is there.
+         */
+        IbkrWebApiStatus: core["schemas"]["IbkrWebApiStatus"];
         /** InviteCheckResponse */
         InviteCheckResponse: core["schemas"]["InviteCheckResponse"];
         /** InviteListResponse */

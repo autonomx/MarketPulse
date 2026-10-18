@@ -17,6 +17,46 @@ class FakeSocket {
   }
 }
 
+describe('Trading stream hub upstream status', () => {
+  it('turns server status messages into polling and live statuses without passing them to charts', () => {
+    const sockets: FakeSocket[] = [];
+    const hub = new TradingStreamHub(() => {
+      const socket = new FakeSocket();
+      sockets.push(socket);
+      return socket as unknown as WebSocket;
+    });
+    const statuses: string[] = [];
+    const received: string[] = [];
+    hub.subscribe('chart-1', 'equity:NASDAQ:AAPL', '5m', (message) => received.push(message.type), (status) => statuses.push(status), 'ibkr-aapl', true);
+    sockets[0].emit('open', new Event('open'));
+    const send = (payload: object) => sockets[0].emit('message', new MessageEvent('message', { data: JSON.stringify(payload) }));
+
+    send({ type: 'status', status: 'reconnecting' });
+    send({ type: 'status', status: 'live' });
+
+    expect(statuses).toEqual(['connecting', 'live', 'polling', 'live']);
+    expect(received).toEqual([]);
+    hub.dispose();
+  });
+
+  it('keeps extended-hours and regular-hours charts of one stock on separate sockets', () => {
+    const urls: string[] = [];
+    const hub = new TradingStreamHub((url) => {
+      urls.push(url);
+      return new FakeSocket() as unknown as WebSocket;
+    });
+    hub.subscribe('one', 'equity:NASDAQ:AAPL', '5m', () => undefined, undefined, 'ibkr-aapl', true);
+    hub.subscribe('two', 'equity:NASDAQ:AAPL', '5m', () => undefined, undefined, 'ibkr-aapl', false);
+    hub.subscribe('three', 'equity:NASDAQ:AAPL', '5m', () => undefined, undefined, 'ibkr-aapl', false);
+
+    expect(urls).toHaveLength(2);
+    expect(urls[0]).toContain('extended_hours=true');
+    expect(urls[1]).toContain('extended_hours=false');
+    expect(hub.listenerCount('equity:NASDAQ:AAPL', '5m', 'ibkr-aapl', false)).toBe(2);
+    hub.dispose();
+  });
+});
+
 describe('Trading stream hub', () => {
   it('uses one socket for identical chart streams and fans out messages', () => {
     const sockets: FakeSocket[] = [];

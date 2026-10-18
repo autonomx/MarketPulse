@@ -10,7 +10,7 @@ from fastapi.testclient import TestClient
 from app.apps.trading.api import create_trading_router
 from app.apps.trading.catalog import BINDINGS, INSTRUMENTS
 from app.apps.trading.streaming.binance_stream import BinanceWebSocketStream, parse_binance_kline
-from app.apps.trading.streaming.manager import StreamingBarUpdate
+from app.apps.trading.streaming.manager import StreamingBarUpdate, StreamingStatusUpdate
 
 
 class EmptyRepository:
@@ -159,3 +159,23 @@ def test_gateway_websocket_sends_normalized_decimal_and_time_values() -> None:
         assert message["bar"]["is_final"] is False
         assert message["bar"]["ingestion_revision"] == 3
         assert message["bar"]["start_time"].endswith("+00:00")
+
+
+def test_gateway_websocket_forwards_extended_hours_and_upstream_status() -> None:
+    calls = []
+
+    class ScopedMarketService:
+        async def stream_updates(self, instrument_id: str, interval: str, binding_id: str, *, extended_hours: bool):
+            calls.append((instrument_id, interval, binding_id, extended_hours))
+            yield StreamingStatusUpdate(connected=False)
+            yield StreamingStatusUpdate(connected=True)
+
+    app = FastAPI()
+    app.include_router(create_trading_router(lambda: EmptyRepository(), lambda: ScopedMarketService()))
+    client = TestClient(app)
+    with client.websocket_connect(
+        "/api/trading/stream?instrument_id=equity:NASDAQ:AAPL&interval=5m&binding_id=ibkr-aapl&extended_hours=false"
+    ) as websocket:
+        assert websocket.receive_json() == {"type": "status", "status": "reconnecting"}
+        assert websocket.receive_json() == {"type": "status", "status": "live"}
+    assert calls == [("equity:NASDAQ:AAPL", "5m", "ibkr-aapl", False)]

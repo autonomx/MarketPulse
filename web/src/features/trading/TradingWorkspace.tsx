@@ -11,6 +11,7 @@ import { useTradingCommandDispatcher } from './commands/useTradingCommands';
 import { TradingKeyboardLayer } from './commands/TradingKeyboardLayer';
 import type { OmnixModuleDefinition } from '../../app/modules';
 import { TradingChartGrid } from './TradingChartGrid';
+import { chartBindingId, useTradingProviders } from './liveChartFeed';
 import { TradingIndicatorManager } from './TradingIndicatorManager';
 import { TradingSidePanel } from './TradingSidePanel';
 import { TradingSideRail } from './TradingSideRail';
@@ -143,7 +144,7 @@ export function TradingWorkspace({ module }: { module: OmnixModuleDefinition }) 
   const [paperAccountId, setPaperAccountId] = useState<string | null>(null);
   const persistence = useTradingWorkspacePersistence();
   const workspaceHydrated = persistence.status !== 'loading';
-  const providers = useQuery({ queryKey: ['trading', 'providers'], queryFn: tradingApi.providers });
+  const providers = useTradingProviders();
   const instruments = useQuery({ queryKey: ['trading', 'instruments'], queryFn: () => tradingApi.instruments() });
   const layout = useTradingStore((state) => state.layout);
   const tabs = useTradingStore((state) => state.tabs);
@@ -189,7 +190,8 @@ export function TradingWorkspace({ module }: { module: OmnixModuleDefinition }) 
     () => providerBindings.filter((binding) => binding.instrument_id === activeChart.instrumentId),
     [activeChart.instrumentId, providerBindings],
   );
-  const selectedBinding = availableBindings.find((binding) => binding.binding_id === activeChart.bindingId)
+  const activeBindingId = chartBindingId(activeChart, providers.data);
+  const selectedBinding = availableBindings.find((binding) => binding.binding_id === activeBindingId)
     ?? availableBindings[0];
   const visibleInstruments = useMemo(() => (instruments.data ?? []).filter((instrument) => (
     instrument.asset_class !== 'crypto' || instrument.venue === 'BINANCE'
@@ -688,6 +690,7 @@ export function TradingWorkspace({ module }: { module: OmnixModuleDefinition }) 
           <section className="trading-chart-shell" aria-label="Trading chart workspace" tabIndex={0}>
             <TradingChartGrid
               paperAccountId={paperAccountId}
+              providers={providers.data}
               onOpenSymbolSearch={openSymbolSearch}
               onOpenPineScript={openPineEditor}
               onOpenMarketDataSettings={() => { void navigate({ to: '/settings', search: { category: 'trading-market-data' } }); }}

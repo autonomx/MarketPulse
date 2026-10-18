@@ -21,7 +21,7 @@ from .market_session_status import MarketSessionStatus, is_always_open, market_s
 from .models import BarsResponse, CanonicalInstrument, ProviderBinding, ProviderPolicy
 from .repositories import TradingDocumentRepository, default_trading_repository
 from .service import TradingMarketDataService, default_market_data_service
-from .streaming.manager import StreamingBarUpdate
+from .streaming.manager import StreamingBarUpdate, StreamingStatusUpdate
 
 logger = logging.getLogger(__name__)
 
@@ -133,7 +133,10 @@ def _document_response(record: dict[str, Any]) -> TradingDocumentResponse:
     )
 
 
-def _stream_payload(update: StreamingBarUpdate) -> dict[str, Any]:
+def _stream_payload(update: StreamingBarUpdate | StreamingStatusUpdate) -> dict[str, Any]:
+    if isinstance(update, StreamingStatusUpdate):
+        # The shared upstream dropped or recovered; the client socket stays open.
+        return {"type": "status", "status": "live" if update.connected else "reconnecting"}
     payload = asdict(update)
     for key, value in tuple(payload.items()):
         if isinstance(value, datetime):
@@ -358,16 +361,22 @@ def create_trading_router(
         instrument_id = websocket.query_params.get("instrument_id", "")
         interval = websocket.query_params.get("interval", "1m")
         binding_id = websocket.query_params.get("binding_id") or None
+        extended_hours_param = websocket.query_params.get("extended_hours")
         if not instrument_id:
             await websocket.close(code=1008, reason="instrument_id is required")
             return
         await websocket.accept()
         try:
             service = market_service_factory()
+            scope: dict[str, Any] = (
+                {}
+                if extended_hours_param is None
+                else {"extended_hours": extended_hours_param.strip().lower() not in {"0", "false", "no", "off"}}
+            )
             updates = (
-                service.stream_updates(instrument_id, interval)
+                service.stream_updates(instrument_id, interval, **scope)
                 if binding_id is None
-                else service.stream_updates(instrument_id, interval, binding_id)
+                else service.stream_updates(instrument_id, interval, binding_id, **scope)
             )
             # Closing the generator releases this client's share of the upstream.
             async with aclosing(cast(Any, updates)):

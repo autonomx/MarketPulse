@@ -18,9 +18,11 @@ export type TradingStreamMessage =
       type: 'bar';
       bar: Omit<MarketBar, 'adjustment_mode' | 'session' | 'provider' | 'received_at'> & {
         binding_id: string;
+        session?: string | null;
       };
     }
-  | { type: 'error'; code: string; message: string };
+  | { type: 'error'; code: string; message: string }
+  | { type: 'status'; status: 'live' | 'reconnecting' };
 
 export type TradingDocument = components['schemas']['TradingDocumentResponse'];
 export type TradingAlertCondition = components['schemas']['TradingAlert']['condition_type'];

@@ -6,7 +6,7 @@ import threading
 import uuid
 from collections.abc import AsyncIterator, Awaitable, Callable
 from contextlib import asynccontextmanager
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from datetime import datetime
 from decimal import Decimal
 from typing import Any, Literal, cast
@@ -35,6 +35,17 @@ class StreamingBarUpdate:
     provider_event_id: str | None = None
     provider_sequence: int | None = None
     ingestion_revision: int = 1
+    # Session-calendar streams (U.S. equities) label each bar's session and say
+    # whether it was built with extended hours; 24x7 streams leave both unset.
+    session: str | None = None
+    extended_hours: bool | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class StreamingStatusUpdate:
+    """The shared upstream dropped (``connected=False``) or is delivering again."""
+
+    connected: bool
 
 
 @dataclass(frozen=True, slots=True)
@@ -62,6 +73,7 @@ class StreamingQuoteUpdate:
 
 
 StreamingUpdate = StreamingBarUpdate | StreamingQuoteUpdate
+BarStreamItem = StreamingBarUpdate | StreamingStatusUpdate
 
 
 @dataclass(slots=True)
@@ -71,7 +83,8 @@ class SharedSubscription:
     binding_id: str = ""
     instrument_id: str = ""
     interval: str | None = None
-    listeners: dict[str, Callable[[StreamingUpdate], None]] = field(default_factory=dict)
+    extended_hours: bool | None = None
+    listeners: dict[str, Callable[[Any], None]] = field(default_factory=dict)
     connected: bool = False
     reconnects: int = 0
     last_event_at: datetime | None = None
@@ -96,10 +109,15 @@ class SharedSubscriptionManager:
         interval: str | None,
         *,
         stream_kind: StreamKind = "BAR",
+        extended_hours: bool | None = None,
     ) -> str:
         if stream_kind == "QUOTE":
             return f"QUOTE|{binding_id}|{instrument_id}"
-        return f"{binding_id}|{instrument_id}|{interval}"
+        key = f"{binding_id}|{instrument_id}|{interval}"
+        # Charts with and without extended hours bucket the same bars differently.
+        if extended_hours is not None:
+            key += "|ext" if extended_hours else "|rth"
+        return key
 
     def _subscribe(
         self,
@@ -109,13 +127,15 @@ class SharedSubscriptionManager:
         instrument_id: str,
         interval: str | None,
         stream_kind: StreamKind,
-        listener: Callable[[StreamingUpdate], None],
+        listener: Callable[[Any], None],
+        extended_hours: bool | None = None,
     ) -> tuple[str, bool]:
         key = self.key(
             binding_id,
             instrument_id,
             interval,
             stream_kind=stream_kind,
+            extended_hours=extended_hours,
         )
         with self._lock:
             created = key not in self._subscriptions
@@ -127,6 +147,7 @@ class SharedSubscriptionManager:
                     binding_id=binding_id,
                     instrument_id=instrument_id,
                     interval=interval,
+                    extended_hours=extended_hours,
                 ),
             )
             subscription.listeners[listener_id] = listener
@@ -139,7 +160,8 @@ class SharedSubscriptionManager:
         binding_id: str,
         instrument_id: str,
         interval: str,
-        listener: Callable[[StreamingBarUpdate], None],
+        listener: Callable[[BarStreamItem], None],
+        extended_hours: bool | None = None,
     ) -> tuple[str, bool]:
         return self._subscribe(
             listener_id=listener_id,
@@ -147,7 +169,8 @@ class SharedSubscriptionManager:
             instrument_id=instrument_id,
             interval=interval,
             stream_kind="BAR",
-            listener=cast(Callable[[StreamingUpdate], None], listener),
+            listener=listener,
+            extended_hours=extended_hours,
         )
 
     def subscribe_quote(
@@ -185,8 +208,17 @@ class SharedSubscriptionManager:
             update.instrument_id,
             update.interval,
             stream_kind="BAR",
+            extended_hours=update.extended_hours,
         )
         return self._publish(key, update, update.end_time)
+
+    def publish_status(self, key: str, update: StreamingStatusUpdate) -> int:
+        with self._lock:
+            subscription = self._subscriptions.get(key)
+            listeners = tuple(subscription.listeners.values()) if subscription else ()
+        for listener in listeners:
+            listener(update)
+        return len(listeners)
 
     def publish_quote(self, update: StreamingQuoteUpdate) -> int:
         key = self.key(
@@ -237,6 +269,7 @@ class SharedSubscriptionManager:
                     "binding_id": item.binding_id,
                     "instrument_id": item.instrument_id,
                     "interval": item.interval,
+                    "extended_hours": item.extended_hours,
                     "listeners": len(item.listeners),
                     "connected": item.connected,
                     "reconnects": item.reconnects,
@@ -253,7 +286,8 @@ class SharedSubscriptionManager:
 
 UpstreamFactory = Callable[..., AsyncIterator[StreamingBarUpdate]]
 # (binding_id, instrument_id, interval, start, end) -> finalized bars in [start, end).
-GapRecovery = Callable[[str, str, str, datetime, datetime], Awaitable[list[StreamingBarUpdate]]]
+# Session-calendar streams also pass extended_hours=... as a keyword.
+GapRecovery = Callable[..., Awaitable[list[StreamingBarUpdate]]]
 
 
 class SharedBarStreamHub:
@@ -262,8 +296,14 @@ class SharedBarStreamHub:
     The first client opens the upstream; later clients join it and the last
     one to leave closes it. A dropped upstream reconnects with backoff, and the
     finalized bars that closed while it was down are fetched over REST and
-    published before the live stream resumes. A slow client loses its oldest
+    published before the live stream resumes. Clients are told when the
+    upstream drops and when it delivers again, so a chart can poll meanwhile
+    instead of showing a frozen bar as live. A slow client loses its oldest
     queued updates instead of holding the others back.
+
+    ``extended_hours`` is set for session-calendar streams (U.S. equities),
+    whose intraday buckets depend on it; it is part of the shared key and is
+    passed to the upstream and gap recovery as a keyword.
     """
 
     def __init__(
@@ -283,6 +323,8 @@ class SharedBarStreamHub:
         self.max_backoff_seconds = max_backoff_seconds
         self.sleep = sleep
         self._upstreams: dict[str, asyncio.Task[None]] = {}
+        # Upstreams that dropped and have not delivered since.
+        self._down: set[str] = set()
 
     @asynccontextmanager
     async def listen(
@@ -292,10 +334,11 @@ class SharedBarStreamHub:
         binding_id: str,
         instrument_id: str,
         interval: str,
-    ) -> AsyncIterator[asyncio.Queue[StreamingBarUpdate]]:
-        queue: asyncio.Queue[StreamingBarUpdate] = asyncio.Queue(maxsize=self.queue_size)
+        extended_hours: bool | None = None,
+    ) -> AsyncIterator[asyncio.Queue[BarStreamItem]]:
+        queue: asyncio.Queue[BarStreamItem] = asyncio.Queue(maxsize=self.queue_size)
 
-        def offer(update: StreamingBarUpdate) -> None:
+        def offer(update: BarStreamItem) -> None:
             if queue.full():
                 queue.get_nowait()
             queue.put_nowait(update)
@@ -307,12 +350,16 @@ class SharedBarStreamHub:
             instrument_id=instrument_id,
             interval=interval,
             listener=offer,
+            extended_hours=extended_hours,
         )
         upstream = self._upstreams.get(key)
         if upstream is None or upstream.done():
             self._upstreams[key] = asyncio.create_task(
-                self._run_upstream(key, provider_symbol, binding_id, instrument_id, interval)
+                self._run_upstream(key, provider_symbol, binding_id, instrument_id, interval, extended_hours)
             )
+        elif key in self._down:
+            # Joining an upstream that is reconnecting: say so now, not at the next drop.
+            offer(StreamingStatusUpdate(connected=False))
         try:
             yield queue
         finally:
@@ -332,44 +379,69 @@ class SharedBarStreamHub:
         binding_id: str,
         instrument_id: str,
         interval: str,
+        extended_hours: bool | None = None,
     ) -> None:
         backoff = 1.0
         last_final_start: datetime | None = None
-        while True:
-            try:
-                first = True
-                async for update in self.open_upstream(
-                    provider_symbol=provider_symbol,
-                    binding_id=binding_id,
-                    instrument_id=instrument_id,
-                    interval=interval,
-                ):
-                    if first:
-                        first = False
-                        backoff = 1.0
-                        self.subscriptions.mark_connected(key)
-                        window = recovery_window(last_final_start, update.start_time, interval=interval)
-                        if window is not None:
-                            for bar in await self.recover_gap(binding_id, instrument_id, interval, *window):
+        dropped = False
+        scope: dict[str, Any] = {} if extended_hours is None else {"extended_hours": extended_hours}
+        try:
+            while True:
+                try:
+                    first = True
+                    async for update in self.open_upstream(
+                        provider_symbol=provider_symbol,
+                        binding_id=binding_id,
+                        instrument_id=instrument_id,
+                        interval=interval,
+                        **scope,
+                    ):
+                        if first:
+                            window = recovery_window(last_final_start, update.start_time, interval=interval)
+                            recovered = (
+                                await self.recover_gap(binding_id, instrument_id, interval, *window, **scope)
+                                if window is not None
+                                else []
+                            )
+                            first = False
+                            # Delivering again only once the first bar is through: an upstream that
+                            # fails on every opening keeps backing off instead of retrying each second.
+                            backoff = 1.0
+                            self.subscriptions.mark_connected(key)
+                            if dropped:
+                                dropped = False
+                                self._down.discard(key)
+                                self.subscriptions.publish_status(key, StreamingStatusUpdate(connected=True))
+                            for bar in recovered:
+                                if extended_hours is not None:
+                                    bar = replace(bar, extended_hours=extended_hours)
                                 self.subscriptions.publish(bar)
                                 last_final_start = bar.start_time
-                    self.subscriptions.publish(update)
-                    if update.is_final and (last_final_start is None or update.start_time > last_final_start):
-                        last_final_start = update.start_time
-            except asyncio.CancelledError:
-                raise
-            except Exception as exc:
-                logger.warning("market stream %s dropped: %s: %s", key, type(exc).__name__, exc)
-            self.subscriptions.mark_disconnected(key)
-            await self.sleep(backoff)
-            backoff = min(self.max_backoff_seconds, backoff * 2)
+                        self.subscriptions.publish(update)
+                        if update.is_final and (last_final_start is None or update.start_time > last_final_start):
+                            last_final_start = update.start_time
+                except asyncio.CancelledError:
+                    raise
+                except Exception as exc:
+                    logger.warning("market stream %s dropped: %s: %s", key, type(exc).__name__, exc)
+                self.subscriptions.mark_disconnected(key)
+                if not dropped:
+                    dropped = True
+                    self._down.add(key)
+                    self.subscriptions.publish_status(key, StreamingStatusUpdate(connected=False))
+                await self.sleep(backoff)
+                backoff = min(self.max_backoff_seconds, backoff * 2)
+        finally:
+            self._down.discard(key)
 
 
 __all__ = [
+    "BarStreamItem",
     "SharedBarStreamHub",
     "SharedSubscriptionManager",
     "StreamKind",
     "StreamingBarUpdate",
     "StreamingQuoteUpdate",
+    "StreamingStatusUpdate",
     "StreamingUpdate",
 ]

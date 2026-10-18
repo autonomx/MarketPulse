@@ -219,3 +219,60 @@ async def test_ibkr_monitor_reconciliation_runs_off_the_event_loop(monkeypatch, 
     assert result == 0
     assert reconciliation_thread_ids
     assert all(thread_id != event_loop_thread_id for thread_id in reconciliation_thread_ids)
+
+
+@pytest.mark.anyio
+async def test_ibkr_monitor_holds_the_gateway_connection_without_strategy_demand(monkeypatch, tmp_path):
+    class FakeRuntime:
+        enabled = True
+
+        def __init__(self, fail: bool) -> None:
+            self.fail = fail
+            self.connected = False
+            self.connect_calls = 0
+
+        def is_connected(self):
+            return self.connected
+
+        def connect(self):
+            self.connect_calls += 1
+            if self.fail:
+                raise RuntimeError("ibkr_gateway_handshake_timeout")
+            self.connected = True
+
+        def diagnostics(self):
+            return {"connected": self.connected, "reconnect_count": 0, "active_quote_subscriptions": 0}
+
+    class FakeProvider:
+        def __init__(self, runtime) -> None:
+            self.runtime = runtime
+
+    monkeypatch.setattr(monitor_module, "IbkrEquityProvider", FakeProvider)
+
+    async def run(runtime):
+        class FakeRegistry:
+            def provider(self, provider_id):
+                return FakeProvider(runtime)
+
+        class FakeMarketService:
+            registry = FakeRegistry()
+
+        monitor, _, _ = _monitor(tmp_path)
+        monitor.strategy_repository_factory = object
+        monitor.market_service_factory = FakeMarketService
+        monkeypatch.setattr(monitor, "_active_demand", lambda _repository, *, now: set())
+        await monitor.run_once()
+        return monitor
+
+    # Charts learn that the Gateway is running from this connection.
+    running = FakeRuntime(fail=False)
+    await run(running)
+    assert (running.connect_calls, running.connected) == (1, True)
+    await run(running)
+    assert running.connect_calls == 1
+
+    # A Gateway that is not running is retried on the next pass, not raised.
+    stopped = FakeRuntime(fail=True)
+    monitor = await run(stopped)
+    assert stopped.connect_calls == 1
+    assert monitor.last_error == "RuntimeError: ibkr_gateway_handshake_timeout"

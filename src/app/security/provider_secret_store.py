@@ -51,6 +51,16 @@ _TRADING_ENVIRONMENT_KEYS: dict[str, dict[str, tuple[str, ...]]] = {
     "prospective_gap_github": {
         "token": ("OMNIX_TRADING_PROSPECTIVE_GAP_GITHUB_TOKEN",),
     },
+    # IBKR Web API (first-party OAuth 1.0a): the portal's consumer key and access token, and the
+    # private keys Omnix generated for it. No IBKR username or password is ever stored.
+    "ibkr_web_api": {
+        "consumer_key": ("OMNIX_IBKR_OAUTH_CONSUMER_KEY",),
+        "access_token": ("OMNIX_IBKR_OAUTH_ACCESS_TOKEN",),
+        "access_token_secret": ("OMNIX_IBKR_OAUTH_ACCESS_TOKEN_SECRET",),
+        "signature_private_key": ("OMNIX_IBKR_OAUTH_SIGNATURE_KEY",),
+        "encryption_private_key": ("OMNIX_IBKR_OAUTH_ENCRYPTION_KEY",),
+        "dh_prime": ("OMNIX_IBKR_OAUTH_DH_PRIME",),
+    },
 }
 # Every provider in the table above is loaded and stored (a provider missing here was never read back).
 _TRADING_PROVIDERS = tuple(_TRADING_ENVIRONMENT_KEYS)

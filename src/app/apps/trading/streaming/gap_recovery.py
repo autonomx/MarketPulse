@@ -4,6 +4,7 @@ from collections.abc import Iterable
 from datetime import datetime, timedelta
 
 from app.apps.trading.models import MarketBar
+from app.apps.trading.providers.bar_semantics import interval_duration
 
 
 INTERVAL_DELTAS: dict[str, timedelta] = {
@@ -81,9 +82,8 @@ def recovery_window(
     *,
     interval: str,
 ) -> tuple[datetime, datetime] | None:
-    delta = INTERVAL_DELTAS.get(interval)
-    if delta is None:
-        raise ValueError(f"unsupported interval: {interval}")
+    # Any chart interval can stream (IBKR rebuilds 2m, 7m or 3h from 1m bars), not only the table's.
+    delta = INTERVAL_DELTAS.get(interval) or interval_duration(interval)
     if last_finalized_start is None:
         return None
     start = last_finalized_start + delta

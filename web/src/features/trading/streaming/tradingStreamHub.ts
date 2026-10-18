@@ -29,8 +29,9 @@ export class TradingStreamHub {
 
   constructor(private readonly socketFactory: SocketFactory = (url) => new WebSocket(url)) {}
 
-  static key(instrumentId: string, interval: string, bindingId?: string | null): string {
-    return `${instrumentId}|${interval}|${bindingId ?? 'default'}`;
+  static key(instrumentId: string, interval: string, bindingId?: string | null, extendedHours?: boolean | null): string {
+    const scope = extendedHours === undefined || extendedHours === null ? '' : extendedHours ? '|ext' : '|rth';
+    return `${instrumentId}|${interval}|${bindingId ?? 'default'}${scope}`;
   }
 
   subscribe(
@@ -40,14 +41,15 @@ export class TradingStreamHub {
     onMessage: MessageListener,
     onStatus?: StatusListener,
     bindingId?: string | null,
+    extendedHours?: boolean | null,
   ): () => void {
-    const key = TradingStreamHub.key(instrumentId, interval, bindingId);
+    const key = TradingStreamHub.key(instrumentId, interval, bindingId, extendedHours);
     let entry = this.entries.get(key);
     let created = false;
     if (!entry) {
       entry = {
         key,
-        url: tradingStreamUrl(instrumentId, interval, bindingId),
+        url: tradingStreamUrl(instrumentId, interval, bindingId, extendedHours),
         socket: null,
         messages: new Map(),
         statuses: new Map(),
@@ -113,6 +115,12 @@ export class TradingStreamHub {
       const data = 'data' in event ? String((event as MessageEvent).data) : '';
       const message: TradingStreamMessage = (parseJson(tradingStreamMessageSchema, data) as TradingStreamMessage | null)
         ?? { type: 'error', code: 'invalid_stream_message', message: 'Trading stream returned an invalid message.' };
+      if (message.type === 'status') {
+        // The server's shared upstream dropped or recovered while this socket stayed open:
+        // charts poll meanwhile rather than showing a frozen bar as live.
+        this.updateStatus(entry, message.status === 'live' ? 'live' : 'polling');
+        return;
+      }
       entry.messages.forEach((listener) => listener(message));
     });
   }
@@ -144,8 +152,8 @@ export class TradingStreamHub {
     return this.entries.size;
   }
 
-  listenerCount(instrumentId: string, interval: string, bindingId?: string | null): number {
-    return this.entries.get(TradingStreamHub.key(instrumentId, interval, bindingId))?.messages.size ?? 0;
+  listenerCount(instrumentId: string, interval: string, bindingId?: string | null, extendedHours?: boolean | null): number {
+    return this.entries.get(TradingStreamHub.key(instrumentId, interval, bindingId, extendedHours))?.messages.size ?? 0;
   }
 
   dispose(): void {

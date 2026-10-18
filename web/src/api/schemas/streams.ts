@@ -52,9 +52,13 @@ export const tradingStreamMessageSchema = z.discriminatedUnion('type', [
       close: decimal,
       volume: decimal,
       is_final: z.boolean(),
+      // Set by session-calendar (equity) streams; 24x7 streams omit it.
+      session: z.string().nullable().optional(),
     }),
   }),
   z.looseObject({ type: z.literal('error'), code: z.string(), message: z.string() }),
+  // The shared upstream dropped ('reconnecting') or delivers again ('live'); the socket stays open.
+  z.looseObject({ type: z.literal('status'), status: z.enum(['live', 'reconnecting']) }),
 ]);
 
 /** A JSON control message on the TTS PCM WebSocket (/api/tts/stream/websocket). */

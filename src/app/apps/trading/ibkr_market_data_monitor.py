@@ -374,6 +374,14 @@ class TradingIbkrMarketDataMonitor(ScheduledTradingMonitor):
             self.last_run_at = now
             return 0
 
+        if not admitted and not provider.runtime.is_connected():
+            # Hold the Gateway connection even with no strategy demand, so
+            # charts can tell that it is running and stream live bars from it.
+            try:
+                provider.runtime.connect()
+            except Exception as exc:
+                self.last_error = f"{type(exc).__name__}: {exc}"
+
         runtime_diagnostics = provider.runtime.diagnostics()
         self.evidence_store.record_runtime(
             now.astimezone(_ET).date(),

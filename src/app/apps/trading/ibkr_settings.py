@@ -4,19 +4,24 @@ from app.config.env import environment
 
 """Durable, non-secret IBKR connection settings.
 
-IB Gateway owns IBKR authentication.  Omnix stores only the local socket
-connection and rollout switches needed to use the official client in its
-market-data observation plane.
+IBKR is reached either through a locally running IB Gateway, which owns IBKR
+authentication, or through IBKR's Web API with OAuth keys, whose secrets live
+in the OS-protected provider secret store (``providers/ibkr_web_api.py``).
+This section stores only which connection to use, the Gateway socket and the
+rollout switches for the market-data observation plane.
 """
 
 import os
 from dataclasses import asdict, dataclass
-from typing import Any
+from typing import Any, Literal
 
 
 _SETTINGS_SECTION = "trading_market_data"
 _IBKR_KEY = "ibkr"
 _TRUE_VALUES = {"1", "true", "yes", "on"}
+
+IbkrConnection = Literal["gateway", "web_api"]
+IBKR_CONNECTIONS: tuple[IbkrConnection, ...] = ("gateway", "web_api")
 
 
 @dataclass(frozen=True, slots=True)
@@ -28,6 +33,7 @@ class IbkrSettings:
     client_id: int = 71
     live_authority_enabled: bool = False
     recovery_authority_enabled: bool = False
+    connection: IbkrConnection = "gateway"
 
     def as_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -52,10 +58,16 @@ def _int(value: Any, default: int, *, minimum: int, maximum: int) -> int:
     return max(minimum, min(maximum, parsed))
 
 
+def _connection(value: Any) -> IbkrConnection:
+    clean = str(value or "").strip().lower()
+    return "web_api" if clean == "web_api" else DEFAULT_IBKR_SETTINGS.connection
+
+
 def settings_from_mapping(value: Any) -> IbkrSettings:
     raw = value if isinstance(value, dict) else {}
     host = str(raw.get("host", DEFAULT_IBKR_SETTINGS.host) or "").strip()
     return IbkrSettings(
+        connection=_connection(raw.get("connection")),
         enabled=_bool(raw.get("enabled"), DEFAULT_IBKR_SETTINGS.enabled),
         monitor_enabled=_bool(raw.get("monitor_enabled"), DEFAULT_IBKR_SETTINGS.monitor_enabled),
         host=host or DEFAULT_IBKR_SETTINGS.host,
@@ -82,6 +94,7 @@ def _environment_settings() -> IbkrSettings:
             "client_id": environment().get("OMNIX_IBKR_CLIENT_ID"),
             "live_authority_enabled": environment().get("OMNIX_IBKR_LIVE_AUTHORITY"),
             "recovery_authority_enabled": environment().get("OMNIX_IBKR_RECOVERY_AUTHORITY"),
+            "connection": environment().get("OMNIX_IBKR_CONNECTION"),
         }
     )
 
@@ -109,6 +122,7 @@ def load_ibkr_settings() -> tuple[IbkrSettings, str]:
         "OMNIX_IBKR_CLIENT_ID",
         "OMNIX_IBKR_LIVE_AUTHORITY",
         "OMNIX_IBKR_RECOVERY_AUTHORITY",
+        "OMNIX_IBKR_CONNECTION",
     )
     if any(name in environment() for name in environment_names):
         return _environment_settings(), "environment"
@@ -138,6 +152,8 @@ def save_ibkr_settings(patch: dict[str, Any]) -> IbkrSettings:
 
 __all__ = [
     "DEFAULT_IBKR_SETTINGS",
+    "IBKR_CONNECTIONS",
+    "IbkrConnection",
     "IbkrSettings",
     "load_ibkr_settings",
     "save_ibkr_settings",

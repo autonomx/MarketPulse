@@ -174,6 +174,83 @@
     opacity: 0.55;
   }
 
+  /* Gateway or Web API: two cards, the chosen one outlined. */
+  .ibkr-connection-choice {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .ibkr-choice {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 1px solid var(--omnix-border);
+    border-radius: 8px;
+    background: var(--omnix-control-bg);
+    cursor: pointer;
+  }
+
+  .ibkr-choice.is-selected {
+    border-color: var(--omnix-cyan);
+  }
+
+  .ibkr-choice input[type='radio'] {
+    margin: 3px 0 0;
+    accent-color: var(--omnix-cyan);
+  }
+
+  /* The Web API walkthrough: numbered steps, each with its own actions. */
+  .ibkr-steps {
+    display: grid;
+    gap: 14px;
+    margin: 0;
+    padding-left: 22px;
+  }
+
+  .ibkr-steps > li {
+    display: grid;
+    gap: 6px;
+    color: var(--omnix-text);
+    font-size: 0.86rem;
+  }
+
+  .ibkr-steps p,
+  .ibkr-steps ul {
+    margin: 0;
+    color: var(--omnix-muted-text);
+    font-size: 0.8rem;
+    line-height: 1.5;
+  }
+
+  .ibkr-steps ul {
+    padding-left: 18px;
+  }
+
+  .ibkr-step-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .ibkr-step-hint {
+    color: var(--omnix-muted-text);
+    font-size: 0.78rem;
+  }
+
+  .ibkr-web-api-fields {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr) minmax(0, 1.5fr);
+    align-items: start;
+    gap: 12px;
+  }
+
+  .ibkr-web-api .settings-inline-status {
+    margin: 0;
+  }
+
   .ibkr-actions {
     display: flex;
     flex-wrap: wrap;
@@ -193,7 +270,9 @@
   }
 
   @media (max-width: 720px) {
-    .ibkr-connection-fields {
+    .ibkr-connection-fields,
+    .ibkr-connection-choice,
+    .ibkr-web-api-fields {
       grid-template-columns: 1fr;
     }
   }

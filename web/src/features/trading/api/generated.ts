@@ -750,6 +750,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/trading/market-data/providers/ibkr/connect": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Connect Ibkr
+         * @description Try the chosen IBKR connection now instead of waiting for the next monitor pass.
+         */
+        post: operations["connect_ibkr_api_trading_market_data_providers_ibkr_connect_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/trading/market-data/providers/ibkr/diagnostics": {
         parameters: {
             query?: never;
@@ -804,10 +824,54 @@ export interface paths {
         get: operations["ibkr_settings_api_trading_market_data_providers_ibkr_settings_get"];
         /**
          * Update Ibkr Settings
-         * @description Save non-secret IBKR settings; authentication remains in Gateway.
+         * @description Save non-secret IBKR settings; Web API keys are saved through their own routes.
          */
         put: operations["update_ibkr_settings_api_trading_market_data_providers_ibkr_settings_put"];
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/trading/market-data/providers/ibkr/web-api/credentials": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Update Ibkr Web Api Credentials
+         * @description Save the consumer key, access token and secret from IBKR's OAuth page.
+         */
+        put: operations["update_ibkr_web_api_credentials_api_trading_market_data_providers_ibkr_web_api_credentials_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/trading/market-data/providers/ibkr/web-api/keys": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Ibkr Web Api Keys
+         * @description The public key files to upload to IBKR's OAuth page.
+         */
+        get: operations["ibkr_web_api_keys_api_trading_market_data_providers_ibkr_web_api_keys_get"];
+        put?: never;
+        /**
+         * Generate Ibkr Web Api Keys
+         * @description Generate and keep the signing and encryption keys; return only their public halves.
+         */
+        post: operations["generate_ibkr_web_api_keys_api_trading_market_data_providers_ibkr_web_api_keys_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -6362,6 +6426,20 @@ export interface components {
         IbkrSettingsStatus: core["schemas"]["IbkrSettingsStatus"];
         /** IbkrSettingsUpdate */
         IbkrSettingsUpdate: core["schemas"]["IbkrSettingsUpdate"];
+        /** IbkrWebApiCredentialUpdate */
+        IbkrWebApiCredentialUpdate: core["schemas"]["IbkrWebApiCredentialUpdate"];
+        /** IbkrWebApiKeysRequest */
+        IbkrWebApiKeysRequest: core["schemas"]["IbkrWebApiKeysRequest"];
+        /**
+         * IbkrWebApiPublicKeys
+         * @description The public files the user uploads to IBKR's OAuth page; the private keys never leave the server.
+         */
+        IbkrWebApiPublicKeys: core["schemas"]["IbkrWebApiPublicKeys"];
+        /**
+         * IbkrWebApiStatus
+         * @description What the IBKR Web API connection has saved: never a secret, only whether it is there.
+         */
+        IbkrWebApiStatus: core["schemas"]["IbkrWebApiStatus"];
         /**
          * IndicatorOutputRef
          * @description Another indicator's output on the same chart, as an indicator's source (TVP-6.5).
@@ -15882,6 +15960,26 @@ export interface operations {
             };
         };
     };
+    connect_ibkr_api_trading_market_data_providers_ibkr_connect_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IbkrSettingsStatus"];
+                };
+            };
+        };
+    };
     ibkr_diagnostics_api_trading_market_data_providers_ibkr_diagnostics_get: {
         parameters: {
             query?: never;
@@ -15977,6 +16075,92 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["IbkrSettingsStatus"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_ibkr_web_api_credentials_api_trading_market_data_providers_ibkr_web_api_credentials_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["IbkrWebApiCredentialUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IbkrSettingsStatus"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    ibkr_web_api_keys_api_trading_market_data_providers_ibkr_web_api_keys_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IbkrWebApiPublicKeys"];
+                };
+            };
+        };
+    };
+    generate_ibkr_web_api_keys_api_trading_market_data_providers_ibkr_web_api_keys_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["IbkrWebApiKeysRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IbkrWebApiPublicKeys"];
                 };
             };
             /** @description Validation Error */

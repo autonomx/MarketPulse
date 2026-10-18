@@ -31,6 +31,8 @@ export const POLL_INTERVALS_MS = {
   watchlistIndicators: 60_000,
   /** Chart bars when the market stream is not delivering (closed or failed stream). */
   chartFallback: 30_000,
+  /** Market-data provider status (is IB Gateway connected?): connection changes publish no events. */
+  marketDataProviders: 30_000,
   /** A research job's progress (pages read, sources): job progress writes publish no events. */
   researchProgress: 1_500,
   /** An image model loading into memory: the image service has no event stream. */

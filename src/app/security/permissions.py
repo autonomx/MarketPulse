@@ -233,6 +233,8 @@ ROUTE_PERMISSIONS: dict[tuple[str, str], str] = {
     ("POST", "/api/assistant/research/credentials"): "tools:connections:admin",
     ("PUT", "/api/trading/execution/providers/alpaca-iex/credentials"): "trading:control",
     ("PUT", "/api/trading/market-data/providers/coinmarketcap/credentials"): "trading:control",
+    ("POST", "/api/trading/market-data/providers/ibkr/web-api/keys"): "trading:control",
+    ("PUT", "/api/trading/market-data/providers/ibkr/web-api/credentials"): "trading:control",
     # Agent workflows are administered; running them is a member action.
     ("POST", "/api/workflows"): "agent:workflows:admin",
     ("POST", "/api/chat/sessions/{session_id}/live/material/promote"): "agent:promote",

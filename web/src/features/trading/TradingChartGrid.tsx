@@ -6,6 +6,8 @@ import { currentTradingWorkspaceScopeId } from './persistence/useTradingWorkspac
 import { useTradingStore, type TradingLayout } from './tradingStore';
 import type { CoreIndicatorId } from './indicators/coreIndicators';
 import { useTradingCommand } from './commands/useTradingCommands';
+import { chartBindingId } from './liveChartFeed';
+import type { ProviderDescriptor } from './tradingTypes';
 
 installTradingChartViewportPersistence();
 
@@ -24,11 +26,14 @@ export function tradingGridColumns(layout: TradingLayout, chartCount: number): n
 
 export function TradingChartGrid({
   paperAccountId,
+  providers,
   onOpenSymbolSearch,
   onOpenPineScript,
   onOpenMarketDataSettings,
 }: {
   paperAccountId?: string | null;
+  /** Market-data provider status: charts with no chosen feed use IBKR while the Gateway is connected. */
+  providers?: readonly ProviderDescriptor[];
   onOpenSymbolSearch: (chartId: string) => void;
   onOpenPineScript: (id: CoreIndicatorId) => void;
   onOpenMarketDataSettings?: () => void;
@@ -96,7 +101,7 @@ export function TradingChartGrid({
             chartId={chart.chartId}
             chartNumber={charts.findIndex((item) => item.chartId === chart.chartId) + 1}
             instrumentId={chart.instrumentId}
-            bindingId={chart.bindingId}
+            bindingId={chartBindingId(chart, providers)}
             interval={chart.interval}
             chartType={chart.chartType}
             indicators={chart.indicators}

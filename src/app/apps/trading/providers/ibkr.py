@@ -33,6 +33,7 @@ from app.apps.trading.us_equity_calendar import us_equity_session
 from .base import ProviderAdapter
 from .errors import ProviderContractError, ProviderDataUnavailableError
 from .ibkr_runtime import (
+    IbkrBarStreamEvent,
     IbkrContractAmbiguousError,
     IbkrContractIdentity,
     IbkrContractUnavailableError,
@@ -40,7 +41,6 @@ from .ibkr_runtime import (
     IbkrRuntime,
     IbkrRuntimeError,
     default_ibkr_runtime,
-    official_ibapi_available,
 )
 from app.apps.trading.us_equity_calendar import EASTERN as _ET
 
@@ -51,7 +51,7 @@ _MAX_HISTORICAL_CHUNK = timedelta(days=1)
 
 def ibkr_configured(runtime: IbkrRuntime | None = None) -> bool:
     active = runtime or default_ibkr_runtime()
-    return bool(active.enabled and (active.transport is not None or official_ibapi_available()))
+    return bool(active.enabled and active.client_available())
 
 
 def _fingerprint(instrument_id: str, bars: list[MarketBar]) -> str:
@@ -78,7 +78,7 @@ def _quote_age(snapshot: IbkrQuoteSnapshot, now: datetime) -> Decimal:
 class IbkrEquityProvider(ProviderAdapter):
     provider_id = "ibkr"
     policy = POLICIES[provider_id]
-    display_name = "IBKR Gateway"
+    display_name = "IBKR"
 
     def configured(self) -> bool:
         return ibkr_configured(self.runtime)
@@ -150,6 +150,29 @@ class IbkrEquityProvider(ProviderAdapter):
     def latest_quote(self, instrument_id: str) -> IbkrQuoteSnapshot | None:
         return self.runtime.latest_quote(instrument_id)
 
+    def subscribe_bars(
+        self,
+        instrument_id: str,
+        listener: Callable[[IbkrBarStreamEvent], None],
+        *,
+        duration_seconds: int,
+    ) -> tuple[int, IbkrContractIdentity]:
+        """Open a live 1m TRADES bar stream with extended hours, like ``get_bars``."""
+        contract = self._contract(instrument_id)
+        try:
+            token = self.runtime.subscribe_bars(
+                contract,
+                listener,
+                duration_seconds=duration_seconds,
+                use_rth=False,
+            )
+        except IbkrRuntimeError as exc:
+            raise ProviderDataUnavailableError(str(exc)) from exc
+        return token, contract
+
+    def unsubscribe_bars(self, token: int) -> None:
+        self.runtime.unsubscribe_bars(token)
+
     def authority_decision(
         self,
         instrument_id: str,
@@ -180,7 +203,7 @@ class IbkrEquityProvider(ProviderAdapter):
                 authoritative=False,
                 reason_codes=("IBKR_DISABLED",),
             )
-        if self.runtime.transport is None and not official_ibapi_available():
+        if not self.runtime.client_available():
             return MarketDataAuthorityDecision(
                 provider=self.provider_id,
                 binding_id=binding.binding_id,
@@ -189,7 +212,11 @@ class IbkrEquityProvider(ProviderAdapter):
                 health="CLIENT_UNAVAILABLE",
                 observed_at=now,
                 authoritative=False,
-                reason_codes=("IBKR_OFFICIAL_CLIENT_UNAVAILABLE",),
+                reason_codes=(
+                    "IBKR_WEB_API_CREDENTIALS_MISSING"
+                    if self.runtime.connection == "web_api"
+                    else "IBKR_OFFICIAL_CLIENT_UNAVAILABLE",
+                ),
             )
         if not self.runtime.is_connected():
             return MarketDataAuthorityDecision(

@@ -22065,6 +22065,15 @@
             "title": "Client Id",
             "type": "integer"
           },
+          "connection": {
+            "default": "gateway",
+            "enum": [
+              "gateway",
+              "web_api"
+            ],
+            "title": "Connection",
+            "type": "string"
+          },
           "enabled": {
             "title": "Enabled",
             "type": "boolean"
@@ -22099,7 +22108,8 @@
           "port",
           "client_id",
           "live_authority_enabled",
-          "recovery_authority_enabled"
+          "recovery_authority_enabled",
+          "connection"
         ],
         "title": "IbkrSettingsPayload",
         "type": "object"
@@ -22115,6 +22125,7 @@
             "enum": [
               "disabled",
               "client_unavailable",
+              "credentials_missing",
               "connected",
               "disconnected"
             ],
@@ -22159,6 +22170,9 @@
             ],
             "title": "Settings Source",
             "type": "string"
+          },
+          "web_api": {
+            "$ref": "#/components/schemas/IbkrWebApiStatus"
           }
         },
         "required": [
@@ -22167,6 +22181,7 @@
           "connection_status",
           "official_ibapi_available",
           "connected",
+          "web_api",
           "provider",
           "last_error",
           "diagnostics"
@@ -22189,6 +22204,21 @@
               }
             ],
             "title": "Client Id"
+          },
+          "connection": {
+            "anyOf": [
+              {
+                "enum": [
+                  "gateway",
+                  "web_api"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Connection"
           },
           "enabled": {
             "anyOf": [
@@ -22262,6 +22292,138 @@
           }
         },
         "title": "IbkrSettingsUpdate",
+        "type": "object"
+      },
+      "IbkrWebApiCredentialUpdate": {
+        "additionalProperties": false,
+        "properties": {
+          "access_token": {
+            "anyOf": [
+              {
+                "maxLength": 512,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Access Token"
+          },
+          "access_token_secret": {
+            "anyOf": [
+              {
+                "maxLength": 4096,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Access Token Secret"
+          },
+          "consumer_key": {
+            "anyOf": [
+              {
+                "maxLength": 32,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Consumer Key"
+          }
+        },
+        "title": "IbkrWebApiCredentialUpdate",
+        "type": "object"
+      },
+      "IbkrWebApiKeysRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "replace": {
+            "default": false,
+            "title": "Replace",
+            "type": "boolean"
+          }
+        },
+        "title": "IbkrWebApiKeysRequest",
+        "type": "object"
+      },
+      "IbkrWebApiPublicKeys": {
+        "additionalProperties": false,
+        "description": "The public files the user uploads to IBKR's OAuth page; the private keys never leave the server.",
+        "properties": {
+          "dh_parameters": {
+            "title": "Dh Parameters",
+            "type": "string"
+          },
+          "encryption_public_key": {
+            "title": "Encryption Public Key",
+            "type": "string"
+          },
+          "signature_public_key": {
+            "title": "Signature Public Key",
+            "type": "string"
+          }
+        },
+        "required": [
+          "signature_public_key",
+          "encryption_public_key",
+          "dh_parameters"
+        ],
+        "title": "IbkrWebApiPublicKeys",
+        "type": "object"
+      },
+      "IbkrWebApiStatus": {
+        "additionalProperties": false,
+        "description": "What the IBKR Web API connection has saved: never a secret, only whether it is there.",
+        "properties": {
+          "access_token_masked": {
+            "default": "",
+            "title": "Access Token Masked",
+            "type": "string"
+          },
+          "access_token_secret_saved": {
+            "title": "Access Token Secret Saved",
+            "type": "boolean"
+          },
+          "consumer_key": {
+            "default": "",
+            "title": "Consumer Key",
+            "type": "string"
+          },
+          "editable": {
+            "title": "Editable",
+            "type": "boolean"
+          },
+          "keys_generated": {
+            "title": "Keys Generated",
+            "type": "boolean"
+          },
+          "portal_url": {
+            "title": "Portal Url",
+            "type": "string"
+          },
+          "ready": {
+            "title": "Ready",
+            "type": "boolean"
+          },
+          "storage": {
+            "title": "Storage",
+            "type": "string"
+          }
+        },
+        "required": [
+          "keys_generated",
+          "access_token_secret_saved",
+          "ready",
+          "editable",
+          "storage",
+          "portal_url",
+          "consumer_key",
+          "access_token_masked"
+        ],
+        "title": "IbkrWebApiStatus",
         "type": "object"
       },
       "ImageAssetDeleteResponse": {
@@ -90912,6 +91074,28 @@
         ]
       }
     },
+    "/api/trading/market-data/providers/ibkr/connect": {
+      "post": {
+        "description": "Try the chosen IBKR connection now instead of waiting for the next monitor pass.",
+        "operationId": "connect_ibkr_api_trading_market_data_providers_ibkr_connect_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IbkrSettingsStatus"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Connect Ibkr",
+        "tags": [
+          "trading-market-data"
+        ]
+      }
+    },
     "/api/trading/market-data/providers/ibkr/diagnostics": {
       "get": {
         "description": "Operator view of Gateway/client/rollout state without storing credentials.",
@@ -91004,7 +91188,7 @@
         ]
       },
       "put": {
-        "description": "Save non-secret IBKR settings; authentication remains in Gateway.",
+        "description": "Save non-secret IBKR settings; Web API keys are saved through their own routes.",
         "operationId": "update_ibkr_settings_api_trading_market_data_providers_ibkr_settings_put",
         "requestBody": {
           "content": {
@@ -91039,6 +91223,110 @@
           }
         },
         "summary": "Update Ibkr Settings",
+        "tags": [
+          "trading-market-data"
+        ]
+      }
+    },
+    "/api/trading/market-data/providers/ibkr/web-api/credentials": {
+      "put": {
+        "description": "Save the consumer key, access token and secret from IBKR's OAuth page.",
+        "operationId": "update_ibkr_web_api_credentials_api_trading_market_data_providers_ibkr_web_api_credentials_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IbkrWebApiCredentialUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IbkrSettingsStatus"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Update Ibkr Web Api Credentials",
+        "tags": [
+          "trading-market-data"
+        ]
+      }
+    },
+    "/api/trading/market-data/providers/ibkr/web-api/keys": {
+      "get": {
+        "description": "The public key files to upload to IBKR's OAuth page.",
+        "operationId": "ibkr_web_api_keys_api_trading_market_data_providers_ibkr_web_api_keys_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IbkrWebApiPublicKeys"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Ibkr Web Api Keys",
+        "tags": [
+          "trading-market-data"
+        ]
+      },
+      "post": {
+        "description": "Generate and keep the signing and encryption keys; return only their public halves.",
+        "operationId": "generate_ibkr_web_api_keys_api_trading_market_data_providers_ibkr_web_api_keys_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IbkrWebApiKeysRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IbkrWebApiPublicKeys"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Generate Ibkr Web Api Keys",
         "tags": [
           "trading-market-data"
         ]

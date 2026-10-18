@@ -121,7 +121,8 @@ export function normalizeStreamBar(
     volume: message.bar.volume,
     is_final: message.bar.is_final,
     adjustment_mode: 'raw',
-    session: '24x7',
+    // Equity streams label the session, as the chart's history does; 24x7 streams don't.
+    session: message.bar.session ?? '24x7',
     provider,
     provider_event_id: message.bar.provider_event_id,
     provider_sequence: message.bar.provider_sequence,
