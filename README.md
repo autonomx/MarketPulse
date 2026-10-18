@@ -31,12 +31,52 @@ Watch Bitcoin tick while Nvidia sets up for the open. MarketPulse puts up to **1
 its own symbol, timeframe and indicators, next to a live watchlist.
 
 - **Live data, no sign-up.** Crypto streams from Binance, with Coinbase and Kraken also built in. US stocks come
-  free through Yahoo Finance. Connect your Alpaca or Interactive Brokers account for their market data.
+  free through Yahoo Finance. Connect your Alpaca or Interactive Brokers account for their market data. See
+  [where the data comes from](#where-the-data-comes-from).
 - **Every timeframe you need.** One-minute bars to monthly candles, plus quick ranges from one day to all history.
 - **Pro drawing tools.** Trend lines, channels, pitchforks, Fibonacci, Gann, Elliott waves, patterns, notes and more.
 - **Workspaces that remember.** Save layouts, switch between chart sessions in the title bar, and open a workspace in
   its own window on a second monitor.
 - **Bar replay.** Step back in time and replay the chart bar by bar to practise reading price action.
+
+## Where the data comes from
+
+Charts work out of the box with free data. Each chart's data-feed menu shows its source, and lets you switch to
+another source for that symbol.
+
+| Market | Charts use | How live |
+|---|---|---|
+| Crypto | **Binance** spot pairs | Live: the current candle moves with every trade |
+| Crypto on other exchanges | **Coinbase** and **Kraken** spot, **Hyperliquid** perpetuals | Refreshes about every 30 seconds |
+| US stocks, ETFs and indexes | **Yahoo Finance**, with **Stooq** as a backup for daily candles | Refreshes about every 30 seconds, regular trading hours only. A daily candle can trail by up to 15 minutes |
+| US stocks, with Interactive Brokers connected | **IBKR**, for one-minute to 30-minute charts | Live: the current candle moves as IBKR reports trades, pre-market and after-hours included |
+| Commodities (oil, gold, silver, natural gas, copper) | **Yahoo Finance** futures prices | Refreshes about every 30 seconds |
+| Crypto market cap (TOTAL, TOTAL3, BTC.D and more) | **CoinMarketCap**, with your free API key | Daily |
+| Economic data (CPI, jobs, GDP and more) | **FRED**, with your free API key | As each figure is published |
+
+A crypto pair opens on Binance whenever Binance lists it. Yahoo Finance is free but unofficial, so now and then it
+can be slow or briefly unavailable.
+
+**Optional broker connections**
+
+- **Interactive Brokers.** Full-market stock prices from your own IBKR market-data subscriptions. While IBKR is
+  connected, stock charts from one minute to 30 minutes switch to IBKR by themselves and update live. Hourly and
+  daily charts stay on Yahoo Finance, which goes back further: IBKR charts hold about a day of one-minute bars.
+  Choose a feed in a chart's data-feed menu to override this. MarketPulse also uses IBKR to check chart data and
+  fill gaps. Connect in **Settings › Trading & Market Data**, one of two ways:
+  - **IB Gateway:** run IBKR's desktop app on your computer. Your IBKR login stays in IB Gateway.
+  - **IBKR Web API:** no app to run. It needs an IBKR Pro account, and IBKR may have to approve API access for
+    you. MarketPulse creates the keys and walks you through registering them on IBKR's site, and it never stores
+    your IBKR username or password. Quotes refresh every second, and each minute's candle is replaced with IBKR's
+    own bar when the minute closes. This connection is new and hasn't yet been tried with a live IBKR account.
+- **Alpaca.** Real-time US stock quotes for AUTO PAPER, plus option chains, dividends and splits, market breadth,
+  and gapper history in backtests. Alpaca's free data comes from a single exchange (IEX), so it isn't used to draw
+  charts.
+
+Other features have their own sources: company financials come from SEC EDGAR, the premarket gapper list from
+Finviz, Treasury yields from the US Treasury, Bitcoin network metrics from Blockchain.com, and crypto futures
+funding, open interest and liquidations from Binance. **Settings › Trading & Market Data** lists every source and
+what it feeds.
 
 ## Practise trading without risking a cent
 
