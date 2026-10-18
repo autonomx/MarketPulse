@@ -63,7 +63,7 @@ can be slow or briefly unavailable.
   connected, stock charts from one minute to 30 minutes switch to IBKR by themselves and update live. Hourly and
   daily charts stay on Yahoo Finance, which goes back further: IBKR charts hold about a day of one-minute bars.
   Choose a feed in a chart's data-feed menu to override this. MarketPulse also uses IBKR to check chart data and
-  fill gaps. Connect in **Settings › Trading & Market Data**, one of two ways:
+  fill gaps. Connect in **Settings › Market data & brokers**, one of two ways:
   - **IB Gateway:** run IBKR's desktop app on your computer. Your IBKR login stays in IB Gateway.
   - **IBKR Web API:** no app to run. It needs an IBKR Pro account, and IBKR may have to approve API access for
     you. MarketPulse creates the keys and walks you through registering them on IBKR's site, and it never stores
@@ -75,7 +75,7 @@ can be slow or briefly unavailable.
 
 Other features have their own sources: company financials come from SEC EDGAR, the premarket gapper list from
 Finviz, Treasury yields from the US Treasury, Bitcoin network metrics from Blockchain.com, and crypto futures
-funding, open interest and liquidations from Binance. **Settings › Trading & Market Data** lists every source and
+funding, open interest and liquidations from Binance. **Settings › Market data & brokers** lists every source and
 what it feeds.
 
 ## Practise trading without risking a cent
