@@ -25,7 +25,7 @@ Updates… opens the download page. Checked on the Mac before the upload:
 
 - `sync check` passes (mirror at Omnix `406dc03a93`, 3355 files). The manifest's default Omnix path is the Windows
   machine's, so on a Mac pass `--omnix` with a local Omnix checkout.
-- `src/tests_marketpulse` passes (45, plus the Windows-only Job Object test skipped), and the Electron suite passes
+- `src/tests_marketpulse` passes (44, plus the Windows-only Job Object test skipped), and the Electron suite passes
   25 of 25.
 - `codesign --verify --deep --strict` passes on the app, and `latest-mac.yml` says 0.1.4 and names the zip.
 - Installed over 0.1.3, 0.1.4 opened on the charts with the existing data, signed in, and Check for Updates… in the
@@ -33,12 +33,12 @@ Updates… opens the download page. Checked on the Mac before the upload:
 
 **Released: 0.1.5**, for both platforms. As with 0.1.4, the Windows installer was published first and the macOS dmg,
 zip and `latest-mac.yml` joined the [v0.1.5 release](https://github.com/autonomx/MarketPulse/releases/tag/v0.1.5)
-after, built from `12fb467` like the Windows files, and it is the latest release that installed apps check. Omnix's
+after, built from `12fb467` like the Windows files. Omnix's
 `main` was rewritten on 2026-10-18 (authors only), so the Mac's Omnix clone was reset to `origin/main`
 (`e959672316`) rather than pulled: a pull merges the old history back in. Checked on the Mac before the upload:
 
 - `sync check --omnix <the Mac's Omnix clone>` passes (mirror at Omnix `e959672316`, 3360 files).
-- `src/tests_marketpulse` passes (45, plus the Windows-only Job Object test skipped), and the Electron suite passes
+- `src/tests_marketpulse` passes (44, plus the Windows-only Job Object test skipped), and the Electron suite passes
   26 of 26, the new text-size test included.
 - `codesign --verify --deep --strict` passes on the app, and `latest-mac.yml` says 0.1.5 and names the zip.
 
@@ -57,13 +57,40 @@ And on the installed app, 0.1.5 over 0.1.4:
 - Settings › Market data & brokers has the Alpaca section (API key ID and secret key) and the list of what each data
   source is for.
 
+**Released: 0.1.6**, for both platforms. As with 0.1.5, the Windows installer was published first and the macOS dmg,
+zip and `latest-mac.yml` joined the [v0.1.6 release](https://github.com/autonomx/MarketPulse/releases/tag/v0.1.6)
+after, built from `b6bc3a6` like the Windows files (mirror at Omnix `1071b860be`), and it is the latest release that
+installed apps check. Both clones were fast-forwarded (`merge --ff-only`); no reset was needed. Checked on the Mac
+before the upload:
+
+- `sync check --omnix <the Mac's Omnix clone>` passes (mirror at Omnix `1071b860be`, 3367 files).
+- `build-info.json` says `macos-arm64`, `b6bc3a6` and `1071b860be`; the staged `postgres` lists arm64 (universal);
+  `python/bin/python3 -c "import app, marketpulse, ibapi"` works from `build/stage`.
+- `src/tests_marketpulse` passes: 44, plus the Windows-only Job Object test skipped (45 collected; the 0.1.4 and
+  0.1.5 entries said 45 passed, which counted the skipped one). The Electron suite passes 26 of 26.
+- `codesign --verify --deep --strict` passes on the app, and `latest-mac.yml` says 0.1.6 and names
+  `MarketPulse-0.1.6-arm64-mac.zip`.
+
+And on the installed app, 0.1.6 over 0.1.5:
+
+- The Keychain prompt for "MarketPulse Safe Storage" came once (Always Allow). This time the first start carried on
+  after it: the backend was ready at once, with no second start needed.
+- It opened on the charts with the existing data, signed in, and Check for Updates… in the menu-bar icon's menu said
+  MarketPulse is up to date (Version 0.1.6).
+- Settings › Market data & brokers: the Interactive Brokers section offers IB Gateway and IBKR Web API. Choosing the
+  Web API shows the 5-step setup (check your account, generate keys, register them with IBKR, paste what IBKR gave
+  you, connect); no keys were generated and nothing was saved, and the form was put back on IB Gateway. The
+  data-sources list describes Interactive Brokers as "through IB Gateway or the IBKR Web API", with live stock charts
+  from one minute to 30 minutes.
+- Not checked: a 1m stock chart switching to IBKR and reading live. IB Gateway isn't installed on this Mac.
+
 **Checked on a Mac** (Apple silicon, macOS 26):
 
 - `stage.py all` stages Python 3.11.17, PostgreSQL 17.11 and ibapi 10.50.2, prunes, and passes the import check.
   Both checks under [Build](#build) pass; the staged `postgres` is a universal binary.
 - `dist` writes the dmg and zip, signed ad hoc with the hardened runtime. The bundle, Python and PostgreSQL pass
   `codesign --verify --deep --strict`, also after the app has run: nothing writes inside the bundle.
-- `npm --prefix desktop run test` passes 21 of 21, and `pytest src/tests_marketpulse` passes (45, plus the Windows-only
+- `npm --prefix desktop run test` passes 21 of 21, and `pytest src/tests_marketpulse` passes (44, plus the Windows-only
   Job Object test skipped).
 - The gate below, steps 1 to 7, on the installed app:
   1. Install from the dmg, first run, owner set, charts open.
