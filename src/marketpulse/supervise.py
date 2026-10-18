@@ -519,17 +519,20 @@ class Supervisor:
                 self.stopped.wait(timeout=180)
                 return
             self.stopping.set()
-        if self.gateway is not None and self.gateway.poll() is None:
-            # The gateway (--managed-stdin) drains and exits when its stdin closes.
-            with contextlib.suppress(OSError):
-                self.gateway.stdin.close()  # type: ignore[union-attr]
-            try:
-                self.gateway.wait(timeout=20)
-            except subprocess.TimeoutExpired:
-                self.gateway.kill()
-        self.stop_postgres()
-        self.emit({"event": "stopped"})
-        self.stopped.set()
+        try:
+            if self.gateway is not None and self.gateway.poll() is None:
+                # The gateway (--managed-stdin) drains and exits when its stdin closes.
+                with contextlib.suppress(OSError):
+                    self.gateway.stdin.close()  # type: ignore[union-attr]
+                try:
+                    self.gateway.wait(timeout=20)
+                except subprocess.TimeoutExpired:
+                    self.gateway.kill()
+            self.stop_postgres()
+            self.emit({"event": "stopped"})
+        finally:
+            # Set even if stopping failed, so a second caller (main, after the command reader) never waits it out.
+            self.stopped.set()
 
     def handle(self, command: dict[str, Any]) -> None:
         name = command.get("cmd")
@@ -573,8 +576,10 @@ def _emitter() -> Callable[[dict[str, Any]], None]:
 
     def emit(event: dict[str, Any]) -> None:
         with lock:
-            sys.stdout.write(json.dumps(event) + "\n")
-            sys.stdout.flush()
+            # The shell may be gone (a crash, or a quit that did not wait): stopping carries on without it.
+            with contextlib.suppress(OSError, ValueError):
+                sys.stdout.write(json.dumps(event) + "\n")
+                sys.stdout.flush()
 
     return emit
 

@@ -357,10 +357,17 @@ test('with every window gone, the Dock or tray brings the charts back', async ()
   await expect(main.locator('.trading-workspace')).toBeVisible({ timeout: 60_000 });
 });
 
-test('quitting leaves no backend process', async () => {
+test('quitting leaves no backend process, even when Quit is chosen twice', async () => {
   expect(backendProcesses(dataDir).length).toBeGreaterThan(0);
-  await app.close();
-  await expect.poll(() => backendProcesses(dataDir).length, { timeout: 60_000 }).toBe(0);
+  // A second Quit while the backend stops (nothing shows for a few seconds) must not end the shell first: the
+  // supervisor would be orphaned and linger.
+  const exited = new Promise((resolveExit) => app.process().once('exit', resolveExit));
+  await app.evaluate(({ app: electronApp }) => {
+    electronApp.quit();
+    setTimeout(() => electronApp.quit(), 1000);
+  });
+  await exited;
+  expect(backendProcesses(dataDir)).toEqual([]);
 });
 
 test('the next launch opens the charts signed in, without the first-run page', async () => {

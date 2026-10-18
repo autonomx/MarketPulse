@@ -352,8 +352,10 @@ async function main(): Promise<void> {
   });
   app.on('activate', () => windows.focusMain());
   app.on('before-quit', (event) => {
-    if (quitting) return;
+    // Every quit waits for the backend: a second Quit while it stops (nothing shows for a few seconds) would otherwise
+    // end the shell first and orphan the supervisor. app.exit below emits no before-quit.
     event.preventDefault();
+    if (quitting) return;
     quitting = true;
     listener.close();
     void supervisor.stop().then(() => app.exit(0));
