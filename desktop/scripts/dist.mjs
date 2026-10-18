@@ -1,6 +1,7 @@
 // Builds the installer for the staged runtime's platform from out/ (roadmap Phases 9 and 11):
 // Windows NSIS from a windows-x64 stage, macOS dmg + zip from a macos-arm64 or macos-x64 stage (on a Mac).
 import { Arch, build, Platform } from 'electron-builder';
+import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -37,6 +38,12 @@ const appleCredentials = Boolean(
 );
 if (mac && !appleCredentials) console.warn('no Apple notarization credentials: the app is not notarized');
 
+// Without a Developer ID the app is signed ad hoc. Flipping the Electron fuses rewrites the binaries, and Apple silicon
+// kills a bundle whose signature no longer matches, so an unsigned build would not start even on the Mac that built it.
+const developerId = mac && Boolean(process.env.CSC_LINK || process.env.CSC_NAME
+  || execFileSync('security', ['find-identity', '-v', '-p', 'codesigning'], { encoding: 'utf8' }).includes('Developer ID Application'));
+if (mac && !developerId) console.warn('no Developer ID: the app is signed ad hoc and runs only on this Mac');
+
 // Windows signing (roadmap MP-9.2), from the environment; without it the installer is unsigned.
 // - Azure Artifact Signing (formerly Trusted Signing): MARKETPULSE_AZURE_SIGNING_ENDPOINT, _ACCOUNT and _PROFILE, plus
 //   AZURE_TENANT_ID, AZURE_CLIENT_ID and AZURE_CLIENT_SECRET for the signing identity.
@@ -67,7 +74,7 @@ await build({
   targets,
   config: {
     extends: join(root, 'electron-builder.yml'),
-    ...(mac ? { mac: { notarize: appleCredentials } } : { win: windowsSigning }),
+    ...(mac ? { mac: { notarize: appleCredentials, ...(developerId ? {} : { identity: '-' }) } } : { win: windowsSigning }),
   },
   publish: process.argv.includes('--publish') ? 'always' : 'never',
 });

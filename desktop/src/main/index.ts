@@ -94,11 +94,21 @@ async function main(): Promise<void> {
   });
   app.on('browser-window-focus', () => badge.seen());
 
+  // Shown notifications are kept until clicked or closed: a collected Notification loses its click listener, and the
+  // click (macOS Notification Center, Windows Action Center) then does nothing. The oldest go past the cap.
+  const shown = new Set<Notification>();
   const listener = new NotificationListener(secrets.notifySecret, {
     signedInWorkspace,
     show: (title, body, url) => {
       const notification = new Notification({ title, body, icon: join(paths.icons, 'icon-256.png') });
+      shown.add(notification);
+      for (const old of shown) {
+        if (shown.size <= 100) break;
+        shown.delete(old);
+      }
+      notification.on('close', () => shown.delete(notification));
       notification.on('click', () => {
+        shown.delete(notification);
         if (!origin) return;
         // Only a page of the app itself: the delivery's link is relative, and anything else is ignored.
         const target = new URL(url, origin);
@@ -452,6 +462,8 @@ function buildMenu(origin: () => string | null, windows: WindowManager, logs: st
     if (current && main) {
       void main.loadURL(`${current}${path}`);
       windows.focusMain();
+    } else if (current) {
+      windows.open('main', `${current}${path}`);
     }
   };
   const template: MenuItemConstructorOptions[] = [

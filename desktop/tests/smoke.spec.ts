@@ -300,15 +300,21 @@ test('a window whose page crashes offers a reload and comes back', async () => {
     const dialogs = (globalThis as unknown as { crashDialogs?: number }).crashDialogs ?? 0;
     if (!contents) return 'gone';
     if (contents.isCrashed()) return `crashed (dialogs ${dialogs})`;
+    // The timer is cleared: left running, it would read `contents` after a later test destroyed it.
+    let timer: NodeJS.Timeout | undefined;
     try {
       const found = await Promise.race([
         contents.executeJavaScript("Boolean(document.querySelector('.trading-workspace'))"),
-        new Promise((resolveLater) => setTimeout(() => resolveLater(`timeout (dialogs ${dialogs}, loading ${contents.isLoading()})`), 2000)),
+        new Promise((resolveLater) => {
+          timer = setTimeout(() => resolveLater(`timeout (dialogs ${dialogs}, loading ${contents.isLoading()})`), 2000);
+        }),
       ]);
       if (typeof found === 'string') return found;
       return found ? 'ready' : `no workspace at ${contents.getURL()}`;
     } catch (error) {
       return `script failed: ${String(error)}`;
+    } finally {
+      clearTimeout(timer);
     }
   }, id), { timeout: 90_000 }).toBe('ready');
 });
@@ -338,6 +344,17 @@ test('the Omnix import page checks a source before importing, through the backen
   }
   await page.locator('#close').click();
   await expect.poll(() => app.windows().some((candidate) => candidate.url().endsWith('/pages/import.html'))).toBe(false);
+});
+
+test('with every window gone, the Dock or tray brings the charts back', async () => {
+  await app.evaluate(({ BrowserWindow }) => {
+    for (const window of BrowserWindow.getAllWindows()) window.destroy();
+  });
+  await expect.poll(() => app.windows().length).toBe(0);
+  // macOS sends `activate` for a Dock click; the tray's Show and a second launch take the same path.
+  await app.evaluate(({ app: electronApp }) => electronApp.emit('activate'));
+  main = await appWindow(app, (url) => url.startsWith(origin) && url.includes('/trading'));
+  await expect(main.locator('.trading-workspace')).toBeVisible({ timeout: 60_000 });
 });
 
 test('quitting leaves no backend process', async () => {

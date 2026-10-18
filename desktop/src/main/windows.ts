@@ -37,7 +37,13 @@ export class WindowManager {
 
   focusMain(): void {
     const main = this.get('main') ?? this.all()[0];
-    if (!main) return;
+    if (!main) {
+      // Every window is gone (the last one is normally hidden, not closed): the Dock, the tray and a second launch
+      // still bring the charts back.
+      const origin = this.origin();
+      if (origin) this.open('main', `${origin}/trading`);
+      return;
+    }
     if (main.isMinimized()) main.restore();
     main.show();
     main.focus();
