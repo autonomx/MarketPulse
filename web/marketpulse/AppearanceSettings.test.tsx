@@ -59,3 +59,36 @@ describe('appearance settings', () => {
     expect(document.documentElement.dataset.omnixAppearancePreference).toBe('system');
   });
 });
+
+describe('text size setting', () => {
+  afterEach(() => {
+    delete (window as { marketPulse?: unknown }).marketPulse;
+  });
+
+  it('steps, slides and resets the text size of the desktop window', () => {
+    const zoom: number[] = [];
+    (window as { marketPulse?: unknown }).marketPulse = { setZoomFactor: (factor: number) => zoom.push(factor) };
+    renderSettings();
+
+    expect(screen.getByRole('slider', { name: 'Text size' })).toHaveValue('100');
+    expect(screen.getByRole('button', { name: 'Reset' })).toBeDisabled();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Larger text' }));
+    expect(screen.getByRole('slider', { name: 'Text size' })).toHaveValue('105');
+    expect(screen.getByText('105%')).toBeInTheDocument();
+
+    fireEvent.change(screen.getByRole('slider', { name: 'Text size' }), { target: { value: '150' } });
+    expect(screen.getByRole('button', { name: 'Larger text' })).toBeDisabled();
+    expect(window.localStorage.getItem('marketpulse.textSize')).toBe('150');
+
+    fireEvent.click(screen.getByRole('button', { name: 'Reset' }));
+    expect(screen.getByText('100%')).toBeInTheDocument();
+    expect(zoom).toEqual([1, 1.05, 1.5, 1]);
+    expect(screen.queryByText(/use the browser/)).toBeNull();
+  });
+
+  it('points a browser to its own zoom', () => {
+    renderSettings();
+    expect(screen.getByText(/use the browser.s own zoom/)).toBeInTheDocument();
+  });
+});

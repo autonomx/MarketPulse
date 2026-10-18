@@ -495,6 +495,11 @@ function updateMenuItems(updates: Updates): MenuItemConstructorOptions[] {
   return [{ label, enabled: action !== null, click: () => { if (action) updates.act(action); } }];
 }
 
+/** Asks the focused window's page to make its text larger (1), smaller (-1) or the default size (0). */
+function textSizeStep(step: -1 | 0 | 1): void {
+  BrowserWindow.getFocusedWindow()?.webContents.send('mp:text-size', step);
+}
+
 /** Shows a page of the app in the main window, opening it if it is closed; nothing before the backend is up. */
 function openPage(origin: string | null, windows: WindowManager, path: string): void {
   const main = windows.get('main');
@@ -535,9 +540,11 @@ function buildMenu(
         { role: 'reload', accelerator: 'F5' },
         { role: 'togglefullscreen' },
         { type: 'separator' },
-        { role: 'resetZoom' },
-        { role: 'zoomIn' },
-        { role: 'zoomOut' },
+        // Text size is a setting the page saves (Settings › Appearance), so these step it there rather than zooming the
+        // window behind its back: the next window to load would put the saved size back.
+        { label: 'Actual Text Size', accelerator: 'CmdOrCtrl+0', click: () => textSizeStep(0) },
+        { label: 'Larger Text', accelerator: 'CmdOrCtrl+=', click: () => textSizeStep(1) },
+        { label: 'Smaller Text', accelerator: 'CmdOrCtrl+-', click: () => textSizeStep(-1) },
         ...(app.isPackaged ? [] : [{ type: 'separator' as const }, { role: 'toggleDevTools' as const }]),
       ],
     },

@@ -152,6 +152,31 @@ test('a window set opens a native window on the same session that hears Broadcas
   await second.close();
 });
 
+test('text size zooms the window, survives a reload and follows the View menu', async () => {
+  const zoom = () => app.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows()
+    .filter((window) => !window.webContents.getURL().startsWith('file:')).map((window) => window.webContents.getZoomFactor()));
+  const clickMenu = (label: string) => app.evaluate(({ Menu }, name) => {
+    const find = (items: Electron.MenuItem[]): Electron.MenuItem | undefined => items
+      .map((item) => (item.label === name ? item : item.submenu ? find(item.submenu.items) : undefined)).find(Boolean);
+    find(Menu.getApplicationMenu()?.items ?? [])?.click();
+  }, label);
+
+  await main.evaluate(() => localStorage.setItem('marketpulse.textSize', '125'));
+  await main.reload();
+  await main.waitForLoadState('domcontentloaded');
+  await expect.poll(zoom).toEqual([1.25]);
+
+  // The View menu steps the focused window's saved size.
+  await app.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows().find((window) => !window.webContents.getURL().startsWith('file:'))?.focus());
+  await clickMenu('Larger Text');
+  await expect.poll(() => main.evaluate(() => localStorage.getItem('marketpulse.textSize'))).toBe('130');
+  await expect.poll(zoom).toEqual([1.3]);
+
+  await clickMenu('Actual Text Size');
+  await expect.poll(zoom).toEqual([1]);
+  expect(await main.evaluate(() => localStorage.getItem('marketpulse.textSize'))).toBe('100');
+});
+
 test('links leave the app only for the system browser, and navigation stays on the app', async () => {
   await app.evaluate(({ shell }) => {
     (globalThis as unknown as { opened: string[] }).opened = [];

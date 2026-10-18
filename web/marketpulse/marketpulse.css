@@ -289,6 +289,7 @@
   /* Appearance: three choices as a segmented control. */
   .mp-settings-choices {
     display: inline-flex;
+    justify-self: start;
     padding: 3px;
     border: 1px solid var(--mp-border);
     border-radius: 8px;
@@ -322,6 +323,25 @@
   .mp-settings-choices label:has(input:focus-visible) {
     outline: 2px solid var(--mp-accent);
     outline-offset: 1px;
+  }
+
+  /* Text size: A−, the slider, A+, the value and Reset on one row. */
+  .mp-text-size {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .mp-text-size input[type='range'] {
+    width: min(260px, 100%);
+    accent-color: var(--mp-accent);
+  }
+
+  .mp-text-size output {
+    min-width: 44px;
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
   }
 
   /* Light mode: the loading and first-run pages on the light terminal's colours. */

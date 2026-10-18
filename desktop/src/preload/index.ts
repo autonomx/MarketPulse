@@ -1,4 +1,4 @@
-import { contextBridge, ipcRenderer } from 'electron';
+import { contextBridge, ipcRenderer, webFrame } from 'electron';
 
 // The bridge (Omnix W-2's `window.marketPulse`) for the gateway's pages, and `marketPulseShell` for the bundled
 // splash and error pages. Each call is checked again in the main process against the calling page's origin.
@@ -33,5 +33,15 @@ if (location.protocol === 'file:') {
     revealLogs: () => ipcRenderer.send('mp:reveal-logs'),
     openExternal: (url: string) => ipcRenderer.send('mp:open-external', String(url)),
     requestLoginCode: (): Promise<boolean> => ipcRenderer.invoke('mp:request-login-code'),
+    // Settings › Appearance › Text size: the page's zoom, which scales all text (the chart's included). Chromium keeps
+    // one zoom per origin, so every MarketPulse window follows.
+    setZoomFactor: (factor: number) => {
+      const value = Number(factor);
+      if (Number.isFinite(value)) webFrame.setZoomFactor(Math.min(1.5, Math.max(0.8, value)));
+    },
+    // View › Larger Text / Smaller Text / Actual Text Size (Ctrl+= / Ctrl+- / Ctrl+0): 1, -1 or 0.
+    onTextSizeStep: (listener: (step: number) => void) => {
+      ipcRenderer.on('mp:text-size', (_event, step) => listener(Math.sign(Number(step)) || 0));
+    },
   });
 }

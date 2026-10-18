@@ -6,18 +6,22 @@ import {
 } from '../src/design/appearanceEffects';
 import { DEFAULT_OMNIX_THEME } from '../src/design/appearanceThemes';
 import { APPEARANCE_CHANGE_EVENT } from '../src/events/bus';
+import { applyTextSize, followTextSizeMenu, loadTextSize, useTextSize } from './textSize';
 
 /**
- * Applies the stored appearance (dark by default) before the first render, as Omnix's shell does on entry, so the
- * trading workspace gets the same theme variables without Omnix's workstation shell. Returns the light level shown.
+ * Applies the stored appearance (dark by default) and text size before the first render, as Omnix's shell does on
+ * entry, so the trading workspace gets the same theme variables without Omnix's workstation shell. Returns the light
+ * level shown. Omnix's text scale (a root font size) stays at 100%: MarketPulse's text size zooms the whole page.
  */
 export function applyStoredAppearance(): ResolvedOmnixAppearanceMode {
   const stored = loadStoredAppearancePreferences();
+  applyTextSize(loadTextSize());
+  followTextSizeMenu();
   return applyAppearanceSettings({
     mode: stored.mode ?? 'dark',
     theme: stored.theme ?? DEFAULT_OMNIX_THEME,
     density: 'comfortable',
-    textScale: stored.textScale ?? DEFAULT_OMNIX_TEXT_SCALE,
+    textScale: DEFAULT_OMNIX_TEXT_SCALE,
     reduceMotion: false,
   }).resolvedMode;
 }
@@ -28,6 +32,8 @@ export function applyStoredAppearance(): ResolvedOmnixAppearanceMode {
  */
 export function AppearanceFollower() {
   const { setColorScheme } = useMantineColorScheme();
+  // Every window follows a text size saved in another one.
+  useTextSize();
 
   useEffect(() => {
     setColorScheme(currentAppearanceMode().resolvedMode);
