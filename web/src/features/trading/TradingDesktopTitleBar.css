@@ -59,4 +59,33 @@
     flex: 1 1 auto;
     min-width: 48px;
   }
+
+  /* Settings and the light/dark switch, next to the window controls. */
+  .trading-title-bar-action {
+    flex: 0 0 auto;
+    display: inline-grid;
+    place-items: center;
+    align-self: center;
+    width: 30px;
+    height: 30px;
+    margin-right: 2px;
+    padding: 0;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: inherit;
+    opacity: 0.78;
+    cursor: pointer;
+  }
+
+  .trading-title-bar-action:last-child {
+    margin-right: 6px;
+  }
+
+  .trading-title-bar-action:hover,
+  .trading-title-bar-action:focus-visible {
+    background: color-mix(in srgb, currentColor 12%, transparent);
+    opacity: 1;
+    outline: none;
+  }
 }

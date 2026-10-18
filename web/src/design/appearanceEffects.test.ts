@@ -2,7 +2,7 @@
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { migrateSettingsDocument } from '../features/settings/settingsMerge';
-import { commitAppearanceSettings, loadStoredAppearancePreferences, normalizeTextScale, OMNIX_APPEARANCE_MODE_STORAGE_KEY, OMNIX_TEXT_SCALE_STORAGE_KEY, OMNIX_THEME_STORAGE_KEY } from './appearanceEffects';
+import { commitAppearanceMode, commitAppearanceSettings, currentAppearanceMode, loadStoredAppearancePreferences, normalizeTextScale, OMNIX_APPEARANCE_MODE_STORAGE_KEY, OMNIX_TEXT_SCALE_STORAGE_KEY, OMNIX_THEME_STORAGE_KEY } from './appearanceEffects';
 import { APPEARANCE_CHANGE_EVENT } from '../events/bus';
 
 describe('appearance theme effects', () => {
@@ -95,5 +95,19 @@ describe('appearance theme effects', () => {
     expect(migrated.appearance.mode).toBe('light');
     expect(migrated.appearance.theme).toBe('aurora');
     expect(migrated.appearance.textScale).toBe(100);
+  });
+});
+
+describe('saving only the light level', () => {
+  it('keeps the applied theme, text scale, density and motion', () => {
+    commitAppearanceSettings({ mode: 'dark', theme: 'graphite', density: 'compact', textScale: 115, reduceMotion: true });
+
+    const detail = commitAppearanceMode('light');
+
+    expect(detail).toEqual({ mode: 'light', resolvedMode: 'light', theme: 'graphite', textScale: 115 });
+    expect(document.documentElement.dataset.omnixDensity).toBe('compact');
+    expect(document.documentElement.classList.contains('omnix-reduce-motion')).toBe(true);
+    expect(loadStoredAppearancePreferences()).toEqual({ mode: 'light', theme: 'graphite', textScale: 115 });
+    expect(currentAppearanceMode()).toEqual({ mode: 'light', resolvedMode: 'light' });
   });
 });

@@ -1,5 +1,5 @@
 {
- "commit": "1022e512ac4279c6e3201ed0d59577ffe8324960",
+ "commit": "406dc03a9383e6bb9089fa1735035110508bd9b6",
  "derived": {
   "pyproject.toml": "418462422a19766d7cd9e09accea65f94fc5b9a908e5fb41eb4279e167522a44",
   "web/package.json": "937d3d627e85e0db5106a9f7a1e2b43b87cd88fb6750de181fcd2ea5153a10a0"
@@ -1840,8 +1840,8 @@
   "web/src/design/VirtualList.test.tsx": "6600b909ca390c23caefcb19470b7470a42474c463fb4a8393b9a5a5211b194c",
   "web/src/design/VirtualList.tsx": "bfcd3fa55b848639f5478fbc8ae2d85fec08c245b375bd36715762dfe27db74d",
   "web/src/design/appearanceEffects.spec.ts": "99919a3eb9923c95942386b7d6d536c14c53a4c40e7fca5c83d20b655d2a606d",
-  "web/src/design/appearanceEffects.test.ts": "d340df11571a9d7dd75dfb583b7a56b490f55ea38bf4e835947375f0ea0865db",
-  "web/src/design/appearanceEffects.ts": "5438a5582e4b60ece3038a7f7025e2d066f1863f8daaf0d6d855a753ce2767cd",
+  "web/src/design/appearanceEffects.test.ts": "ccbf6956d88d7ca401982b90a283e4af5e3f7a82939d93a65e9614e059c44997",
+  "web/src/design/appearanceEffects.ts": "283eaf2ebc081d3e682a256abd971a5dd293f4b7f590eaabf0176801dce02b15",
   "web/src/design/appearanceThemes.test.ts": "3ad39fadb3999b389770f953643f48d085d41b25410e06a5967e31fd38cb6cc8",
   "web/src/design/appearanceThemes.ts": "bc1dd265e55adff2f8cc1629f451e1b6c6c2b27a5e1182f970348dffea518266",
   "web/src/design/layers.css": "0d4391054c33a6777facf38fd89822569c696ab9e0cc58b36fd667b33bcc251b",
@@ -1850,6 +1850,7 @@
   "web/src/design/sidebar.test.tsx": "4396e99847234400643cb8e46b498d73bacbbda247baf9f89d1274d23f75cfb3",
   "web/src/design/theme.ts": "a7b9c2b5e0d2ae03c0e395e617e08aeaddc497af8273bbcec787490ff824ed00",
   "web/src/design/tokens.css": "638fe964014bd95c9554def22b58cfdb667ed32f04fb387ed00d524dee17cf69",
+  "web/src/design/useAppearanceMode.ts": "fe94df24b9183427db8ba020e7d1d95f2f37746418b6b897224d373068271c67",
   "web/src/events/bus.ts": "0c9eba0f91ff500f7526acc9ddaaea6885bebe3c8d3d7fb667251a7807b7f91a",
   "web/src/events/eventClient.test.ts": "2e85cda545c6739e39cd005edcca35096f0d7a616233756eb2b30783567cc808",
   "web/src/events/eventClient.ts": "ec6095b1eea59ef01002242420a0557bd93ef4d406dc600e865ebc1a71b82729",
@@ -2807,9 +2808,9 @@
   "web/src/features/trading/TradingCompactHeader.css": "16cd15ebbeaacfa17c9b9b188fb72f5318683458a436db5cceb6310bb60e1559",
   "web/src/features/trading/TradingCompareSymbolDialog.css": "bafd8333b2582a60657e0b5186002e0bb90941e5a36a18c0bb197149baa107c2",
   "web/src/features/trading/TradingCompareSymbolDialog.tsx": "026e78e8f49f03964155873455f074f4085de8f949e6349b7ca4692d9509fe4a",
-  "web/src/features/trading/TradingDesktopTitleBar.css": "cc6d1198dfcaa9cf531dc58623224915f9b02417148a242493ce6f956b539c52",
-  "web/src/features/trading/TradingDesktopTitleBar.test.tsx": "1b0b533735cecc4a7a5b609ff3fd7b2e0c694061f1529521007891d8d989f671",
-  "web/src/features/trading/TradingDesktopTitleBar.tsx": "60fd5a443439b8f371b02e2f3d6a1157b797cd3b3df21248c08f4c98f1d70b90",
+  "web/src/features/trading/TradingDesktopTitleBar.css": "e2a22eecc564f6e647e11a22b380689ffe69aeaa22123b62e570186232d5ad06",
+  "web/src/features/trading/TradingDesktopTitleBar.test.tsx": "a4747776a9f738870ad6a8e51e45ba6dc477d5ef136dd37daa5e7f7a1c152e9d",
+  "web/src/features/trading/TradingDesktopTitleBar.tsx": "47459267b407b736f4a629d7a807b3fc2794ac237cc6f207d0294b64e1d21521",
   "web/src/features/trading/TradingDiagnosticsPanel.tsx": "fdecc27661ad74d0f00ae9766f2d3eaef1936a9dd73ddf098139bfb1e1e885bf",
   "web/src/features/trading/TradingDrawingToolToggles.test.tsx": "228f39d3aef3d043c3962232baf37de307e8512e3acb5d8bb1b32cf5dd99365c",
   "web/src/features/trading/TradingDrawingToolToggles.tsx": "534c3ec8b4e2bcb0698beb6fdb763347fd760904bd7ed9a23f950e4670addd2d",
@@ -2948,7 +2949,7 @@
   "web/src/features/trading/TradingWatchlistSymbolPicker.tsx": "b44c87a3feed64c51f451011921e3fcc78f9fd642edbd17867c5231b50238027",
   "web/src/features/trading/TradingWindowRestore.tsx": "7a82d9a4133d895399ec65a313c218bafd797f581cc478339be379c42b62b5b5",
   "web/src/features/trading/TradingWorkspace.css": "5194e3f4c845f60ee054d831b8739c747e3f893a88195c564bdb591936cf9e10",
-  "web/src/features/trading/TradingWorkspace.tsx": "da965cb4e755c6f0944d84f51f82b5cfd3546252dc2152a71812565073526cfb",
+  "web/src/features/trading/TradingWorkspace.tsx": "fafdc691d74c4f184174d19ccdfca84a2a51124b905916a30560b3f3863c0ac4",
   "web/src/features/trading/TradingYAxisControls.css": "a674fd654fbc04e33d2b90155889d46af6e4303b83decfe24005f3c2a9f7c7b8",
   "web/src/features/trading/TradingYAxisControls.tsx": "420ab0bc7c5e0b3a42b3a906432b87e712ac4c00723b1f42627a66506689fa7e",
   "web/src/features/trading/TradingYieldCurve.css": "0e6add408f453d8255841f7c4f7ff7298a23389e79cf648935d36be976a91c19",
@@ -3361,5 +3362,5 @@
   "web/vitest.workspace.config.ts": "f1f2382afdf7550337092061b966ac32b22fb2286174c89b691bc35703795507"
  },
  "source": "F:/LLM/omnix",
- "synced_at": "2026-10-18T00:51:38+00:00"
+ "synced_at": "2026-10-18T02:20:19+00:00"
 }

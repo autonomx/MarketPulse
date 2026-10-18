@@ -504,7 +504,11 @@ export function TradingWorkspace({ module }: { module: OmnixModuleDefinition }) 
   return (
     <main className={`trading-workspace${focusMode ? ' trading-focus-mode' : ''}`} aria-labelledby="trading-title">
       {/* In the desktop app the session tabs live in the window's title bar (MarketPulse W-4). */}
-      {desktop ? <TradingDesktopTitleBar bridge={desktop}>{sessionTabs}</TradingDesktopTitleBar> : null}
+      {desktop ? (
+        <TradingDesktopTitleBar bridge={desktop} onOpenSettings={() => { void navigate({ to: '/settings' }); }}>
+          {sessionTabs}
+        </TradingDesktopTitleBar>
+      ) : null}
       <header className="trading-terminal-header">
         <div className="trading-terminal-brand">
           <span className="trading-terminal-logo" aria-hidden="true" />

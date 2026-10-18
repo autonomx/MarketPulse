@@ -98,3 +98,24 @@ export function commitAppearanceSettings(settings: AppearanceEffectSettings): Om
   emitOmnixEvent(APPEARANCE_CHANGE_EVENT, detail);
   return detail;
 }
+
+/** Saves a new light level, keeping the page's applied theme, text scale, density and motion. */
+export function commitAppearanceMode(mode: OmnixAppearanceMode): OmnixAppearanceChangeDetail {
+  const stored = loadStoredAppearancePreferences();
+  const root = typeof document === 'undefined' ? null : document.documentElement;
+  return commitAppearanceSettings({
+    mode,
+    theme: root?.dataset.omnixTheme ?? stored.theme ?? DEFAULT_OMNIX_THEME,
+    density: root?.dataset.omnixDensity ?? 'comfortable',
+    textScale: root?.dataset.omnixTextScale ? Number(root.dataset.omnixTextScale) : stored.textScale ?? DEFAULT_OMNIX_TEXT_SCALE,
+    reduceMotion: root?.classList.contains('omnix-reduce-motion') ?? false,
+  });
+}
+
+/** The light level the page shows now: the chosen mode and what it resolves to. */
+export function currentAppearanceMode(): { mode: OmnixAppearanceMode; resolvedMode: ResolvedOmnixAppearanceMode } {
+  const root = typeof document === 'undefined' ? null : document.documentElement;
+  const mode = normalizeAppearanceMode(root?.dataset.omnixAppearancePreference ?? loadStoredAppearancePreferences().mode ?? 'dark');
+  const applied = root?.dataset.omnixAppearance;
+  return { mode, resolvedMode: applied === 'light' || applied === 'dark' ? applied : resolveAppearanceMode(mode) };
+}
