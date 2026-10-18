@@ -11,6 +11,7 @@ export const marketPulseSettingsScope: ViewModuleScope = {
   apiPrefixes: [
     '/api/settings', '/api/providers', '/api/models', '/api/runtime', '/api/hermes',
     '/api/trading/market-data', '/api/trading/prospective-gap/github-credentials',
+    '/api/trading/execution/providers/alpaca-iex/credentials',
   ],
 };
 

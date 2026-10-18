@@ -24,6 +24,8 @@ describe('MarketPulse firewall scopes', () => {
     expect(isApiAllowedForView('/api/providers', 'settings')).toBe(true);
     expect(isApiAllowedForView('/api/trading/market-data/providers/fred/credentials', 'settings' as never)).toBe(true);
     expect(isApiAllowedForView('/api/trading/prospective-gap/github-credentials', 'settings' as never)).toBe(true);
+    expect(isApiAllowedForView('/api/trading/execution/providers/alpaca-iex/credentials', 'settings' as never)).toBe(true);
+    expect(isApiAllowedForView('/api/trading/execution/orders', 'settings' as never)).toBe(false);
     expect(isApiAllowedForView('/api/trading/bars', 'settings' as never)).toBe(false);
     expect(isApiAllowedForView('/api/rpg/turns', 'settings' as never)).toBe(false);
     expect(isApiAllowedForView('/api/auth/password', 'welcome' as never)).toBe(true);
