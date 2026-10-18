@@ -15,7 +15,8 @@
 
 <p align="center">
   <a href="https://github.com/autonomx/MarketPulse/releases/latest"><strong>⬇&nbsp; Download for Windows</strong></a>
-  &nbsp;·&nbsp; macOS in testing
+  &nbsp;·&nbsp;
+  <a href="https://github.com/autonomx/MarketPulse/releases/latest"><strong>⬇&nbsp; Download for macOS</strong></a>
 </p>
 
 <p align="center">
@@ -76,8 +77,8 @@ When the built-ins aren't enough, write your own with **MarketPulse Scripts**:
 </p>
 
 Set alerts on price levels, on the trend lines you draw, on whole watchlists, or from your own scripts. MarketPulse
-keeps watching from the system tray after you close the window. It shows a desktop notification and badges its
-taskbar icon until you look. Add your mail server and it emails you too.
+keeps watching from the system tray (the menu bar on a Mac) after you close the window. It shows a desktop
+notification and badges its taskbar or Dock icon until you look. Add your mail server and it emails you too.
 
 ## Research that goes deeper
 
@@ -106,11 +107,13 @@ taskbar icon until you look. Add your mail server and it emails you too.
   asks every request for company filings to include a contact email, so MarketPulse sends your account's email to
   the SEC, and nowhere else.
 - **Protected.** Sign in with a password, and invite others or allow guests on a shared computer. API keys are
-  encrypted with Windows' own data protection.
+  encrypted with Windows' own data protection, or kept in the macOS Keychain.
 - **Backed up.** A copy of your data is taken every day, and the last seven are kept.
 - **Free and open source,** under the MIT licence.
 
 ## Get MarketPulse
+
+**Windows**
 
 1. Download **MarketPulse-Setup-x.y.z.exe** from the [latest release](https://github.com/autonomx/MarketPulse/releases/latest).
 2. Run it. It installs just for you, with no administrator rights needed (about 600 MB).
@@ -121,8 +124,20 @@ Updates install themselves the next time you quit.
 > **Windows says it "protected your PC"?** MarketPulse isn't code-signed yet, so SmartScreen doesn't recognise it.
 > Choose **More info**, then **Run anyway**.
 
-**Requirements:** Windows 10 or 11 (64-bit). A macOS version for Apple silicon is in testing. It will be released
-once it is signed and notarized by Apple.
+**macOS**
+
+1. Download **MarketPulse-x.y.z-arm64.dmg** from the [latest release](https://github.com/autonomx/MarketPulse/releases/latest).
+2. Open it and drag MarketPulse to Applications.
+3. Start MarketPulse. It sets itself up on first launch, in about 30 seconds. Then create your password and start
+   charting.
+
+To update, download the newer dmg and drag it to Applications again. Your data is kept.
+
+> **macOS says it "could not verify" MarketPulse?** MarketPulse isn't notarized by Apple yet. Open **System
+> Settings › Privacy & Security**, scroll down to the message about MarketPulse, and choose **Open Anyway**. You
+> only do this once.
+
+**Requirements:** Windows 10 or 11 (64-bit), or macOS 12 or later on a Mac with Apple silicon (M1 or newer).
 
 ## Questions
 
@@ -133,8 +148,8 @@ account (Alpaca or Interactive Brokers) is optional, for their market data.
 
 **Does it trade with real money?** No. MarketPulse is for watching markets, research and paper trading.
 
-**Where is my data?** In `%LOCALAPPDATA%\MarketPulse` on your computer. Uninstalling keeps it unless you choose to
-remove it.
+**Where is my data?** On your computer: in `%LOCALAPPDATA%\MarketPulse` on Windows, and in
+`~/Library/Application Support/MarketPulse` on a Mac. Uninstalling keeps it unless you choose to remove it.
 
 ---
 

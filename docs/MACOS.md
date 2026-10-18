@@ -5,37 +5,56 @@ Python installs its packages itself. Apple silicon builds `macos-arm64`; an Inte
 
 ## Status (2026-10-17)
 
-The first Mac run was on Apple silicon (macOS 26). It produced an unsigned `MarketPulse-0.1.2-arm64.dmg` and `.zip`.
+**Released.** The first macOS build, `MarketPulse-0.1.2-arm64.dmg` and `.zip` for Apple silicon, is on the
+[v0.1.2 release](https://github.com/autonomx/MarketPulse/releases/tag/v0.1.2) next to the Windows installer. It is
+built from `4c079f1`, later than the tag, and is signed ad hoc, not notarized: Gatekeeper rejects a downloaded copy,
+and users allow it once under System Settings › Privacy & Security › Open Anyway (the README says how).
 
-**Done on a Mac:**
+**Checked on a Mac** (Apple silicon, macOS 26):
 
 - `stage.py all` stages Python 3.11.17, PostgreSQL 17.11 and ibapi 10.50.2, prunes, and passes the import check.
-- Both checks under [Build](#build) pass. The staged `postgres` is a universal binary (arm64 and x86_64).
-- `npm --prefix desktop run dist` writes the dmg and zip. With no identity in the keychain it skips signing and
-  notarization, as designed.
-- `npm --prefix desktop run test` passes 20 of 20 against `build/stage`. These cover: first run through the splash
-  to the charts, window sets, navigation rules, drag regions, refused permissions, a notification while every window
-  is hidden, delivery after a simulated sleep, the crash view, the Omnix import page, quit leaving no backend
-  process, signed in on the next launch, and `--quit`.
-- The backend's Keychain item (service "MarketPulse", account "secret-file-key") is created through
-  Security.framework, so the ctypes Keychain backend works.
-- One fix: `stage.py` hashed ibapi's files in an order that depends on the platform, so a pin made on Windows always
-  failed on a Mac. It now sorts in Windows order on every platform, and the pin is unchanged.
+  Both checks under [Build](#build) pass; the staged `postgres` is a universal binary.
+- `dist` writes the dmg and zip, signed ad hoc with the hardened runtime. The bundle, Python and PostgreSQL pass
+  `codesign --verify --deep --strict`, also after the app has run: nothing writes inside the bundle.
+- `npm --prefix desktop run test` passes 21 of 21, and `pytest src/tests_marketpulse` passes (45, plus the Windows-only
+  Job Object test skipped).
+- The gate below, steps 1 to 7, on the installed app:
+  1. Install from the dmg, first run, owner set, charts open.
+  2. With every window closed, an alert raises a notification and a Dock badge. Clicking it brings MarketPulse to the
+     front, but on the charts as they were, not on the alert's symbol (see below).
+  3. Both Keychain items exist.
+  4. Quit from the menu-bar icon (a template image that looks right): no process left.
+  5. The next start opens the charts, signed in.
+  6. `0.1.3-gate.1` installed over 0.1.2 starts on the same data, signed in, with PostgreSQL shut down cleanly. No
+     migration was pending, so the migration path was not exercised here.
+  7. With the app in the Trash, the data folder and both Keychain items stay.
+
+**Fixed while checking:**
+
+- An unsigned build did not start at all: setting the fuses rewrites the Electron binaries, and Apple silicon kills a
+  bundle whose signature no longer matches (exit 137). Without a Developer ID, `dist` now signs ad hoc.
+- `stage.py`'s ibapi tree hash depended on the platform; it now sorts files in Windows order everywhere.
+- Notification clicks were lost once the Notification was garbage-collected (Windows too). Shown notifications are
+  now kept until clicked or closed.
+- With every window gone, the Dock, the tray's Show and a second launch did nothing; they now reopen the charts.
+- A second Quit while stopping ended the shell first and orphaned the supervisor for 180 s; every quit now waits.
+- Two integration tests only passed on Windows.
 
 **Still to do:**
 
-1. **Integration tests on a Mac.** Run `pytest src/tests_marketpulse` against a scratch PostgreSQL (see
-   [Tests](#tests)).
-2. **The Phase 11 gate**, on the built dmg and preferably on a clean Mac or user account (see
-   [the gate](#phase-11-gate-the-phase-9-checks-on-a-mac)). It covers install, notifications from the installed app,
-   both Keychain items, quit, restart, upgrade and removal. The shell's "MarketPulse Safe Storage" item is still
-   unchecked: the tests run the unpackaged Electron, which never creates it.
-3. **Signing and notarization.** A "Developer ID Application" certificate and notarization credentials are needed.
-   Then check that the hardened runtime works and that `dist` signs every binary under `Resources/runtime` (see
-   [below](#mac-behaviours-that-have-not-been-checked-on-a-mac-yet)).
-4. **An Intel build** (`macos-x64`), on an Intel Mac.
-5. **Releasing:** add the signed dmg and zip to a GitHub release, then check that the updater moves one macOS build
-   to the next. After that, the README can offer a macOS download.
+1. **Open the alert's chart.** A notification's link is `/trading?alert=<id>`, and the web app ignores `alert`, so a
+   click keeps the current chart. The smoke test only passes because its alert is on the default instrument. The
+   fix is in mirrored Omnix code (`alerts_desktop.py` can add `instrument=`, which the web app already follows),
+   then a sync. Windows has the same issue.
+2. **Developer ID signing and notarization**, then check the hardened runtime with a real identity and that the
+   updater moves one macOS build to the next. Until then Mac users update by installing the new dmg.
+3. **An Intel build** (`macos-x64`), on an Intel Mac.
+4. **Windows 0.1.3** with the shell fixes above.
+5. **Quit takes about 20 s** (the gateway drains, then PostgreSQL stops), and nothing shows while it does. That is
+   why a user chooses Quit twice.
+6. **Bytecode in the bundle.** Running the staged Python (the import check, the test suites) writes `.pyc` files
+   into `build/stage`, and `dist` ships them: 20 standard-library files in this release. They are signed and
+   harmless, but `stage.py prune` before `dist` would drop them.
 
 ## What you need
 
@@ -63,7 +82,8 @@ The first Mac run was on Apple silicon (macOS 26). It produced an unsigned `Mark
   - notarization credentials, either an App Store Connect API key (`APPLE_API_KEY`, `APPLE_API_KEY_ID`,
     `APPLE_API_ISSUER`) or an Apple ID (`APPLE_ID`, `APPLE_APP_SPECIFIC_PASSWORD`, `APPLE_TEAM_ID`).
 
-  Without them the build is unsigned and unnotarized: it runs only on your own Mac (right-click › Open the first time).
+  Without them the build is signed ad hoc and not notarized. It runs on the Mac that built it; on any other Mac,
+  Gatekeeper asks the user to allow it once (System Settings › Privacy & Security › Open Anyway).
 
 ## Build
 
@@ -87,10 +107,11 @@ these on the staged runtime:
 
 ## Tests
 
-With a scratch PostgreSQL for the integration tests (never a database that holds real data):
+With a scratch PostgreSQL for the integration tests (never a database that holds real data), migrated first:
 
 ```sh
 export OMNIX_TEST_DATABASE_URL=postgresql://USER:PASSWORD@127.0.0.1:PORT/marketpulse_test
+OMNIX_DATABASE_URL=$OMNIX_TEST_DATABASE_URL OMNIX_FEATURES=trading PYTHONPATH=src:scripts python3 -m app.persistence.cli migrate
 PYTHONPATH=src:scripts python3 -m pytest src/tests_marketpulse -q
 npm --prefix desktop run test         # Electron smoke + unit suites against build/stage
 ```
@@ -103,21 +124,21 @@ npm --prefix desktop run test         # Electron smoke + unit suites against bui
    notification appears and the Dock shows a badge. Clicking the notification opens the alert's chart.
 3. Keychain Access shows two items: "MarketPulse Safe Storage" (the shell's database passwords) and service
    "MarketPulse", account "secret-file-key" (the backend's credential-file key).
-4. Quit from the menu bar icon. `pgrep -fl "MarketPulse|postgres -D"` shows nothing within a few seconds.
+4. Quit from the menu bar icon. `pgrep -fl "MarketPulse|postgres -D"` shows nothing within about 30 seconds.
 5. Start again: the charts open signed in. Data lives under `~/Library/Application Support/MarketPulse`.
 6. Upgrade: install a newer build over this one (or let the updater apply the zip). Data is kept and migrations run.
 7. Remove: drag the app to the Trash. The data folder stays until you delete it.
 
 ## Mac behaviours that have not been checked on a Mac yet
 
-- Hardened runtime with `desktop/build-resources/entitlements.mac.plist`. Python needs unsigned executable memory
-  for ctypes callbacks and loads extension modules signed by the same identity.
-- electron-builder signs the bundled Python and PostgreSQL binaries inside `Resources/runtime`. Notarization fails
-  if it misses one.
+- The hardened runtime with a Developer ID (`desktop/build-resources/entitlements.mac.plist`). The ad hoc build runs
+  with it; a real identity adds library validation by team, which `disable-library-validation` should cover.
+- Notarization, which fails if electron-builder misses a binary inside `Resources/runtime`. The ad hoc build signs
+  them all.
 - If the supervisor is killed (no Job Object on macOS), PostgreSQL keeps running. The next start reconnects to it
   instead of reporting a busy port.
-- Python's bytecode cache goes to the data folder, so nothing writes inside the signed app bundle.
-- The menu-bar icon is a template image, and the title bar leaves room for the traffic lights.
+- The updater on macOS (Squirrel.Mac needs a properly signed app).
 
-Checked on 2026-10-17: the Keychain backend (`app/security/keychain.py`) calls Security.framework through ctypes,
-in an unsigned run.
+Checked on 2026-10-17: the Keychain backend (`app/security/keychain.py`) through ctypes, the bytecode cache in the
+data folder (nothing writes inside the bundle), the menu-bar template image, and the title bar's room for the traffic
+lights.
